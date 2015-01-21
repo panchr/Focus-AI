@@ -11,7 +11,3 @@
 	2. How can human playing patterns be extrapolated from this data, if possible at all?
 5. How can the AI's humanness level be tested?
 	1. Can the data gathered from the tests be used to further improve the AI, and if so, how?
-
-<style type = "text/css">
-	li > ol {list-style-type: lower-alpha;}
-</style>
