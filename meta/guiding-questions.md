@@ -1,4 +1,7 @@
-## Overall Questions
+*Here are my guiding questions. Similar to my timeline, these are flexible and may change if necessary.*
+
+## Overall Question
+
 ### How can a game-playing AI be developed such that it is indistinguishable from a human player?
 
 ## Guiding Questions

@@ -1,4 +1,7 @@
+*This document contains the approximate timeline of my project. It may change over time as my project progresses.*
+
 # Timeline
+
 ## Mid-January to March
 ### Developing the Game-playing AI
 
@@ -25,4 +28,5 @@ __Week 14__ Start preparing portfolio and presentation
 
 ## May
 ### Preparing the Portfolio/Presentation
+
 __Week 15__ Prepare Portfolio and presentation (continued from previous week)
