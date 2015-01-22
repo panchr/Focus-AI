@@ -12,5 +12,6 @@
 4. What types of data does the AI need to gather for its learning process?
 	1. How will this data be analyzed?
 	2. How can human playing patterns be extrapolated from this data, if possible at all?
-5. How can the AI's humanness level be tested?
+5. How will the AI learn?
+6. How can the AI's humanness level be tested?
 	1. Can the data gathered from the tests be used to further improve the AI, and if so, how?
