@@ -19,3 +19,6 @@ Overall, there are more Chess AI, so I will have a lot to work off of. On the ot
 - Efficient scaling with more users (cannot require significant resources for a single instance of the AI)
 - Predictable outcomes
 - Difficulty scaling (might be too advanced to implement originally)
+
+#### 1/27/15
+I decided to go with Checkers, because it is simple enough that I will have time to develop the AI, but it is also complex enough so that there is room for me to learn more about game AI.
