@@ -7,7 +7,9 @@
 
 __Week 1__ Choose the game for AI and determine the necessary features *(reading: past AI created with Dynamic Scripting)*
 
-__Weeks 2 - 3__ Plan the structure of the AI, including individual aspects/processes and its required data structures *(reading: Dynamic Scripting data models & general features of game-playing AI)*
+__Week 2__ Plan the structure of the AI, including individual aspects/processes *(reading: General features of game-playing AI)*
+
+__Week 3__ Plan AI's required data structures *(reading: Dynamic Scripting data models)*
 
 __Week 4__ Create unit tests for the each feature/data model *(reading: Python Unit Testing & Test-Driven Development)*
 
