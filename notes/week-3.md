@@ -10,7 +10,7 @@ Dynamic Scripting Data Models
 Every game, the AI will need to record a list of its played moves. Then, when it receives feedback from the human player, it can modify the weights of these moves.
 The weight is increased if the AI seemed human, or decreased otherwise.
 
-##### Rulebase
+#### Rulebase
 The rulebase consists of rules. Each rule is defined as follows:
 
 |Name|Data type|Description|
