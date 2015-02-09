@@ -11,7 +11,7 @@ __Week 2__ Plan the structure of the AI, including individual aspects/processes 
 
 __Week 3__ Plan AI's required data structures *(reading: Dynamic Scripting data models)*
 
-__Week 4__ Develop Data Models and associated Unit Tests *(reading: Python databases and unit tests)*
+__Week 4__ Develop Data Models and associated Unit Tests *(reading: Generating dynamic rules through the evolutionary algorithm)*
 
 __Week 5__ Create basic list of Checkers rules for rulebase *(reading: general Checkers strategy)*
 

@@ -13,6 +13,7 @@
 	1. How will this data be analyzed?
 	2. How can human playing patterns be extrapolated from this data, if possible at all?
 5. How will the AI learn?
+	1. In addition to modifying rule weights, can the AI dynamically generate new rules?
 6. How can the AI's humanness level be tested?
 	1. Can the data gathered from the tests be used to further improve the AI, and if so, how?
 7. How can such an AI be implemented using Python? 
