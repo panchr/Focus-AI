@@ -20,7 +20,7 @@ __Weeks 6 - 8__ Work on algorithm of AI *(reading: Python AI algorithms)*
 __Weeks 9 - 10__ Data analysis algorithm & optimization *(reading: Python data analysis/profiling/optimization, embedding C in Python)*
 
 ## April
-### Testing and improving the AI
+### Testing and Improving the AI
 
 __Week 11__ Develop website for users to play against the AI *(reading: Node.js sockets and asynchronous communication/data streams with Python daemons)*
 
