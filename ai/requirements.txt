@@ -1,0 +1,3 @@
+# Rushy Panchal
+# Focus AI requirements
+mongokit==0.9.1.1
