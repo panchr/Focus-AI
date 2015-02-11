@@ -3,8 +3,8 @@
 
 from models.model import CustomTypeBase
 
-class Condition(CustomTypeBase):
-	'''A Custom type representing a Dynamic Scripting condition'''
+class Response(CustomTypeBase):
+	'''A Custom type representing a Dynamic Scripting response'''
 	mongo_type = basestring
 	python_type = basestring
 	init_type = basestring

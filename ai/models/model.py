@@ -27,7 +27,7 @@ class Model(mongokit.Document, object):
 			return returnValue
 		return decorated
 
-class CustomTypeBase(CustomType, object):
+class CustomTypeBase(mongokit.CustomType, object):
 	'''Base class for a custom Mongokit type'''
 	mongo_type = None
 	python_type = None

@@ -12,11 +12,6 @@ class HashedPassword(CustomTypeBase):
 	init_type = basestring
 
 	@staticmethod
-	def new(password = ""):
-		'''Hashes a new password'''
-		return HashedPassword.hash(password)
-
-	@staticmethod
 	def check(password, hashed):
 		'''Checks if the password matches the hashed password'''
 		return (bcrypt.hashpw(password, hashed) == hashed)

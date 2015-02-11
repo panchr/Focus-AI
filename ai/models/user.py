@@ -1,11 +1,13 @@
 # Rushy Panchal
-# ai/models/player.py
+# ai/models/user.py
 
 from models.model import Model
 from models.auth import HashedPassword
 
-class Player(Model):
+class User(Model):
 	'''A single player'''
+	__collection__ = "users"
+
 	structure = {
 		"display": basestring,
 		"email": basestring,

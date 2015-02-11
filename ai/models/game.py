@@ -8,7 +8,7 @@ from models.model import Model
 class Game(Model):
 	'''Contains all of the data about a single game that was played'''
 	structure = {
-		"players": [ObjectId], # Player.id
+		"players": [ObjectId], # User.id
 		"history": [Gamestate],
 		"rulesUsed": [ObjectId], # Rule.id, only needed if AI
 		"feedback": Feedback,
