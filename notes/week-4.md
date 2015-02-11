@@ -38,4 +38,8 @@ In Spronck's original description of his Dynamic Scripting algorithm, the progra
 Initially, I planned on having this automated to begin with. I was going to order the AI rules based on the humanness weight --- this seemed intuitive to me.
 Indeed, Timuri discusses the weight-based ordering. However, he also looks into two other types of sorting, based on the relationships between two rules, which is the outcome when used together.
 
-I found the relation-based ordering pretty interesting, but it seems fairly complex, at least for now. Maybe if I have time towards the end of my project I will work on learning more about how it works and try implementing it.
+I found the relation-based ordering pretty interesting, but it seems fairly complex, at least for now.
+Maybe if I have time towards the end of my project I will work on learning more about how it works and try implementing it.
+
+Recently, I spoke with Ethan Holly, an alum from my high school. He introduced me to representation/feature learning, which is essentially detecting features instead of hardcoding them.
+This is similar to my idea about the dynamically generating rules. In the next few days, I am going to research more about the topic and see if it's feasible/if I understand any of it.
