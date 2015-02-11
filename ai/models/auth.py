@@ -9,7 +9,7 @@ class HashedPassword(CustomTypeBase):
 	'''MongoDB Model for storing (and authenticating) user passwords'''
 	mongo_type = basestring
 	python_type = basestring
-	init_type = basestring
+	init_type = None
 
 	@staticmethod
 	def check(password, hashed):
