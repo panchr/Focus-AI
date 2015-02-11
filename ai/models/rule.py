@@ -14,17 +14,21 @@ class Rule(Model):
 		"state": Gamestate,
 		"condition": Condition,
 		"response": Response,
-		"weight": int,
+		"weight": int, # might want to store it as a double instead so that all the weights can be normalized (instead of -infinity to +infinity, weights are 0 to 1)
 		}
 	
 	required_fields = ["state", "weight", "condition", "response"]
 
+	default_values = {
+		"weight": 0
+		}
+
 	@Model.autosave
-	def increase_weight(self):
+	def increaseWeight(self):
 		'''Increments the weight'''
 		self.weight += 1
 
 	@Model.autosave
-	def decrease_weight(self):
+	def decreaseWeight(self):
 		'''Decreases the weight'''
 		self.weight -= 1

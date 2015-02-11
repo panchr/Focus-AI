@@ -1,5 +1,5 @@
 # Rushy Panchal
-# tests/models/test_users.py
+# tests/models/test_user.py
 
 import unittest
 import baseTests

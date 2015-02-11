@@ -113,7 +113,7 @@ class CustomTypeTestBase(baseTests.BaseTest, object):
 	def test_hasInitType(self):
 		'''init_type is set'''
 		self.assertHasAttr(self.modelObject, "init_type")
-		self.assertIn(self.modelObject.init_type, (self.modelObject.python_type, types.NoneType))
+		self.assertIn(self.modelObject.init_type, (self.modelObject.python_type, types.NoneType, None))
 
 	def test_hasToPython(self):
 		'''to_python method is set'''
