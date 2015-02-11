@@ -29,4 +29,13 @@ class Rule(mongokit.Document):
 	required_fields = ["state", "weight", "condition", "response"]
 ```
 
-*Note: most of my code and development work is the `dev` branch. I will merge it into the `master` branch every week, so the weekly tag will contain the latest development work.*
+I am still working on it so this snippet will soon be out-of-date.
+
+#### Dynamically Generating Rules
+
+I read this interesting paper on [ordering the rulebase in a Dynamic Scripting implementation](http://www.aaai.org/Papers/AIIDE/2007/AIIDE07-009.pdf).
+In Spronck's original description of his Dynamic Scripting algorithm, the programmer has to dictate the rule order.
+Initially, I planned on having this automated to begin with. I was going to order the AI rules based on the humanness weight --- this seemed intuitive to me.
+Indeed, Timuri discusses the weight-based ordering. However, he also looks into two other types of sorting, based on the relationships between two rules, which is the outcome when used together.
+
+I found the relation-based ordering pretty interesting, but it seems fairly complex, at least for now. Maybe if I have time towards the end of my project I will work on learning more about how it works and try implementing it.
