@@ -1,3 +1,4 @@
 # Rushy Panchal
 # Focus AI requirements
 mongokit==0.9.1.1
+bcrypt==1.1.0
