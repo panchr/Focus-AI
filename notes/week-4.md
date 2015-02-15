@@ -43,3 +43,5 @@ Maybe if I have time towards the end of my project I will work on learning more 
 
 Recently, I spoke with Ethan Holly, an alum from my high school. He introduced me to representation/feature learning, which is essentially detecting features instead of hardcoding them.
 This is similar to my idea about the dynamically generating rules. In the next few days, I am going to research more about the topic and see if it's feasible/if I understand any of it.
+
+I have read through about a third of the Representation Learning paper so far. My notes on it are located in a [separate page](representation-learning.md) because there were quite a few of them.

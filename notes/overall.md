@@ -39,3 +39,7 @@ The AI needs to collect the game state of every game played. In addition, it sho
 Each rule in the rulebase should have a unique condition (which triggers it), as well as an associated response, game state, and humanness weight.
 
 When a move seems human, that rule's weight is increased. If it seems like an AI, then the weight is decreased, so that it is less likely to be chosen in the future.
+
+### Representation Learning
+
+Here are [my notes on representation learning(representation-learning.md).
