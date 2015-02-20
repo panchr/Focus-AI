@@ -2,4 +2,5 @@
 # ai/config.py
 
 # Global configuration options
-DEV = True # development mode
+ENV = "development" # development mode
+DEV_MODE = (ENV == "development")

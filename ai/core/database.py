@@ -1,8 +1,6 @@
 # Rushy Panchal
 # ai/core/database.py
 
-from config import *
-
 import pymongo
 
 class Database(pymongo.Connection):
