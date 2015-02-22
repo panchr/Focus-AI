@@ -3,8 +3,6 @@
 
 import subprocess
 
-from config import *
-
 class DevelopmentServer(object):
 	'''Mocks a development server for MongoDB and other services'''
 	def __init__(self):
