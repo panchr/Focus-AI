@@ -6,28 +6,15 @@ from models.model import CustomTypeBase
 class Gamestate(CustomTypeBase):
 	'''Depicts the game state
 
-	BSON representation: 01,02,03|11,12,13|21,22,23
-	Python representation: [
-		[01, 02, 03],
-		[11, 12, 13],
-		[21, 22, 23]
-		]
+	Each element of the list represents a player's bitstring.
 
-	Each individual element is stored as an integer'''
+	For example, Player 0 may have a bitstring of 0b10100000, or 160'''
 
-	mongo_type = basestring
-	python_type = [list]
-	init_type = [list]
+	mongo_type = [int]
+	python_type = [int]
+	init_type = list # may have to change this to "list", because it should be callable
 
 	@classmethod
 	def new(cls, width = 8, height = 8):
 		'''Creates a new Game state descriptor'''
 		return [[0] * height for w in xrange(width)]
-
-	def to_bson(self, value):
-		'''Converts the Python object to a BSON representation'''
-		return "|".join(",".join(map(str, part)) for part in value)
-
-	def to_python(self, value):
-		'''Converts the BSON representation to a Python object'''
-		return [map(int, part.split(",")) for part in value.split("|")]
