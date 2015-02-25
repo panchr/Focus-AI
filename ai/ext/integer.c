@@ -1,5 +1,5 @@
 // Rushy Panchal
-// ai/ext/bitstring.c
+// ai/ext/integer.c
 // Provides bitstring operations in C
 
 #include <math.h>
@@ -26,8 +26,7 @@ unsigned int countBits(unsigned int n) {
 
 unsigned int not(unsigned int n) {
 	// Calculate the logical NOT of n
-	unsigned int x;
-	x = ~n & (unsigned int) (pow(2, countBits(n)) - 1);
+	unsigned int x = ~n & (unsigned int) (pow(2, countBits(n)) - 1);
 	return x;
 	}
 
