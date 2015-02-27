@@ -62,6 +62,12 @@ class TestInteger(unittest.TestCase, baseTests.BaseTest):
 		self.assertEquals(self.testA ^ self.testC, 0b00110011)
 		self.assertEquals(self.testC ^ self.testA, 0b00110011)
 
+	def test_moveBit(self):
+		'''Integer.moveBit works'''
+		self.assertEquals(self.testA.moveBit(5, 1), 0b10000111)
+		self.assertEquals(self.testB.moveBit(3, 5), 0b0100100101110000)
+		self.assertEquals(self.testC.moveBit(0, 0), 0b10010110)
+
 	def test_concat(self):
 		'''Integer.concat works'''
 		self.assertEquals(self.testA.concat(self.testC), 0b1010010110010110)

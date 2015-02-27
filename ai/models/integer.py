@@ -6,7 +6,7 @@ class IntegerBase:
 	def __invert__(self):
 		'''Invert the current value with the logical NOT operator'''
 		value = self.real
-		return self.dataType(~value & (2**value.bit_length() - 1))
+		return self.dataType(value ^ (2**value.bit_length() - 1)) # use a XOR mask to flip the bits
 
 	def rcirc(self, n):
 		'''RCIRC the bitstring n times'''
@@ -34,9 +34,19 @@ class IntegerBase:
 		left = (value << n) ^ (right << numBits) # get the first n bits
 		return self.dataType(left | right) # combine the left and right halves
 
-	def concat(self, n):
+	def moveBit(self, old, new, size = None):
+		'''Move a bit from the "old" to "new" position'''
+		value = self.real
+		if old == new:
+			return self.dataType(value)
+		if not size:
+			size = value.bit_length()
+		value = (value | (1 << new)) & (((2**(size - old - 1) -1) << (old + 1)) | (2**old - 1))
+		return self.dataType(value)
+
+	def concat(self, n, size = None):
 		'''Concatenates two integers'''
-		return self.dataType((self.real << n.bit_length()) | n)
+		return self.dataType((self.real << (size if size else n.bit_length())) | n)
 
 class Integer(IntegerBase, int):
 	'''A wrapper around native ints that allows for various logical operators'''
