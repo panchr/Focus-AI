@@ -44,6 +44,12 @@ class IntegerBase:
 		value = (value | (1 << new)) & (((2**(size - old - 1) -1) << (old + 1)) | (2**old - 1))
 		return self.dataType(value)
 
+	def getBit(self, position):
+		'''Get the bit in a certain position'''
+		value = self.real
+
+		return (value >> position) & (2**(value.bit_length() - position + 2) + 1)
+
 	def concat(self, n, size = None):
 		'''Concatenates two integers'''
 		return self.dataType((self.real << (size if size else n.bit_length())) | n)

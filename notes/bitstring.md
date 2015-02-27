@@ -47,7 +47,7 @@ class Integer(int):
 		value = self.real
 		numBits = value.bit_length()
 		n = n % numBits # make sure n is within the range of (0, numBits) inclusive
-		if (n == numBits): # RCIRC(x, n) for n = (number of bits in x) is equal to x
+|		if (n == numBits)|# RCIRC(x, n) for n = (number of bits in x) is| equal to x
 			return value
 
 		toShift = numBits - n
@@ -60,7 +60,7 @@ class Integer(int):
 		value = self.real
 		numBits = value.bit_length()
 		n = n % numBits # make sure n is within the range of (0, numBits) inclusive
-		if (n == numBits): # LCIRC(x, n) for n = (number of bits in x) is equal to x
+|		if (n == numBits)|# LCIRC(x, n) for n = (number of bits in x) is| equal to x
 			return value
 
 		toShift = numBits - n
@@ -76,3 +76,26 @@ Thus, the changed operations become:
 |`NOT x`|boolean|`~Integer(x)`
 |`x LCIRC n`|mutation|`Integer(x).lcirc(n)`|
 |`x RCIRC n`|mutation|`Integer(x).rcirc(n)`|
+
+## Benchmark Testing
+
+After doing some testing, I found out that my `Long` class (which wraps the `long` primitive) is actually significantly slower than using a list of bits.
+
+Here is a benchmark for various operations that I will need to perform, between using a literal string of bits, a binary integer, and a list (for 100,000 calls):
+
+|Function|Elapsed Time|
+|----------|---------------|
+|str.getBit|0.0192716030799s|
+|str.moveBit|0.22296878136s|
+|str.compare|0.0254751902129s|
+|str.concat|0.0339446831609s|
+|list.getBit|0.0135640748445s|
+|list.moveBit|0.0431440098892s|
+|list.compare|0.0325705429963s|
+|list.concat|0.235995744157s|
+|Long.getBit|0.332514551061s|
+|Long.moveBit|1.16779904939s|
+|Long.compare|0.0291004114438s|
+|Long.concat|0.387784635174s|
+
+If I have the time, I might re-implement the `Integer`/`Long` classes in C (using the Python API for integrating with C) and see if these end up being faster. This shouldn't be too hard because a lot of the operations are the same, but I will have to learn how to integrate with C to make it work.
