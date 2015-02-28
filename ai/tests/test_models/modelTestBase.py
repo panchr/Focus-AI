@@ -134,5 +134,6 @@ class CustomTypeTestBase(baseTests.BaseTest, object):
 		'''BSON to Python conversions'''
 		for (bson, python) in self.mongoConversions:
 			python_raw = self.modelObject.to_python(bson)
+			print python_raw
 			self.assertEquals(python_raw, python)
 			self.assertIsInstance(python_raw, type(python))

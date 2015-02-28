@@ -2,33 +2,45 @@
 # ai/models/state.py
 
 from models.model import CustomTypeBase
-from models.integer import Integer, Long
+
+import numpy as np
+import math
+
+import config
 
 class Gamestate(CustomTypeBase):
-	'''Depicts the game state
+	'''Depicts the game state'''
+	mongo_type = list
+	python_type = np.ndarray
+	init_type = None
 
-	Every element (other than the first) of the list represents a player's bitstring.
-	The first element describes the width of each bitstring.
+	def to_bson(self, value):
+		'''Convert the structure to BSON'''
+		return value.tolist()
 
-	For example, Player 0 may have a bitstring of 0b10100000, or 160'''
-
-	mongo_type = [int]
-	python_type = [int]
-	init_type = list
+	def to_python(self, value):
+		'''Convert the structure to a Python list'''
+		return np.asarray(value, dtype = config.STORAGE_DATATYPE)
 
 	@classmethod
-	def new(cls, width = 8, height = 8):
+	def new(cls, width = 8, height = 8, dataType = config.STORAGE_DATATYPE):
 		'''Creates a new Game state descriptor'''
-		return [{
-			"width": width,
-			"height": height,
-			"size": width * height
-			}]
+		return np.zeros((width, height), dtype = dataType)
+
+	@staticmethod
+	def movePiece(state, old, new):
+		'''Moves a piece in the game'''
+		current = state[old]
+		state[old] = state[new] # assumes that "new" is currently 0
+		state[new] = current
+		return True
+
+	@staticmethod
+	def isValid(state):
+		'''Board is valid'''
+		raise NotImplementedError("Gamestate.isValid has not been implemented yet")
 
 	@staticmethod
 	def compare(stateA, stateB):
 		'''Compares two states'''
-		difference = 0
-		for valueA, valueB in zip(stateA[1:], stateB[1:]):
-			difference += abs(valueA - valueB)
-		return difference
+		raise NotImplementedError("Gamestate.compare has not been implemented yet")
