@@ -40,6 +40,7 @@ Each rule in the rulebase should have a unique condition (which triggers it), as
 
 When a move seems human, that rule's weight is increased. If it seems like an AI, then the weight is decreased, so that it is less likely to be chosen in the future.
 
-### Representation Learning
+Currently, the game state is stored as a 2-dimensional `numpy.ndarray`, which turns out to be faster than numeric bitstrings.
 
-Here are [my notes on representation learning(representation-learning.md).
+### Representation Learning
+Here are [my notes on representation learning](representation-learning.md).
