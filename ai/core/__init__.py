@@ -30,4 +30,4 @@ def start():
 	return db
 
 if __name__ == '__main__':
-	start()
+	db = start()

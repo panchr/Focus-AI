@@ -85,7 +85,7 @@ class ModelTestBase(baseTests.BaseTest, object):
 				return True
 			elif (len(item) == 1): # if it's a single-item-list, make sure that item is valid
 				return self.validateMongokitItem(key, item[0], errors)
-		elif (issubclass(item, CustomType)): # a CustomType must be valid
+		elif (isinstance(item, CustomType) or issubclass(item, CustomType)): # a CustomType must be valid
 			return True
 		else:
 			errors.append("\t{key}, {dataType} is not a valid Mongokit data type.".format(key = key, dataType = item))
@@ -104,7 +104,7 @@ class CustomTypeTestBase(baseTests.BaseTest, object):
 	def test_hasMongoType(self):
 		'''mongo_type is set'''
 		self.assertHasAttr(self.modelObject, "mongo_type")
-		self.assertIn(self.modelObject.mongo_type, VALID_MONGOKIT_TYPES)
+		self.assertTrue(self.modelObject.mongo_type in VALID_MONGOKIT_TYPES or type(self.modelObject.mongo_type) in VALID_MONGOKIT_TYPES)
 
 	def test_hasPythonType(self):
 		'''python_type is set'''
@@ -113,7 +113,7 @@ class CustomTypeTestBase(baseTests.BaseTest, object):
 	def test_hasInitType(self):
 		'''init_type is set'''
 		self.assertHasAttr(self.modelObject, "init_type")
-		self.assertIn(self.modelObject.init_type, (self.modelObject.python_type, types.NoneType, None))
+		self.assertIn(self.modelObject.init_type, (self.modelObject.python_type, type(self.modelObject.python_type), types.NoneType, None))
 
 	def test_hasToPython(self):
 		'''to_python method is set'''
@@ -134,5 +134,6 @@ class CustomTypeTestBase(baseTests.BaseTest, object):
 		'''BSON to Python conversions'''
 		for (bson, python) in self.mongoConversions:
 			python_raw = self.modelObject.to_python(bson)
+			print python_raw
 			self.assertEquals(python_raw, python)
 			self.assertIsInstance(python_raw, type(python))

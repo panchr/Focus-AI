@@ -12,7 +12,7 @@ class Game(Model):
 
 	structure = {
 		"players": [ObjectId], # User.id
-		"history": Gamestate, # should be [Gamestate], but Mongokit throws a SchemaError --- this works so Gamestate is definitely a valid type
+		"history": Gamestate(), # should be [Gamestate], but Mongokit throws a SchemaError --- this works so Gamestate is definitely a valid type
 		"rulesUsed": [ObjectId], # Rule.id, only needed if AI
 		"feedback": basestring,
 		}

@@ -6,14 +6,16 @@ from models.state import Gamestate
 from models.condition import Condition
 from models.response import Response
 
+import config
+
 class Rule(Model):
 	'''A general model for a Dynamic Scripting Rule'''
 	__collection__ = "rulebase"
 
 	structure = {
-		"state": Gamestate,
-		"condition": Condition,
-		"response": Response,
+		"state": Gamestate(),
+		"condition": Condition(),
+		"response": Response(),
 		"weight": int, # might want to store it as a double instead so that all the weights can be normalized (instead of -infinity to +infinity, weights are 0 to 1)
 		}
 	
@@ -26,9 +28,9 @@ class Rule(Model):
 	@Model.autosave
 	def increaseWeight(self):
 		'''Increments the weight'''
-		self.weight += 1
+		self.weight += config.WEIGHT_DELTA
 
 	@Model.autosave
 	def decreaseWeight(self):
 		'''Decreases the weight'''
-		self.weight -= 1
+		self.weight -= config.WEIGHT_DELTA
