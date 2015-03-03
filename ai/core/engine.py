@@ -13,7 +13,4 @@ class Engine(object):
 	# old and new are tuples of (x, y) coordinates
 	def makeMove(self, old, new):
 		'''Move a piece to a new position'''
-		self.state.movePiece(old, new)
-		if self.isValidState(state):
-			return True
-		return False
+		return Gamestate.movePiece(self.state, old, new)

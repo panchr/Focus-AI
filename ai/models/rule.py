@@ -29,8 +29,17 @@ class Rule(Model):
 	def increaseWeight(self):
 		'''Increments the weight'''
 		self.weight += config.WEIGHT_DELTA
+		if (self.weight + 1) >= config.NORMALIZE_THRESHOLD:
+			Rule.normalize()
 
 	@Model.autosave
 	def decreaseWeight(self):
 		'''Decreases the weight'''
 		self.weight -= config.WEIGHT_DELTA
+		if (self.weight - 1) <= config.NORMALIZE_THRESHOLD_NEG:
+			Rule.normalize()
+
+	@classmethod
+	def normalize(cls):
+		'''Normalizes all of the weights between 0 and 1'''
+		pass # weight = weight / (sum of all weights)

@@ -27,20 +27,25 @@ class Gamestate(CustomTypeBase):
 		'''Creates a new Game state descriptor'''
 		return np.zeros((width, height), dtype = dataType)
 
-	@staticmethod
-	def movePiece(state, old, new):
+	@classmethod
+	def movePiece(cls, state, old, new):
 		'''Moves a piece in the game'''
+		if not cls.isValid(state, old, new):
+			return False
 		current = state[old]
-		state[old] = state[new] # assumes that "new" is currently 0
+		state[old] = state[new]
 		state[new] = current
 		return True
 
 	@staticmethod
-	def isValid(state):
-		'''Board is valid'''
-		raise NotImplementedError("Gamestate.isValid has not been implemented yet")
+	def isValid(state, old, new):
+		'''New move is valid'''
+		valid = (state[new] == 0) and (state[old] == 1)
+		return valid
 
 	@staticmethod
 	def compare(stateA, stateB):
-		'''Compares two states'''
-		raise NotImplementedError("Gamestate.compare has not been implemented yet")
+		'''Compares two states and returns the quotient of similarity'''
+		difference = np.sum(stateA ^ stateB)
+		numElements = stateA.size
+		return float(numElements - difference) / numElements
