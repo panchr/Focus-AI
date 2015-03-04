@@ -42,4 +42,5 @@ class Rule(Model):
 	@classmethod
 	def normalize(cls):
 		'''Normalizes all of the weights between 0 and 1'''
+		raise NotImplementedError("Rule.normalize has not been implemented!")
 		pass # weight = weight / (sum of all weights)

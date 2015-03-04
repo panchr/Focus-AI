@@ -1,7 +1,7 @@
 # Rushy Panchal
 # ai/config.py
 
-from numpy import uint32
+from numpy import int32
 
 # Global configuration options
 ENV = "development" # development mode
@@ -14,6 +14,6 @@ PORT = 27017
 RULE_MATCHES = 3
 WEIGHT_DELTA = 1
 
-STORAGE_DATATYPE = uint32
+STORAGE_DATATYPE = int32
 NORMALIZE_THRESHOLD = 2**31 - 2
 NORMALIZE_THRESHOLD_NEG = -1 * NORMALIZE_THRESHOLD

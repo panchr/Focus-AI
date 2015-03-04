@@ -9,7 +9,10 @@ import math
 import config
 
 class Gamestate(CustomTypeBase):
-	'''Depicts the game state'''
+	'''Depicts the game state
+
+	Each player is represented by an integer.
+	A player's kings are represented negative integers.'''
 	mongo_type = list
 	python_type = np.ndarray
 	init_type = None
@@ -46,6 +49,8 @@ class Gamestate(CustomTypeBase):
 	@staticmethod
 	def compare(stateA, stateB):
 		'''Compares two states and returns the quotient of similarity'''
-		difference = np.sum(stateA ^ stateB)
-		numElements = stateA.size
-		return float(numElements - difference) / numElements
+		difference = np.sum(abs(stateA ^ stateB))
+		maxValue = max(np.max(stateA), np.max(stateB))
+		minValue = min(np.min(stateA), np.min(stateB))
+		arraySize = stateA.size * (maxValue - minValue)
+		return float(arraySize - difference) / arraySize # doesn't account for position in the matrix, which is important

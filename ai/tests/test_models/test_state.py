@@ -64,7 +64,10 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 
 	def test_compare(self):
 		'''Gamestate.compare works'''
-		expectedSimilarity = float(self.stateA.size - self.stateA.shape[0] - 5) / self.stateA.size
+		maxValue = max(np.max(self.stateA), np.max(self.stateB))
+		minValue = min(np.min(self.stateA), np.min(self.stateB))
+		arraySize = self.stateA.size * (maxValue - minValue)
+		expectedSimilarity = float(arraySize - self.stateA.shape[0] - 5) / arraySize
 		givenSimilarity = self.model.compare(self.stateA, self.stateB)
 
 		self.assertEquals(givenSimilarity, expectedSimilarity)
