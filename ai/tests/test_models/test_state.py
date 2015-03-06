@@ -53,6 +53,9 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.stateD = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
 		self.stateD[1, 1] = 2
 		self.stateD[6, 1] = 1
+		self.stateE = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
+		self.stateE[1, 1] = -2
+		self.stateE[6, 3] = -1
 
 	def test_toPython(self): # has to be custom because numpy array equality returns an array of booleans
 		'''BSON to Python conversions'''
@@ -118,3 +121,31 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		copyD[7, 0] = -1
 		self.model.movePiece(self.stateD, (6, 1), (7, 0))
 		self.assertTrue((self.stateD == copyD).all())
+
+	def test_kingMove(self):
+		'''Gamestate.movePiece correctly moves Kings'''
+		copyE = np.copy(self.stateE)
+
+		# try moving Player 2's King (-2) down
+		copyE[1, 1] = 0
+		copyE[2, 2] = -2
+		self.model.movePiece(self.stateE, (1, 1), (2, 2))
+		self.assertTrue((self.stateE == copyE).all())
+		
+		# move Player 2's King (-2) back up
+		copyE[2, 2] = 0
+		copyE[1, 3] = -2
+		self.model.movePiece(self.stateE, (2, 2), (1, 3))
+		self.assertTrue((self.stateE == copyE).all())
+
+		# try moving Player 1's King (-1) down
+		copyE[6, 3] = 0
+		copyE[5, 2] = -1
+		self.model.movePiece(self.stateE, (6, 3), (5, 2))
+		self.assertTrue((self.stateE == copyE).all())
+		
+		# move Player 1's King (-1) back up
+		copyE[5, 2] = 0
+		copyE[6, 1] = -1
+		self.model.movePiece(self.stateE, (5, 2), (6, 1))
+		self.assertTrue((self.stateE == copyE).all())
