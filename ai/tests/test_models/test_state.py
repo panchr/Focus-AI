@@ -77,20 +77,22 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 
 	def test_isValid(self):
 		'''Gamestate.isValid works'''
-		self.assertTrue(self.model.isValid(self.stateB, (2, 3), (0, 0)))
-		self.assertTrue(self.model.isValid(self.stateB, (1, 1), (2, 4)))
-		self.assertTrue(self.model.isValid(self.stateB, (1, 5), (4, 7)))
+		self.assertTrue(self.model.isValid(self.stateB, (2, 3), (3, 4)))
+		self.assertTrue(self.model.isValid(self.stateB, (1, 1), (2, 2)))
+		self.assertTrue(self.model.isValid(self.stateB, (1, 5), (2, 6)))
 
 	def test_movePiece(self):
 		'''Gamestate.movePiece works'''
 		copyC = np.copy(self.stateC)
 		pairs = [
-			[(1, 1), (2, 3)],
-			[(2, 2), (3, 4)],
-			[(5, 4), (0, 0)]
+			[(2, 2), (3, 3)],
+			[(2, 3), (3, 4)],
+			[(5, 4), (6, 3)]
 			]
+
 		for old, new in pairs:
+			piece = copyC[old]
 			self.model.movePiece(self.stateC, old, new)
 			copyC[old] = 0
-			copyC[new] = 1
+			copyC[new] = piece
 			self.assertTrue((self.stateC == copyC).all())

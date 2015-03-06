@@ -40,11 +40,27 @@ class Gamestate(CustomTypeBase):
 		state[new] = current
 		return True
 
-	@staticmethod
-	def isValid(state, old, new):
+	@classmethod
+	def isValid(cls, state, old, new):
 		'''New move is valid'''
-		valid = (state[new] == 0) and (state[old] == 1)
-		return valid
+		toMove = state[old]
+		deltaY = new[0] - old[0]
+		deltaX = new[1] - old[1]
+		absDeltaY = abs(deltaY)
+		absDeltaX = abs(deltaX)
+		conditions = (
+			(state[new] == 0),
+			(toMove != 0),
+			(deltaY > 0 if toMove == 1 else deltaY < 0),
+			((absDeltaY == 1 and absDeltaX == 1) # normal move
+				or ((absDeltaY % 2 == 0) and cls.isValidTake(state, old, new))), # moving over two pieces
+			)
+		return all(conditions)
+
+	@classmethod
+	def isValidTake(cls, state, old, new):
+		'''Piece take is valid'''
+		raise NotImplementedError("Gamestate.isValidTake not yet implemented")
 
 	@staticmethod
 	def compare(stateA, stateB):

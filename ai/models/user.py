@@ -11,7 +11,7 @@ class User(Model):
 	structure = {
 		"display": basestring,
 		"email": basestring,
-		"password": HashedPassword, # should be hashed
+		"password": HashedPassword(), # should be hashed
 		"ai": bool,
 		}
 

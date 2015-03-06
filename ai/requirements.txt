@@ -9,3 +9,4 @@ pycparser==2.10
 pymongo==2.8
 pytz==2014.10
 six==1.9.0
+shortid==0.1.0
