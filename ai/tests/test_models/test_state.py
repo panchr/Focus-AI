@@ -37,19 +37,22 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 				[0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0]
 				],
-			np.zeros((2, 5), dtype = np.uint32)
+			np.zeros((2, 5), dtype = np.int32)
 			)
 			]
-		self.stateA = np.zeros((8, 8), dtype = np.uint32)
+		self.stateA = np.zeros((8, 8), dtype = np.int32)
 		self.stateB = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
 		self.stateB[1] = 1 # difference of at least self.stateA.shape[0]
 		self.stateB[2, 3] = 1
 		self.stateA[1, 1] = 4
 		# total difference is (5 + self.stateA.shape[0])
-		self.stateC = np.zeros((8, 8), dtype = np.uint32)
+		self.stateC = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
 		self.stateC[1, 1] = 1
 		self.stateC[2, 2] = 1
 		self.stateC[5, 4] = 1
+		self.stateD = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
+		self.stateD[1, 1] = 2
+		self.stateD[6, 1] = 1
 
 	def test_toPython(self): # has to be custom because numpy array equality returns an array of booleans
 		'''BSON to Python conversions'''
@@ -97,7 +100,21 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 
 		for old, new in pairs:
 			piece = copyC[old]
-			self.model.movePiece(self.stateC, old, new)
 			copyC[old] = 0
 			copyC[new] = piece
+			self.model.movePiece(self.stateC, old, new)
 			self.assertTrue((self.stateC == copyC).all())
+
+	def test_kingPromotion(self):
+		'''Gamestate.movePiece promotes pieces to kings when necessary'''
+		copyD = np.copy(self.stateD)
+
+		copyD[1, 1] = 0
+		copyD[0, 2] = -2
+		self.model.movePiece(self.stateD, (1, 1), (0, 2))
+		self.assertTrue((self.stateD == copyD).all())
+
+		copyD[6, 1] = 0
+		copyD[7, 0] = -1
+		self.model.movePiece(self.stateD, (6, 1), (7, 0))
+		self.assertTrue((self.stateD == copyD).all())
