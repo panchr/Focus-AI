@@ -81,6 +81,11 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertTrue(self.model.isValid(self.stateB, (1, 1), (2, 2)))
 		self.assertTrue(self.model.isValid(self.stateB, (1, 5), (2, 6)))
 
+		# These moves should fail - not valid board positions
+		self.assertFalse(self.model.isValid(self.stateB, (1, 5), (2, 7)))
+		self.assertFalse(self.model.isValid(self.stateB, (1, 0), (2, 7)))
+		self.assertFalse(self.model.isValid(self.stateB, (1, 0), (1, 0)))
+
 	def test_movePiece(self):
 		'''Gamestate.movePiece works'''
 		copyC = np.copy(self.stateC)

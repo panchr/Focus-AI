@@ -12,7 +12,7 @@ class Gamestate(CustomTypeBase):
 	'''Depicts the game state
 
 	Each player is represented by an integer.
-	A player's kings are represented negative integers.'''
+	A player's kings are represented by negative integers.'''
 	mongo_type = list
 	python_type = np.ndarray
 	init_type = None
@@ -36,9 +36,18 @@ class Gamestate(CustomTypeBase):
 		if not cls.isValid(state, old, new):
 			return False
 		current = state[old]
-		state[old] = state[new]
+		state[old] = 0
+		if not isinstance(new[0], int): # take-based move
+			cls.takePieces(state, new)
+		if ((current == 1 and new[0] == 7) or (current == 2 and new[0] == 0)):
+			current *= -1 # piece reached the end of the board, so let's promote it to a King
 		state[new] = current
 		return True
+
+	@classmethod
+	def takePieces(cls, state, moves):
+		'''Takes pieces between each move'''
+		raise NotImplementedError("Gamestate.takePieces not yet implemented")
 
 	@classmethod
 	def isValid(cls, state, old, new):
@@ -48,19 +57,24 @@ class Gamestate(CustomTypeBase):
 		deltaX = new[1] - old[1]
 		absDeltaY = abs(deltaY)
 		absDeltaX = abs(deltaX)
-		conditions = (
+		conditions = [
 			(state[new] == 0),
 			(toMove != 0),
-			(deltaY > 0 if toMove == 1 else deltaY < 0),
-			((absDeltaY == 1 and absDeltaX == 1) # normal move
-				or ((absDeltaY % 2 == 0) and cls.isValidTake(state, old, new))), # moving over two pieces
-			)
+			(deltaY > 0 if toMove == 1 else (deltaY < 0 if toMove == 2 else True)),
+			]
+		if isinstance(new[0], int): # simple move
+			conditions.extend([
+				(absDeltaY == 1),
+				(absDeltaX == 1)
+				])
+		else:
+			raise NotImplementedError("Gamestate.isValid -> take has not been implemented")
+			# each step should be evaluated in a loop
+			conditions.extend([
+				(absDeltaX % 2 == 0),
+				(absDeltaY % 2 == 0),
+				]) # should add on conditions for each step in the take
 		return all(conditions)
-
-	@classmethod
-	def isValidTake(cls, state, old, new):
-		'''Piece take is valid'''
-		raise NotImplementedError("Gamestate.isValidTake not yet implemented")
 
 	@staticmethod
 	def compare(stateA, stateB):
