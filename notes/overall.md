@@ -1,11 +1,10 @@
 # Overall Planning/Notes
 
-## Last Updated: 2/7/2015
+## Last Updated: 3/5/2015
 
 ### Current Status
 
-Currently, I've decided on a game to be played: Checkers. This game was chosen because it is simple to understand, but complex enough so that I will have a lot to work with.
-In addition, I've decided on the [AI's general decision-making process](#decision-making-process), which is outlined below.
+Currently, I am working on the Checkers game engine. I have decided to use 2-dimensional `numpy` arrays to store and manipulate the gamestate.
 
 ### Decision Making Process
 
@@ -40,7 +39,10 @@ Each rule in the rulebase should have a unique condition (which triggers it), as
 
 When a move seems human, that rule's weight is increased. If it seems like an AI, then the weight is decreased, so that it is less likely to be chosen in the future.
 
-Currently, the game state is stored as a 2-dimensional `numpy.ndarray`, which turns out to be faster than numeric bitstrings.
+Currently, the game state is stored as a 2-dimensional `numpy.ndarray`, which turned out to be faster than numeric bitstrings.
 
 ### Representation Learning
 Here are [my notes on representation learning](representation-learning.md).
+
+### Game Engine
+I could not find a suitable Checkrs Game Engine in Python, so I am working on creating my own. Most of my notes were taken during [week 7](week-7.md).

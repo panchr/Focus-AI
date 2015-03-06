@@ -13,11 +13,9 @@ __Week 3__ Plan AI's required data structures *(reading: Dynamic Scripting data 
 
 __Week 4__ Develop Data Models and associated Unit Tests *(reading: Generating dynamic rules through the evolutionary algorithm)*
 
-__Weeks 5 - 7__ Work on algorithm of AI *(reading: Python AI algorithms)*
+__Weeks 5 - 8__ Work on algorithm of AI *(reading: Python AI algorithms)*
 
-__Week 8__ Create basic list of Checkers rules for rulebase *(reading: general Checkers strategy and continue learning about Deep Learning)*
-
-__Weeks 9 - 10__ Data analysis algorithm & optimization *(reading: Python data analysis/profiling/optimization, embedding C in Python)*
+__Weeks 9 - 10__ Create basic list of Checkers rules for rulebase *(reading: general Checkers strategy and continue learning about Deep Learning)*
 
 ## April
 ### Testing and Improving the AI
@@ -26,7 +24,7 @@ __Week 11__ Develop website for users to play against the AI *(reading: Node.js 
 
 __Weeks 12 - 13__ Aggregate data of perceived humanness from human players (on website) playing against the AI & modify AI accordingly *(reading: analyzing and displaying data)*
 
-__Week 14__ Start preparing portfolio and presentation
+__Week 14__ Start preparing portfolio and presentation and continue gathering data
 
 ## May
 ### Preparing the Portfolio/Presentation
