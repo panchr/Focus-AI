@@ -56,6 +56,16 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.stateE = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
 		self.stateE[1, 1] = -2
 		self.stateE[6, 3] = -1
+		self.stateF = np.asarray([
+			[0, 0, 0, 0, 0, 0, 0 ,0],
+			[0, 0, 0, 0, 0, 0, 0 ,0],
+			[0, 0, 1, 0, 0, 0, 0 ,0],
+			[0, 0, 0, 0, 0, 0, 0 ,0],
+			[0, 0, 1, 0, 0, 0, 0 ,0],
+			[0, 0, 0, 2, 0, 0, 0 ,0],
+			[0, 0, 0, 0, 0, 0, 0 ,0],
+			[0, 0, 0, 0, 0, 0, 0 ,0],
+			], dtype = np.int32)
 
 	def test_toPython(self): # has to be custom because numpy array equality returns an array of booleans
 		'''BSON to Python conversions'''
@@ -81,8 +91,8 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertEquals(self.model.compare(self.stateA, self.stateA), 1)
 		self.assertEquals(self.model.compare(self.stateB, self.stateB), 1)
 
-	def test_isValid(self):
-		'''Gamestate.isValid works'''
+	def test_isValid_simple(self):
+		'''Gamestate.isValid (for simple moves) works'''
 		self.assertTrue(self.model.isValid(self.stateB, (2, 3), (3, 4)))
 		self.assertTrue(self.model.isValid(self.stateB, (1, 1), (2, 2)))
 		self.assertTrue(self.model.isValid(self.stateB, (1, 5), (2, 6)))
@@ -91,6 +101,10 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertFalse(self.model.isValid(self.stateB, (1, 5), (2, 7)))
 		self.assertFalse(self.model.isValid(self.stateB, (1, 0), (2, 7)))
 		self.assertFalse(self.model.isValid(self.stateB, (1, 0), (1, 0)))
+
+	def test_isValid_taking(self):
+		'''Gamestate.isValid (for taking moves) works'''
+		self.assertTrue(self.model.isValid(self.stateF, (5, 3), [(3, 1), (1, 3)]))
 
 	def test_movePiece(self):
 		'''Gamestate.movePiece works'''

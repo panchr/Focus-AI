@@ -11,8 +11,8 @@
 	1. Can the data gathered from the tests be used to further improve the AI, and if so, how?
 6. How can such an AI be implemented using Python? 
 	1. [To store the data, will a robust relational database backend (such as MySQL or PostgresSQL) be required, or is a NoSQL/document database (such as MongoDB) adequate?](../notes/week-5.md#rule-database)
-	2. If a suitable game engine cannot be found, can one be developed in Python?
-	3. How will the AI interact with a game engine?
+	2. [If a suitable game engine cannot be found, can one be developed in Python?](../notes/week-7.md)
+	3. [How will the AI interact with a game engine?](../notes/week-7.md#core-interaction)
 7. What type of interface will the primary application be?
 	1. If using a web-based interface, how will the website interface with the AI and game engine?
 	2. How can a Python-driven AI support concurrent connections?
@@ -26,3 +26,4 @@
 4. Developed basic data models and unit tests and started research on Deep Learning
 5. Started working on the core AI features
 6. Continued work of the core AI, mainly focusing on the Game state manipulation
+7. Started main work on the game engine - making moves and move validation

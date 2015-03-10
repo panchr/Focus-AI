@@ -52,28 +52,52 @@ class Gamestate(CustomTypeBase):
 	@classmethod
 	def isValid(cls, state, old, new):
 		'''New move is valid'''
+		simpleMove = isinstance(new[0], int)
 		toMove = state[old]
-		deltaY = new[0] - old[0]
-		deltaX = new[1] - old[1]
+		deltaY = (new[0] if simpleMove else new[-1][0]) - old[0]
+		deltaX = (new[1] if simpleMove else new[-1][1]) - old[1]
 		absDeltaY = abs(deltaY)
 		absDeltaX = abs(deltaX)
 		conditions = [
-			(state[new] == 0),
 			(toMove != 0),
 			(deltaY > 0 if toMove == 1 else (deltaY < 0 if toMove == 2 else True)),
 			]
-		if isinstance(new[0], int): # simple move
+		if simpleMove: # simple move
 			conditions.extend([
+				(state[new] == 0),
 				(absDeltaY == 1),
 				(absDeltaX == 1)
 				])
-		else:
-			raise NotImplementedError("Gamestate.isValid -> take has not been implemented")
-			# each step should be evaluated in a loop
+		else: # taking move
+			numberMoves = len(new)
+			if numberMoves == 1: # only taking one piece (might not need this - test soon)
+				inBetween = (old[0] + deltaY / 2, old[1] + deltaX / 2)
+				takeConditions = [
+					(absDeltaX == 2),
+					(absDeltaY == 2),
+					(state[inBetween] == 1)
+					]
+			else:
+				takeConditions = [] # preallocate the memory required - wait just kidding, too lazy for that
+				currentPos = old
+				for nextPos in new:
+					takeDeltaY = nextPos[0] - currentPos[0]
+					takeDeltaX = nextPos[1] - currentPos[1]
+					inBetween = (currentPos[0] + takeDeltaY / 2, currentPos[1] + takeDeltaX / 2)
+
+					takeConditions.extend([
+						(state[nextPos] == 0),
+						(state[inBetween] == 1),
+						(takeDeltaX == 0 or abs(takeDeltaX) == 2),
+						(abs(takeDeltaY) == 2),
+						])
+
+					currentPos = nextPos # advance a move
+			#raise NotImplementedError("Gamestate.isValid -> take has not been implemented")
 			conditions.extend([
 				(absDeltaX % 2 == 0),
 				(absDeltaY % 2 == 0),
-				]) # should add on conditions for each step in the take
+				] + takeConditions)
 		return all(conditions)
 
 	@staticmethod

@@ -40,3 +40,6 @@ A "taking" move is when a piece is taking the opponent's pieces. It is valid und
 * In this diagonal path, each set of two squares should be of the following order: {open, enemy piece}
 
 I have not fully implemented the "taking" move validation nor the mechanism for taking pieces (but these two will work together, so this should be simple).
+
+### Core Interaction
+Because both the AI core and Game Engine are written in Python, interaction between the two will be simple: the core runner will simply contain an`Engine` instance.
