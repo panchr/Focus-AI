@@ -64,7 +64,7 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 			[0, 0, 1, 0, 2, 0, 0 ,0],
 			[0, 0, 0, 2, 2, 0, 0 ,0],
 			[0, 0, -1, 0, 0, 0, 0 ,0],
-			[0, 0, 0, 0, 0, 0, 0 ,0],
+			[0, 0, 0, 2, 0, 0, 0 ,0],
 			], dtype = np.int32)
 
 	def test_toPython(self): # has to be custom because numpy array equality returns an array of booleans
@@ -97,6 +97,10 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertTrue(self.model.isValid(self.stateB, (1, 1), (2, 2)))
 		self.assertTrue(self.model.isValid(self.stateB, (1, 5), (2, 6)))
 
+		# This king should be able to move in all directions
+		self.assertTrue(self.model.isValid(self.stateF, (6, 2), (7, 1)))
+		self.assertTrue(self.model.isValid(self.stateF, (6, 2), (5, 1)))
+
 		# These moves should fail - not valid board moves
 		self.assertFalse(self.model.isValid(self.stateB, (1, 5), (2, 7)))
 		self.assertFalse(self.model.isValid(self.stateB, (1, 0), (2, 7)))
@@ -108,6 +112,8 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (2, 3), (3, 4)), (True, []))
 		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 1), (2, 2)), (True, []))
 		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 5), (2, 6)), (True, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (6, 2), (7, 1)), (True, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (6, 2), (5, 1)), (True, []))
 
 		# These moves should fail - not valid board moves
 		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 5), (2, 7)), (False, []))
@@ -119,6 +125,7 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertTrue(self.model.isValid(self.stateF, (5, 3), [(3, 1), (1, 3)])) # double take
 		self.assertTrue(self.model.isValid(self.stateF, (5, 3), [(3, 1)])) # single take is also valid
 		self.assertTrue(self.model.isValid(self.stateF, (2, 3), [(0, 5), (2, 7)])) # King can take in all directions
+		self.assertTrue(self.model.isValid(self.stateF, (7, 3), [(5, 1), (3, 3), (1, 1)])) # triple-chain of takes
 
 		# Invalid board moves
 		self.assertFalse(self.model.isValid(self.stateF, (5, 3), [(3, 1), (1, -1)])) # cannot move to a negative spot
@@ -133,6 +140,7 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(3, 1), (1, 3)]), (True, [(4, 2), (2, 2)]))
 		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(3, 1)]), (True, [(4, 2)]))
 		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (2, 3), [(0, 5), (2, 7)]), (True, [(1, 4), (1, 6)]))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (7, 3), [(5, 1), (3, 3), (1, 1)]), (True, [(6, 2), (4, 2), (2, 2)]))
 
 		# Invalid board moves
 		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(3, 1), (1, -1)]), (False, []))
@@ -145,18 +153,70 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 	def test_movePiece(self):
 		'''Gamestate.movePiece works'''
 		copyC = np.copy(self.stateC)
-		pairs = [
-			[(2, 2), (3, 3)],
-			[(2, 3), (3, 4)],
-			[(5, 4), (6, 3)]
+		moves = [ # should also insert some failed moves in here
+			[(2, 2), (3, 3), True],
+			[(5, 4), (6, 3), True],
+			[(2, 3), (3, 4), False],
+			[(5, 4), (6, 2), False]
 			]
 
-		for old, new in pairs:
-			piece = copyC[old]
-			copyC[old] = 0
-			copyC[new] = piece
-			self.model.movePiece(self.stateC, old, new)
+		for old, new, expected in moves:
+			received, taken = self.model.movePiece(self.stateC, old, new)
+
+			if expected:
+				piece = copyC[old]
+				copyC[old] = 0
+				copyC[new] = piece
+
 			self.assertTrue((self.stateC == copyC).all())
+			self.assertEquals(expected, received)
+
+			# revert the move for the next test
+			if expected:
+				copyC[old] = piece
+				copyC[new] = 0
+				self.stateC[old] = piece
+				self.stateC[new] = 0
+
+	def test_takePiece(self):
+		'''Gamestate.movePiece with taking works'''
+		copyF = np.copy(self.stateF)
+		moves = [
+			[(5, 3), [(3, 1), (1, 3)], [(4, 2), (2, 2)], True],
+			[(5, 3), [(3, 1)], [(4, 2)], True],
+			[(2, 3), [(0, 5), (2, 7)], [(1, 4), (1, 6)], True],
+			[(7, 3), [(5, 1), (3, 3), (1, 1)], [(6, 2), (4, 2), (2, 2)], True],
+			[(7, 2), [(5, 1), (3, 3), (1, 1)], [], False],
+			[(7, 3), [(5, 1), (3, 2), (1, 1)], [], False]
+			]
+
+		for old, new, rawTakenPieces, expected in moves:
+			received, takenPieces = self.model.movePiece(self.stateF, old, new)
+
+			if expected:
+				oldPieces = []
+				piece = copyF[old]
+				copyF[old] = 0
+				copyF[new[-1]] = piece
+				for taken in rawTakenPieces:
+					oldPieces.append(copyF[taken]) # keep a history of taken pieces to revert later on
+					copyF[taken] = 0
+
+			self.assertTrue((self.stateF == copyF).all())
+			self.assertEquals(rawTakenPieces, takenPieces)
+			self.assertEquals(expected, received)
+
+			# revert the move for the next test
+			if expected:
+				copyF[new[-1]] = 0
+				copyF[old] = piece
+
+				self.stateF[new[-1]] = 0
+				self.stateF[old] = piece
+
+				for taken, oldPiece in zip(takenPieces, oldPieces):
+					copyF[taken] = oldPiece
+					self.stateF[taken] = oldPiece
 
 	def test_kingPromotion(self):
 		'''Gamestate.movePiece promotes pieces to kings when necessary'''

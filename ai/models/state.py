@@ -33,20 +33,23 @@ class Gamestate(CustomTypeBase):
 	@classmethod
 	def movePiece(cls, state, old, new):
 		'''Moves a piece in the game'''
-		boardValid, piecesTaken = cls.boardValidAndTaken(state, old, new)
 		try:
-			if not cls.isValid(state, old, new):
-				return False
+			simpleMove = isinstance(new[0], int)
+			boardValid, piecesTaken = cls.boardValidAndTaken(state, old, new)
+			if not boardValid:
+				return False, []
 		except IndexError:
-			return False
+			return False, []
 		current = state[old]
 		state[old] = 0
 		for taken in piecesTaken: # won't run if it's a simple move because piecesTaken will be an empty list in that case
 			state[taken] = 0
-		if ((current == 1 and new[0] == 7) or (current == 2 and new[0] == 0)):
+		newMove = new if simpleMove else new[-1]
+
+		if ((current == 1 and newMove[0] == 7) or (current == 2 and newMove[0] == 0)):
 			current *= -1 # piece reached the end of the board, so let's promote it to a King
-		state[new] = current
-		return True
+		state[newMove] = current
+		return True, piecesTaken
 
 	@classmethod
 	def takePieces(cls, state, moves):
