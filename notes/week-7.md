@@ -39,7 +39,9 @@ A "taking" move is when a piece is taking the opponent's pieces. It is valid und
 * There is a diagonal (zig-zags allowed) path between the start and end positions
 * In this diagonal path, each set of two squares should be of the following order: {open, enemy piece}
 
-I have not fully implemented the "taking" move validation nor the mechanism for taking pieces (but these two will work together, so this should be simple).
+I have implemented the mechanism for taking pieces and validating take-based moves.
+I also created robust test cases for the validation algorithm, and I will make similar tests for the taking pieces (although this should be pretty simple).
+Essentially, the validation works by going through a list of the moves (because a "take move" can have numerous segments) and making sure that a piece is being taken (in addition to the previous requirements that the move itself is valid). If each segment is valid, then the entire chain of moves must also be valid.
 
 ### Core Interaction
 Because both the AI core and Game Engine are written in Python, interaction between the two will be simple: the core runner will simply contain an`Engine` instance.

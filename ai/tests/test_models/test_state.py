@@ -58,12 +58,12 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.stateE[6, 3] = -1
 		self.stateF = np.asarray([
 			[0, 0, 0, 0, 0, 0, 0 ,0],
-			[0, 0, 0, 0, 0, 0, 0 ,0],
-			[0, 0, 1, 0, 0, 0, 0 ,0],
-			[0, 0, 0, 0, 0, 0, 0 ,0],
-			[0, 0, 1, 0, 0, 0, 0 ,0],
-			[0, 0, 0, 2, 0, 0, 0 ,0],
-			[0, 0, 0, 0, 0, 0, 0 ,0],
+			[0, 0, 0, 0, 1, 0, 1 ,0],
+			[0, 0, 1, -2, 0, 0, 1 ,0],
+			[0, 0, 0, 0, 2, 1, 0 ,0],
+			[0, 0, 1, 0, 2, 0, 0 ,0],
+			[0, 0, 0, 2, 2, 0, 0 ,0],
+			[0, 0, -1, 0, 0, 0, 0 ,0],
 			[0, 0, 0, 0, 0, 0, 0 ,0],
 			], dtype = np.int32)
 
@@ -97,14 +97,50 @@ class TestGamestate(unittest.TestCase, CustomTypeTestBase):
 		self.assertTrue(self.model.isValid(self.stateB, (1, 1), (2, 2)))
 		self.assertTrue(self.model.isValid(self.stateB, (1, 5), (2, 6)))
 
-		# These moves should fail - not valid board positions
+		# These moves should fail - not valid board moves
 		self.assertFalse(self.model.isValid(self.stateB, (1, 5), (2, 7)))
 		self.assertFalse(self.model.isValid(self.stateB, (1, 0), (2, 7)))
 		self.assertFalse(self.model.isValid(self.stateB, (1, 0), (1, 0)))
 
+	def test_boardValidAndTaken_simple(self):
+		'''Gamestate.boardValidAndTaken (for simple moves) works'''
+		# no pieces should be taken for any simple move
+		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (2, 3), (3, 4)), (True, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 1), (2, 2)), (True, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 5), (2, 6)), (True, []))
+
+		# These moves should fail - not valid board moves
+		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 5), (2, 7)), (False, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 0), (2, 7)), (False, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateB, (1, 0), (1, 0)), (False, []))
+
 	def test_isValid_taking(self):
 		'''Gamestate.isValid (for taking moves) works'''
-		self.assertTrue(self.model.isValid(self.stateF, (5, 3), [(3, 1), (1, 3)]))
+		self.assertTrue(self.model.isValid(self.stateF, (5, 3), [(3, 1), (1, 3)])) # double take
+		self.assertTrue(self.model.isValid(self.stateF, (5, 3), [(3, 1)])) # single take is also valid
+		self.assertTrue(self.model.isValid(self.stateF, (2, 3), [(0, 5), (2, 7)])) # King can take in all directions
+
+		# Invalid board moves
+		self.assertFalse(self.model.isValid(self.stateF, (5, 3), [(3, 1), (1, -1)])) # cannot move to a negative spot
+		self.assertFalse(self.model.isValid(self.stateF, (5, 3), [(7, 1)])) # cannot go backwards because it's a regular piece
+		self.assertFalse(self.model.isValid(self.stateF, (4, 4), [(2, 6)])) # must land on an empty spot
+		self.assertFalse(self.model.isValid(self.stateF, (3, 4), [(1, 6)])) # must take a piece every step
+		self.assertFalse(self.model.isValid(self.stateF, (3, 5), [(1, 7)])) # cannot take own piece
+		self.assertFalse(self.model.isValid(self.stateF, (5, 3), [(3, 1), (2, 0)])) # must make consecutive jumps
+
+	def test_boardValidAndTaken_taking(self):
+		'''Gamestate.boardValidAndTaken (for taking moves) works'''
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(3, 1), (1, 3)]), (True, [(4, 2), (2, 2)]))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(3, 1)]), (True, [(4, 2)]))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (2, 3), [(0, 5), (2, 7)]), (True, [(1, 4), (1, 6)]))
+
+		# Invalid board moves
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(3, 1), (1, -1)]), (False, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(7, 1)]), (False, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (4, 4), [(2, 6)]), (False, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (3, 4), [(1, 6)]), (False, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (3, 5), [(1, 7)]), (False, []))
+		self.assertEquals(self.model.boardValidAndTaken(self.stateF, (5, 3), [(3, 1), (2, 0)]), (False, []))
 
 	def test_movePiece(self):
 		'''Gamestate.movePiece works'''
