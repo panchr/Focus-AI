@@ -4,7 +4,7 @@
 
 ### Current Status
 
-Currently, I am working on the Checkers game engine. I have decided to use 2-dimensional `numpy` arrays to store and manipulate the gamestate.
+Currently, I am working on figuring out how to represent the conditions and responses in a machine-readable way.
 
 ### Decision Making Process
 

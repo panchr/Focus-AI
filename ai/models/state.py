@@ -52,11 +52,6 @@ class Gamestate(CustomTypeBase):
 		return True, piecesTaken
 
 	@classmethod
-	def takePieces(cls, state, moves):
-		'''Takes pieces between each move'''
-		raise NotImplementedError("Gamestate.takePieces not yet implemented")
-
-	@classmethod
 	def boardValidAndTaken(cls, state, old, new):
 		'''Determines if the board is valid and returns a list of taken pieces'''
 		simpleMove = isinstance(new[0], int)

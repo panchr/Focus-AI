@@ -7,8 +7,8 @@
 3. [What types of data does the AI need to gather for its learning process?](../notes/week-3.md#rulebase)
 4. [How will the AI learn?](../notes/week-2.md#decision-making-process)
 	1. [In addition to modifying rule weights, can the AI dynamically generate new rules?](../notes/week-4.md#dynamically-generating-rules)
-5. How can the AI's humanness level be tested?
-	1. Can the data gathered from the tests be used to further improve the AI, and if so, how?
+5. [How can the AI's humanness level be tested?](../notes/testing-humanness.md)
+	1. [Can the data gathered from the tests be used to further improve the AI, and if so, how?](../notes/testing-humanness.md#improving-ai)
 6. How can such an AI be implemented using Python? 
 	1. [To store the data, will a robust relational database backend (such as MySQL or PostgresSQL) be required, or is a NoSQL/document database (such as MongoDB) adequate?](../notes/week-5.md#rule-database)
 	2. [If a suitable game engine cannot be found, can one be developed in Python?](../notes/week-7.md)
