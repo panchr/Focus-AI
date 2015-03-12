@@ -9,10 +9,11 @@ class Engine(object):
 	'''Basic Game Engine class'''
 	random_id = shortid.ShortId()
 
-	def __init__(self, rows = 8, columns = 8):
+	def __init__(self, database = None, rows = 8, columns = 8):
 		self.games = {}
 		self.numberGames = 0
 		self.rows, self.columns = rows, columns
+		self.db = database
 
 	def newGame(self, rows = None, columns = None):
 		'''Adds a new game to the list of games'''

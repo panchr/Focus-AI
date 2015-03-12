@@ -7,17 +7,18 @@ import baseTests
 from modelTestBase import CustomTypeTestBase
 from models.auth import HashedPassword
 
-class TestAuth(unittest.TestCase, CustomTypeTestBase):
+class TestAuth(CustomTypeTestBase, unittest.TestCase):
 	'''Tests the models.auth.Auth Model'''
+	model = HashedPassword
+	mongoConversions = [
+		("focus-ai", "focus-ai"),
+		("testcase2", "testcase2"),
+		("randomSpamTest", "randomSpamTest")
+		]
+
 	def setUp(self):
 		'''Set up the test case'''
-		self.model = HashedPassword
 		self.modelObject = self.model()
-		self.mongoConversions = [
-			("focus-ai", "focus-ai"),
-			("testcase2", "testcase2"),
-			("randomSpamTest", "randomSpamTest")
-			]
 		self.baseSalt = "$2a$12$NwZuVdNNB8l2jSaGzZvwIO"
 		self.hashes = {
 			"cryptosana": "$2a$12$NwZuVdNNB8l2jSaGzZvwIOTMuJNte9bRc6NIkf.CTmpuoEIaXVqPS",

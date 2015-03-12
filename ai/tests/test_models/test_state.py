@@ -8,38 +8,39 @@ import numpy as np
 from modelTestBase import CustomTypeTestBase
 from models.state import Gamestate
 
-class TestGamestate(unittest.TestCase, CustomTypeTestBase):
+class TestGamestate(CustomTypeTestBase, unittest.TestCase):
 	'''Tests the models.state.Gamestate Model'''
+	model = Gamestate
+	mongoConversions = [
+		([
+			[1, 2, 1, 0],
+			[0, 1, 2, 1]
+			], 
+		np.asarray([
+			[1, 2, 1, 0],
+			[0, 1, 2, 1]
+			])
+		),
+		([
+			[1, 1, 0, 0],
+			[0, 0, 0, 1]
+			], 
+		np.asarray([
+			[1, 1, 0, 0],
+			[0, 0, 0, 1]
+			])
+		),
+		([
+			[0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0]
+			],
+		np.zeros((2, 5), dtype = np.int32)
+		)
+		]
+
 	def setUp(self):
 		'''Set up the test case'''
-		self.model = Gamestate
 		self.modelObject = self.model()
-		self.mongoConversions = [
-			([
-				[1, 2, 1, 0],
-				[0, 1, 2, 1]
-				], 
-			np.asarray([
-				[1, 2, 1, 0],
-				[0, 1, 2, 1]
-				])
-			),
-			([
-				[1, 1, 0, 0],
-				[0, 0, 0, 1]
-				], 
-			np.asarray([
-				[1, 1, 0, 0],
-				[0, 0, 0, 1]
-				])
-			),
-			([
-				[0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0]
-				],
-			np.zeros((2, 5), dtype = np.int32)
-			)
-			]
 		self.stateA = np.zeros((8, 8), dtype = np.int32)
 		self.stateB = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
 		self.stateB[1] = 1 # difference of at least self.stateA.shape[0]

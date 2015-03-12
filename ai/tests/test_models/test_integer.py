@@ -8,9 +8,10 @@ from models.integer import Integer, Long
 
 class TestInteger(unittest.TestCase, baseTests.BaseTest):
 	'''Test the models.integer.Integer Model'''
+	model = Integer
+
 	def setUp(self):
 		'''Sets up the test cases'''
-		self.model = Integer
 		self.testA = self.model(0b10100101)
 		self.testB = self.model(0b0100100101011000)
 		self.testC = self.model(0b10010110)
@@ -77,9 +78,10 @@ class TestInteger(unittest.TestCase, baseTests.BaseTest):
 
 class TestLong(TestInteger):
 	'''Test the models.integer.Long Model'''
+	model = Long
+
 	def setUp(self):
 		'''Sets up the test cases'''
-		self.model = Long
 		self.testA = self.model(0b10100101L)
 		self.testB = self.model(0b0100100101011000L)
 		self.testC = self.model(0b10010110L)

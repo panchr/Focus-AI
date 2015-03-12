@@ -2,6 +2,7 @@
 # ai/core/__init__.py
 
 from core.database import Database
+from core.engine import Engine
 from models.user import User
 from models.rule import Rule
 
@@ -12,6 +13,7 @@ import os
 
 import config
 
+engine = None
 db = None
 
 def start():
@@ -26,8 +28,9 @@ def start():
 		User,
 		Rule
 		])
+	engine = Engine(database = db)
 
-	return db
+	return engine, db
 
 if __name__ == '__main__':
-	db = start()
+	engine, db = start()

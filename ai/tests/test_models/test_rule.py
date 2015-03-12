@@ -7,12 +7,9 @@ import baseTests
 from modelTestBase import ModelTestBase
 from models.rule import Rule
 
-class TestRule(unittest.TestCase, ModelTestBase):
+class TestRule(ModelTestBase, unittest.TestCase):
 	'''Tests the models.rule.Rule Model'''
-	def setUp(self):
-		'''Set up the test case'''
-		self.model = Rule
-		self.modelObject = self.model()
+	model = Rule
 
 	def test_hasIncreaseWeight(self):
 		'''Has function increaseWeight'''

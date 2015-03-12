@@ -11,6 +11,12 @@ VALID_MONGOKIT_TYPES = Document.authorized_types
 
 class ModelTestBase(baseTests.BaseTest, object):
 	'''Base testing class for Models'''
+	model = Document
+
+	def setUp(self):
+		'''Sets up the test case'''
+		self.modelObject = self.model()
+
 	def test_isSubclass(self):
 		'''subclass of Document'''
 		self.assertIsSubclass(self.model, Document)
@@ -93,6 +99,12 @@ class ModelTestBase(baseTests.BaseTest, object):
 
 class CustomTypeTestBase(baseTests.BaseTest, object):
 	'''Testing class for CustomTypes'''
+	model = CustomType
+
+	def setUp(self):
+		'''Set up a test case'''
+		self.modelObject = self.model()
+
 	def test_isSubclass(self):
 		'''subclass of CustomType'''
 		self.assertIsSubclass(self.model, CustomType)

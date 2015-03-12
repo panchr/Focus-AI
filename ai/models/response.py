@@ -4,10 +4,15 @@
 from models.model import CustomTypeBase
 
 class Response(CustomTypeBase):
-	'''A Custom type representing a Dynamic Scripting response'''
-	mongo_type = basestring
-	python_type = basestring
-	init_type = None
+	'''A Custom type representing a Dynamic Scripting response
 
-	# similar to the condition, there is no actual interpretation of the response (just yet)
-	# it will be implemented in the future as I work on the AI and figure out how it is structured
+	The response is structured as a 2-D list:
+		[old position, new position]'''
+	mongo_type = list
+	python_type = list
+	init_type = list
+
+	@classmethod
+	def new(cls):
+		'''Creates a new Response'''
+		return [(), ()] # return an empty 2-D list (no move)

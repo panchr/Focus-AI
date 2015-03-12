@@ -7,14 +7,11 @@ import baseTests
 from modelTestBase import CustomTypeTestBase
 from models.response import Response
 
-class TestResponse(unittest.TestCase, CustomTypeTestBase):
+class TestResponse(CustomTypeTestBase, unittest.TestCase):
 	'''Tests the models.response.Response Model'''
-	def setUp(self):
-		'''Set up the test case'''
-		self.model =  Response
-		self.modelObject = self.model()
-
-		self.mongoConversions = [
-			("response", "response"),
-			("good-response", "good-response")
-			]
+	model = Response
+	mongoConversions = [
+		([(), ()], [(), ()]), # no move
+		([(2, 3), (1, 1)], [(2, 3), (1, 1)]), # simple move
+		([(5, 2), [(5, 1), (2, 1)]], [(5, 2), [(5, 1), (2, 1)]]) # taking move
+		]
