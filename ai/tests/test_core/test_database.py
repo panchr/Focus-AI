@@ -8,9 +8,7 @@ from core.database import Database
 
 class TestDatabase(unittest.TestCase, baseTests.BaseTest, object):
 	'''Test the core.database.Database class'''
-	def setUp(self):
-		'''Sets up the test cases'''
-		self.testClass = Database
+	testClass = Database
 
 	def tearDown(self):
 		'''Tears down the test cases'''
@@ -20,3 +18,7 @@ class TestDatabase(unittest.TestCase, baseTests.BaseTest, object):
 	def test_hasGetMatchingRules(self):
 		'''has getMatchingRules method'''
 		self.assertFunctionExists(self.testClass, "getMatchingRules")
+
+	def test_getMatchingRules(self):
+		'''Database.getMatchingRules works'''
+		pass # not implemented yet
