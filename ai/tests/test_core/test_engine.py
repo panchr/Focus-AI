@@ -43,9 +43,9 @@ class TestEngine(unittest.TestCase, baseTests.BaseTest, object):
 	def test_makeMove(self):
 		'''Engine.makeMove works'''
 		pairs = [
+			[(6, 5), (5, 4)],
 			[(1, 1), (2, 2)],
-			[(2, 2), (3, 1)],
-			[(6, 5), (5, 4)]
+			[(5, 4), (4, 5)]
 			]
 		copyState = np.copy(self.testObject.games[self.gameA])
 

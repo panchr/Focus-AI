@@ -2,6 +2,7 @@
 # ai/core/engine.py
 
 from models.state import Gamestate
+from core.errors import WrongPlayerMove, InvalidMove
 
 import shortid
 
@@ -11,6 +12,7 @@ class Engine(object):
 
 	def __init__(self, rows = 8, columns = 8):
 		self.games = {}
+		self.gameMeta = {}
 		self.numberGames = 0
 		self.rows, self.columns = rows, columns
 
@@ -21,6 +23,9 @@ class Engine(object):
 		game[0: 2] = 1
 		game[-2:] = 2
 		self.games[gameID] = game
+		self.gameMeta[gameID] = {
+			"move": 2
+			}
 		self.numberGames += 1
 		return gameID
 
@@ -31,4 +36,15 @@ class Engine(object):
 	# old and new are tuples of (x, y) coordinates
 	def makeMove(self, gameID, old, new):
 		'''Move a piece to a new position'''
-		return Gamestate.movePiece(self.games[gameID], old, new)
+		game = self.games[gameID]
+		gameMeta = self.gameMeta[gameID]
+		playerToMove = game[old]
+		if gameMeta["move"] == playerToMove:
+			boardValid, piecesTaken = Gamestate.movePiece(game, old, new)
+			if not boardValid:
+				raise InvalidMove("Move was invalid")
+			else:
+				gameMeta["move"] = (1 if playerToMove == 2 else 2)
+				return boardValid, piecesTaken
+		else:
+			raise WrongPlayerMove("Opposite Player Move")
