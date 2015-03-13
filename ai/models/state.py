@@ -66,7 +66,7 @@ class Gamestate(CustomTypeBase):
 			(old[1] >= 0),
 			(toMove != 0),
 			(deltaY > 0 if toMove == 1 else (deltaY < 0 if toMove == 2 else True)),
-			# ^ must be moving forward if Player 1, backwards if Player 2, or any direction if moving a King
+			# must be moving forward if Player 1, backwards if Player 2, or any direction if moving a King
 			]
 		takenPieces = []
 

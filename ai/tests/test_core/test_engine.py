@@ -6,14 +6,17 @@ import baseTests
 import numpy as np
 
 from core.engine import Engine
+from core.errors import WrongPlayerMove, InvalidMove
 
 class TestEngine(unittest.TestCase, baseTests.BaseTest, object):
 	'''Tests the core.engine.Engine class'''
+	testClass = Engine
+
 	def setUp(self):
 		'''Sets up the test cases'''
-		self.testClass = Engine
 		self.testObject = self.testClass(8, 8)
 		self.gameA = self.testObject.newGame()
+		self.gameB = self.testObject.newGame()
 
 	def test_hasNewGame(self):
 		'''Engine.newGame method exists'''
@@ -55,3 +58,9 @@ class TestEngine(unittest.TestCase, baseTests.BaseTest, object):
 			copyState[old] = 0
 			copyState[new] = piece
 			self.assertTrue((self.testObject.games[self.gameA] == copyState).all())
+
+	def test_makeMoveErrors(self):
+		'''Engine.makeMove raises appropriate errors if necessary'''
+		self.assertRaises(InvalidMove, self.testObject.makeMove, self.gameB, (-1, 1), (1, 1))
+		self.assertRaises(WrongPlayerMove, self.testObject.makeMove, self.gameB, (0, 1), (1, 1))
+		self.assertRaises(InvalidMove, self.testObject.makeMove, self.gameB, (7, 1), (3, 1))
