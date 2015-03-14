@@ -33,4 +33,4 @@ class DynamicScriptingAI(object):
 		# could use ((state & stimuli) == stimuli).all()
 		# this requires a list of stimuli, which means repeated database accesses
 		# however, the stimuli aren't changing so this isn't an issue
-		raise NotImplementedError("DynamicScriptingAI.analyzeStimuli not yet implemented")
+		# raise NotImplementedError("DynamicScriptingAI.analyzeStimuli not yet implemented")

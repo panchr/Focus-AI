@@ -5,6 +5,9 @@ import types
 
 dev = True
 
+TEST_HOST = 'localhost'
+TEST_PORT = 27017
+
 CALLABLE_TYPES = (
 	types.FunctionType,
 	types.LambdaType,
@@ -43,3 +46,25 @@ class BaseTest(object):
 			return self.accessFlattened(dictionary[splitted[0]], splitted[1])
 		else:
 			return dictionary[key]
+
+class NumpyTest(BaseTest):
+	'''A wrapper around BaseTest that also allows for Numpy Array testing'''
+	def assertInArray(self, element, array):
+		'''Asserts that element is in the array'''
+		for x in array:
+			if (element == x).all():
+				return True
+		assert False
+
+	def assertArrayEquals(self, a, b):
+		'''Asserts that two arrays are equal'''
+		self.assertTrue((a == b).all())
+
+class DatabaseTest(BaseTest):
+	'''A wrapper around BaseTest that tests for Database connections'''
+	connection = None
+
+	def test_connection(self):
+		'''Tests the database connection'''
+		self.assertHasAttr(self, "connection")
+		self.assertEquals(self.connection.server_info()["ok"], 1.0)

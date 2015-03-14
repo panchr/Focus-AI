@@ -1,12 +1,8 @@
 # Rushy Panchal
 # ai/core/__init__.py
 
-from core.database import Database
-from core.engine import Engine
-from models.user import User
-from models.rule import Rule
-
-from core.dev import DevelopmentServer
+import core
+import models
 
 import atexit
 import os
@@ -19,16 +15,18 @@ db = None
 def start():
 	'''Starts the core features'''
 	if (config.DEV_MODE):
-		devServer = DevelopmentServer()
+		devServer = core.dev.DevelopmentServer()
 		devServer.start()
 		atexit.register(devServer.stop)
 
-	db = Database(host = config.HOST, port = config.PORT)
+	db = core.database.Database(host = config.HOST, port = config.PORT)
 	db.register([
-		User,
-		Rule
+		models.User,
+		models.Rule,
+		models.Game
 		])
-	engine = Engine(database = db)
+	models.register(db)
+	engine = core.engine.Engine(database = db)
 
 	return engine, db
 

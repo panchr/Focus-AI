@@ -25,6 +25,16 @@ class Rule(Model):
 		"weight": 0
 		}
 
+	@staticmethod
+	def new(state, condition, response):
+		'''Creates a new rule'''
+		rule = Model.connection.Rule()
+		rule.state = state
+		rule.condition = condition
+		rule.response = response
+		rule.save()
+		return rule
+
 	@Model.autosave
 	def increaseWeight(self):
 		'''Increments the weight'''
@@ -43,4 +53,4 @@ class Rule(Model):
 	def normalize(cls):
 		'''Normalizes all of the weights between 0 and 1'''
 		raise NotImplementedError("Rule.normalize has not been implemented!")
-		pass # weight = weight / (sum of all weights)
+		# weight = weight / (sum of all weights)

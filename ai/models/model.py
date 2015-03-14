@@ -10,6 +10,8 @@ class Model(mongokit.Document, object):
 	use_dot_notation = True
 	skip_validation = True
 
+	connection = None
+
 	@staticmethod
 	def autosave(func):
 		'''Returns a decorated function to add implicit saving'''

@@ -1,6 +1,7 @@
 # Rushy Panchal
 # ai/core/dev.py
 
+import os
 import subprocess
 
 class DevelopmentServer(object):
@@ -12,7 +13,8 @@ class DevelopmentServer(object):
 
 	def start(self):
 		'''Start all of the server's services'''
-		self.mongo = subprocess.Popen(["mongod"])
+		self.devNull = open(os.devnull, "wb")
+		self.mongo = subprocess.Popen(["mongod"], stdout = self.devNull)
 		
 		self.running = True
 
@@ -20,5 +22,6 @@ class DevelopmentServer(object):
 		'''Stop all of the server's services'''
 		if self.running:
 			self.mongo.kill()
+			self.devNull.close()
 
 		self.running = False

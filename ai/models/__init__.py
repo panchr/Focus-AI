@@ -1,10 +1,11 @@
 # Rushy Panchal
 # ai/models/
 
-from models.rule import Rule
+from models.model import Model
 from models.user import User
+from models.rule import Rule
+from models.game import Game
 
 def register(connection):
-	'''Register all models with the database'''
-	connection.register(Rule)
-	connecton.register(User)
+	'''Register the connection with all of the models'''
+	Model.connection = connection
