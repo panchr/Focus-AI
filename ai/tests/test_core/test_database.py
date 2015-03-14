@@ -16,9 +16,17 @@ class TestDatabase(unittest.TestCase, baseTests.BaseTest, object):
 		pass
 
 	def test_hasGetMatchingRules(self):
-		'''has getMatchingRules method'''
+		'''Database has getMatchingRules method'''
 		self.assertFunctionExists(self.testClass, "getMatchingRules")
+
+	def test_hasGetStimuli(self):
+		'''Database has getStimuli method'''
+		self.assertFunctionExists(self.testClass, "getStimuli") 
 
 	def test_getMatchingRules(self):
 		'''Database.getMatchingRules works'''
+		pass # not implemented yet
+
+	def test_getStimuli(self):
+		'''Database.getStimuli works'''
 		pass # not implemented yet

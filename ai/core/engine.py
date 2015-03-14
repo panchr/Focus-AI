@@ -10,11 +10,17 @@ class Engine(object):
 	'''Basic Game Engine class'''
 	random_id = shortid.ShortId()
 
-	def __init__(self, rows = 8, columns = 8):
+	def __init__(self, rows = 8, columns = 8, database = None):
 		self.games = {}
 		self.gameMeta = {}
 		self.numberGames = 0
 		self.rows, self.columns = rows, columns
+		self.db = database
+		self.gameStimuli = self.db.getStimuli() if self.db else []
+
+	def reloadStimuli(self):
+		'''Gets the stimuli from the database'''
+		self.gameStimuli = self.db.getStimuli()
 
 	def newGame(self, rows = None, columns = None):
 		'''Adds a new game to the list of games'''

@@ -10,6 +10,11 @@ import config
 
 class Database(mongokit.Connection):
 	'''Specific database wrapper for a MongoDB database'''
+	def getStimuli(self):
+		'''Get all of the stimuli from the database'''
+		cursor = Rule.find({}, {"condition": 1})
+		return list(cursor)
+
 	def getMatchingRules(self, state, stimuli):
 		'''Finds the rules matching the patterns'''
 		results = list(Rule.find({

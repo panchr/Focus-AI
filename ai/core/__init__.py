@@ -28,7 +28,7 @@ def start():
 		User,
 		Rule
 		])
-	engine = Engine()
+	engine = Engine(database = db)
 
 	return engine, db
 
