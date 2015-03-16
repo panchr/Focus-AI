@@ -27,3 +27,4 @@
 5. Started working on the core AI features
 6. Continued work of the core AI, mainly focusing on the Game state manipulation
 7. Started main work on the game engine - making moves and move validation
+8. Finished game engine and started the models for the Condition and Response pairs of the rule sets

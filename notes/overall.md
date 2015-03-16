@@ -4,7 +4,9 @@
 
 ### Current Status
 
-Currently, I am working on figuring out how to represent the conditions and responses in a machine-readable way.
+Currently, I am working on finishing up some remaining unit tests.
+In addition, I want to learn about deep learning to see if I can use it to analyze Checkers gameplay data to determine stimuli.
+On the other hand, I could also use a base set of data and then use genetic algorithms to create further rules.
 
 ### Decision Making Process
 
