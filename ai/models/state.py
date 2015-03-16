@@ -28,7 +28,7 @@ class Gamestate(CustomTypeBase):
 	@classmethod
 	def new(cls, width = 8, height = 8, dataType = config.STORAGE_DATATYPE):
 		'''Creates a new Game state descriptor'''
-		return np.zeros((width, height), dtype = dataType)
+		return np.zeros((height, width), dtype = dataType)
 
 	@classmethod
 	def movePiece(cls, state, old, new):
