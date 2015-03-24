@@ -2,6 +2,8 @@
 # tests/baseTest.py
 
 import types
+import unittest
+import numpy as np
 
 dev = True
 
@@ -16,6 +18,10 @@ CALLABLE_TYPES = (
 
 class BaseTest(object):
 	'''A collection of general unit testing'''
+	def test_inheritsTestcase(self):
+		'''Tests that the test case inherits from unittest.TestCase'''
+		self.assertIsInstance(self, unittest.TestCase)
+
 	def assertHasAttr(self, o, attr):
 		'''Object has an attribute'''
 		self.assertTrue(hasattr(o, attr), "{o} does not have attribute {attr}".format(o = o, attr = attr))
@@ -49,15 +55,23 @@ class BaseTest(object):
 
 class NumpyTest(BaseTest):
 	'''A wrapper around BaseTest that also allows for Numpy Array testing'''
+	def assertEquals(self, a, b):
+		'''Asserts that two objects are equal'''
+		if isinstance(a, np.ndarray) or isinstance(b, np.ndarray):
+			self.assertArrayEquals(a, b)
+		else:
+			super(BaseTest, self).assertEquals(a, b)
+
 	def assertInArray(self, element, array):
 		'''Asserts that element is in the array'''
 		for x in array:
 			if (element == x).all():
 				return True
-		assert False
+		self.fail("{element} not found in {array}".format(element = element, array = array))
 
 	def assertArrayEquals(self, a, b):
 		'''Asserts that two arrays are equal'''
+		print a, b
 		self.assertTrue((a == b).all())
 
 class DatabaseTest(BaseTest):

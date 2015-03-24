@@ -21,7 +21,9 @@ class DevelopmentServer(object):
 	def stop(self):
 		'''Stop all of the server's services'''
 		if self.running:
-			self.mongo.kill()
+			self.mongo.terminate()
+			self.mongo.wait()
+
 			self.devNull.close()
 
 		self.running = False

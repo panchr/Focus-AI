@@ -13,12 +13,12 @@ class Database(mongokit.Connection):
 	def getStimuli(self):
 		'''Get all of the stimuli from the database'''
 		cursor = self.Rule.find({}, {"condition": 1})
-		return list(cursor)
+		return map(lambda rule: rule.condition, list(cursor))
 
 	def getMatchingRules(self, state, stimuli):
 		'''Finds the rules matching the patterns'''
-		results = list(Rule.find({
-			"condition": {"$in": stimuli},
+		results = list(self.Rule.find({
+			"condition": {"$in": stimuli}, # might need to provide an encoded instance of Gamestate here
 			}).sort("weight", -1).limit(config.RULE_MATCHES))
-		results.sort(key = lambda item: Gamestate.compare(state, item.state), reversed = True)
+		results.sort(key = lambda item: Gamestate.compare(state, item.state), reverse = True)
 		return results
