@@ -11,7 +11,7 @@ class DynamicScriptingAI(object):
 		self.db = database
 		self.engine = engine
 		self.gameID = game
-		self.game = self.engine.getGame(self.gameID) if self.engine else ""
+		self.state = self.engine.getGame(self.gameID) if self.engine else ""
 		self.possibleStimuli = self.db.gameStimuli if self.db else []
 
 	def makeMove(self):
@@ -29,4 +29,4 @@ class DynamicScriptingAI(object):
 
 	def analyzeStimuli(self):
 		'''Analyzes the stimuli from the game and returns a list of potential stimuli'''
-		return filter(lambda stimulus: ((self.state & stimulus) == stimulus).all(), self.stimuli)
+		return filter(lambda stimulus: ((self.state & stimulus) == stimulus).all(), self.possibleStimuli)

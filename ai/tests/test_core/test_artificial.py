@@ -3,16 +3,70 @@
 
 import unittest
 import baseTests
+import numpy as np
 
 from core.artificial import DynamicScriptingAI
 
-class TestDynamicScriptingAI(unittest.TestCase, baseTests.BaseTest):
+class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 	'''Test the core.artificial.DynamicScriptingAI class'''
 	testClass = DynamicScriptingAI
 
 	def setUp(self):
 		'''Sets up the test case'''
 		self.testObject = self.testClass()
+		self.stimuli = [
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 1, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 1, 0, 0, 0, 0],
+				[0, 0, 2, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				], dtype = np.int32),
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 2, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 2, 0, 0, 0, 0, 0],
+				[0, 0, 0, -1, 0, 0, 0, 0],
+				], dtype = np.int32),
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 1, 0, 0, 0],
+				[0, 0, 0, 0, 0, 2, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 2, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				], dtype = np.int32)
+			]
+		self.testObject.possibleStimuli = self.stimuli
+		self.stateA = np.asarray([
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[2, 2, 0, 2, 2, 2, 2, 2],
+			[2, 2, 2, 2, 2, 2, 2, 2],
+			], dtype = np.int32)
+		self.stateB = np.asarray([
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[2, 2, 2, 0, 2, 2, 2, 2],
+			[2, 2, 2, -1, 2, 2, 2, 2],
+			], dtype = np.int32)
 
 	def test_hasMakeMove(self):
 		'''DynamicScriptingAI.makeMove method exists'''
@@ -28,4 +82,10 @@ class TestDynamicScriptingAI(unittest.TestCase, baseTests.BaseTest):
 
 	def test_analyzeStimuli(self):
 		'''DynamicScriptingAI.analyzeStimuli works'''
-		pass # not implemented yet
+		self.testObject.state = self.stateA
+		stimuli = self.testObject.analyzeStimuli()
+		self.assertEquals(stimuli, self.stimuli[:1])
+
+		self.testObject.state = self.stateB
+		stimuli = self.testObject.analyzeStimuli()
+		self.assertEquals(stimuli, self.stimuli[:2])
