@@ -117,5 +117,5 @@ class Gamestate(CustomTypeBase):
 		difference = np.sum(abs(stateA ^ stateB))
 		maxValue = max(np.max(stateA), np.max(stateB))
 		minValue = min(np.min(stateA), np.min(stateB))
-		arraySize = stateA.size * (maxValue - minValue)
+		arraySize = float(stateA.size) * (maxValue - minValue) # have to convert this to a float to prevent a Numpy overflow
 		return float(arraySize - difference) / arraySize # doesn't account for position in the matrix, which is important

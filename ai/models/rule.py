@@ -50,7 +50,10 @@ class Rule(Model):
 			Rule.normalize()
 
 	@classmethod
-	def normalize(cls):
+	def normalize(cls): # UNTESTED
 		'''Normalizes all of the weights between 0 and 1'''
-		raise NotImplementedError("Rule.normalize has not been implemented!")
-		# weight = weight / (sum of all weights)
+		rules = list(cls.find())
+		sumWeights = float(sum(map(lambda rule: rule.weight, rules)))
+		for rule in rules:
+			rule.weight = rule.weight / sumWeights
+			rule.save()

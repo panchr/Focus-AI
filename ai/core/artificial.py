@@ -12,7 +12,7 @@ class DynamicScriptingAI(object):
 		self.engine = engine
 		self.gameID = game
 		self.state = self.engine.getGame(self.gameID) if self.engine else ""
-		self.possibleStimuli = self.db.gameStimuli if self.db else []
+		self.possibleStimuli = self.engine.gameStimuli if self.db else []
 
 	def makeMove(self):
 		'''Makes the AI's move'''
