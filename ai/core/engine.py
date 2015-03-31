@@ -27,14 +27,7 @@ class Engine(object):
 		rows = rows or self.rows
 		columns = columns or self.columns
 		gameID = self.random_id.generate()
-		game = Gamestate.new(rows, columns)
-
-		# Initialize the game board
-		midPoint = (rows + 1) / 2 - 1
-		game[1:midPoint:2, 0::2] = 1
-		game[:midPoint:2, 1::2] = 1
-		game[rows - midPoint::2, 0::2] = 2
-		game[rows - midPoint + 1::2, 1::2] = 2
+		game = Gamestate.new(rows, columns, initialize = True)
 
 		self.games[gameID] = game
 		self.gameMeta[gameID] = {
@@ -46,6 +39,10 @@ class Engine(object):
 	def getGame(self, gameID):
 		'''Get the game by the game id'''
 		return self.games[gameID]
+
+	def setGame(self, gameID, newGame):
+		'''Set the game to a new state'''
+		self.games[gameID] = newGame
 
 	# old and new are tuples of (x, y) coordinates
 	def makeMove(self, gameID, old, new):

@@ -1,6 +1,8 @@
 # Rushy Panchal
 # ai/core/artificial.py
 
+from core.errors import InvalidMove
+
 import config
 
 class DynamicScriptingAI(object):
@@ -14,16 +16,24 @@ class DynamicScriptingAI(object):
 		self.state = self.engine.getGame(self.gameID) if self.engine else ""
 		self.possibleStimuli = self.engine.gameStimuli if self.db else []
 
+	def setState(self, newState):
+		'''Sets the game state'''
+		self.state = newState
+		if self.engine:
+			self.engine.setGame(self.gameID, newState)
+
 	def makeMove(self):
 		'''Makes the AI's move'''
 		stimuli = self.analyzeStimuli()
-		possibleMoves = self.db.getMatchingRules(self.game, stimuli)
+		possibleMoves = self.db.getMatchingRules(self.state, stimuli)
 		moveSuccess = False
 
 		for move in possibleMoves:
-			moveSuccess = self.engine.makeMove(self.gameID, *move.response)
-			if moveSuccess:
+			try:
+				moveSuccess = self.engine.makeMove(self.gameID, *move.response)
 				break
+			except InvalidMove:
+				continue
 		
 		return moveSuccess
 

@@ -2,6 +2,7 @@
 # ai/core/database.py
 
 import mongokit
+import numpy as np
 
 from models.rule import Rule
 from models.state import Gamestate
@@ -17,6 +18,9 @@ class Database(mongokit.Connection):
 
 	def getMatchingRules(self, state, stimuli):
 		'''Finds the rules matching the patterns'''
+		if len(stimuli) > 0 and isinstance(stimuli[0], np.ndarray):
+			converter = Gamestate()
+			stimuli = map(converter.to_bson, stimuli)
 		results = list(self.Rule.find({
 			"condition": {"$in": stimuli}, # might need to provide an encoded instance of Gamestate here
 			}).sort("weight", -1).limit(config.RULE_MATCHES))

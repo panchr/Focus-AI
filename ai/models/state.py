@@ -26,9 +26,23 @@ class Gamestate(CustomTypeBase):
 		return np.asarray(value, dtype = config.STORAGE_DATATYPE)
 
 	@classmethod
-	def new(cls, width = 8, height = 8, dataType = config.STORAGE_DATATYPE):
+	def new(cls, width = 8, height = 8, dataType = config.STORAGE_DATATYPE, initialize = False):
 		'''Creates a new Game state descriptor'''
-		return np.zeros((height, width), dtype = dataType)
+		game = np.zeros((height, width), dtype = dataType)
+		if initialize:
+			cls.initialize(game)
+		return game
+
+	@classmethod
+	def initialize(cls, game):
+		'''Initializes the Gamestate'''
+		rows = game.shape[0]
+		midPoint = (rows + 1) / 2 - 1
+		game[1:midPoint:2, 0::2] = 1
+		game[:midPoint:2, 1::2] = 1
+		game[rows - midPoint::2, 0::2] = 2
+		game[rows - midPoint + 1::2, 1::2] = 2
+		return game
 
 	@classmethod
 	def movePiece(cls, state, old, new):

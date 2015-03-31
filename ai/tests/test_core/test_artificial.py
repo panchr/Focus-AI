@@ -23,34 +23,39 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 		cls.db.register(models.Rule)
 		models.register(cls.db)
 		
-		# models.Rule(np.asarray([
-		# 	[0, 1, 0, 1, 0, 1, 0, 1],
-		# 	[1, 0, 1, 0, 1, 0, 1, 0],
-		# 	[0, 1, 0, 1, 0, 1, 0, 0],
-		# 	[0, 0, 2, 0, 0, 0, 0, 0],
-		# 	[0, 0, 0, 0, 0, 1, 0, 0],
-		# 	[2, 0, 0, 0, 2, 0, 2, 0],
-		# 	[0, 2, 0, 2, 0, 2, 0, 2],
-		# 	[2, 0, 2, 0, 2, 0, 2, 0]
-		# 	], dtype = np.int32), np.asarray([
-		# 		[0, 0, 0, 0, 0, 0, 0, 0],
-		# 		[0, 0, 0, 0, 0, 0, 0, 0],
-		# 		[0, 0, 0, 0, 0, 0, 0, 0],
-		# 		[0, 0, 0, 0, 0, 0, 0, 0],
-		# 		[0, 0, 0, 0, 0, 1, 0, 0],
-		# 		[0, 0, 0, 0, 0, 0, 2, 0],
-		# 		[0, 0, 0, 0, 0, 0, 0, 0],
-		# 		[0, 0, 0, 0, 0, 0, 0, 0]
-		# 		], dtype = np.int32), [(5, 6), (3, 4)])
-
 		cls.engine = Engine(database = cls.db)
-		game_id = cls.engine.newGame()
+		cls.game_id = cls.engine.newGame()
 
-		cls.testObject = cls.testClass(database = cls.db, engine = cls.engine, game = game_id)
+		cls.testObject = cls.testClass(database = cls.db, engine = cls.engine, game = cls.game_id)
+
+		models.Rule.new(
+			np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = np.int32),
+			np.asarray([
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[0, 0, 0, 0, 0, 0, 2, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+			], dtype = np.int32),
+			[(5, 6), [(3, 4)]]
+			)
 
 	@classmethod
 	def tearDownClass(cls):
 		'''Tear down the class after unit testing'''
+		cls.db[models.Rule.__database__][models.Rule.__collection__].remove({})
 		cls.db.close()
 
 	def setUp(self):
@@ -137,20 +142,43 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 		'''DynamicScriptingAI.analyzeStimuli method exists'''
 		self.assertFunctionExists(self.testObject, "analyzeStimuli")
 
+	def test_hasSetState(self):
+		'''DynamicScriptingAI.setState method exists'''
+		self.assertFunctionExists(self.testObject, "setState")
+
+	def test_setState(self):
+		'''DynamicScriptingAI.setState works'''
+		newState = "newState"
+
+		self.assertNotEquals(self.testObject.state, newState)
+		self.assertNotEquals(self.engine.games[self.game_id], newState)
+
+		self.testObject.setState(newState)
+
+		self.assertEquals(self.testObject.state, newState)
+		self.assertEquals(self.engine.games[self.game_id], newState)
+
 	def test_makeMove(self):
 		'''DynamicScriptingAI.makeMove works'''
-		self.testObject.state = self.stateC
+		self.testObject.setState(self.stateC)
+		copyC = np.copy(self.stateC)
 
-		# need to make sure it is performing moves that actually contains the given stimuli
-		# also need to consider when there are no stimuli found - random move?
-		pass # not implemented yet
+		# Make sure they are equal to start with
+		self.assertEquals(self.testObject.state, copyC)
+
+		self.testObject.makeMove()
+		copyC[5, 6] = 0
+		copyC[4, 5] = 0
+		copyC[3, 4] = 2
+
+		self.assertEquals(self.testObject.state, copyC)
 
 	def test_analyzeStimuli(self):
 		'''DynamicScriptingAI.analyzeStimuli works'''
-		self.testObject.state = self.stateA
+		self.testObject.setState(self.stateA)
 		stimuli = self.testObject.analyzeStimuli()
 		self.assertEquals(stimuli, self.stimuli[:1])
 
-		self.testObject.state = self.stateB
+		self.testObject.setState(self.stateB)
 		stimuli = self.testObject.analyzeStimuli()
 		self.assertEquals(stimuli, self.stimuli[:2])

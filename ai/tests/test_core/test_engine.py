@@ -8,7 +8,7 @@ import numpy as np
 from core.engine import Engine
 from core.errors import WrongPlayerMove, InvalidMove
 
-class TestEngine(unittest.TestCase, baseTests.BaseTest, object):
+class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 	'''Tests the core.engine.Engine class'''
 	testClass = Engine
 
@@ -29,6 +29,14 @@ class TestEngine(unittest.TestCase, baseTests.BaseTest, object):
 	def test_hasReloadStimuli(self):
 		'''Engine.reloadStimuli method exists'''
 		self.assertFunctionExists(self.testObject, "reloadStimuli")
+
+	def test_hasGetGame(self):
+		'''Engine.getGame method exists'''
+		self.assertFunctionExists(self.testObject, "getGame")
+
+	def test_hasSetGame(self):
+		'''Engine.setGame method exists'''
+		self.assertFunctionExists(self.testObject, "setGame")
 
 	def test_hasGames(self):
 		'''Engine.games exists'''
@@ -58,6 +66,26 @@ class TestEngine(unittest.TestCase, baseTests.BaseTest, object):
 		self.assertEquals(self.testObject.numberGames, currentGames + 1)
 		self.assertEquals(len(self.testObject.games.keys()), currentGames + 1)
 		self.assertEquals(len(self.testObject.gameMeta.keys()), currentGames + 1)
+
+	def test_getGame(self):
+		'''Engine.getGame works'''
+		gameID = "abc"
+		self.testObject.games[gameID] = 1
+		self.assertEquals(self.testObject.games[gameID], self.testObject.getGame(gameID))
+
+	def test_setgame(self):
+		'''Engine.setGame works'''
+		gameA = "gameA"
+		gameB = "gameB"
+
+		self.testObject.games[gameA] = "a"
+		self.testObject.games[gameB] = "b"
+
+		self.assertNotEquals(self.testObject.games[gameA], self.testObject.games[gameB])
+
+		self.testObject.setGame(gameA, self.testObject.games[gameB])
+
+		self.assertEquals(self.testObject.games[gameA], self.testObject.games[gameB])
 
 	def test_makeMove(self):
 		'''Engine.makeMove works'''

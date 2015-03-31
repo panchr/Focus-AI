@@ -71,7 +71,6 @@ class NumpyTest(BaseTest):
 
 	def assertArrayEquals(self, a, b):
 		'''Asserts that two arrays are equal'''
-		print a, b
 		self.assertTrue((a == b).all())
 
 class DatabaseTest(BaseTest):

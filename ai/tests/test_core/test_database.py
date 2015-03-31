@@ -102,10 +102,10 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				], dtype = np.int32)]
 			]
-		bsonConverter = Gamestate()
+
 		for board_stimuli, rule in zip(toMatch, self.rules):
 			board, stimuli = board_stimuli
-			matched = self.connection.getMatchingRules(board, map(bsonConverter.to_bson, [stimuli]))
+			matched = self.connection.getMatchingRules(board, [stimuli])
 			for key, value in rule.items():
 				self.assertEquals(value, matched[0][key])
 

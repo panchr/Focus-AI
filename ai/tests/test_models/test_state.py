@@ -8,7 +8,7 @@ import numpy as np
 from modelTestBase import CustomTypeTestBase
 from models.state import Gamestate
 
-class TestGamestate(CustomTypeTestBase, unittest.TestCase):
+class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 	'''Tests the models.state.Gamestate Model'''
 	model = Gamestate
 	mongoConversions = [
@@ -74,6 +74,21 @@ class TestGamestate(CustomTypeTestBase, unittest.TestCase):
 			python_raw = self.modelObject.to_python(bson)
 			self.assertTrue((python_raw == python).any())
 			self.assertIsInstance(python_raw, type(python))
+
+	def test_initialize(self):
+		'''Gamestate.initialize works'''
+		size = (8, 8)
+		mockBoard = np.zeros(size, dtype = np.int32)
+		newGame = Gamestate.new(*size, dataType = np.int32, initialize = True)
+
+		rows = size[0]
+		midPoint = (rows + 1) / 2 - 1
+		mockBoard[1:midPoint:2, 0::2] = 1
+		mockBoard[:midPoint:2, 1::2] = 1
+		mockBoard[rows - midPoint::2, 0::2] = 2
+		mockBoard[rows - midPoint + 1::2, 1::2] = 2
+
+		self.assertEquals(mockBoard, newGame)
 
 	def test_compareType(self):
 		'''Gamestate.compare returns float'''
