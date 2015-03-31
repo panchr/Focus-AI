@@ -37,9 +37,7 @@ class TestDevelopmentServer(unittest.TestCase, baseTests.BaseTest):
 			self.fail("Connection Failed")
 
 		self.testObject.stop()
+		connection.close()
 
 		self.assertEquals(self.testObject.running, False)
-		#self.assertEquals(connection.alive(), False)
-
-		# self.assertRaises(pymongo.errors.ConnectionFailure, pymongo.Connection)
-
+		self.assertEquals(connection.alive(), False)

@@ -129,7 +129,8 @@ class Gamestate(CustomTypeBase):
 	def compare(stateA, stateB):
 		'''Compares two states and returns the quotient of similarity'''
 		difference = np.sum(abs(stateA ^ stateB))
-		maxValue = max(np.max(stateA), np.max(stateB))
-		minValue = min(np.min(stateA), np.min(stateB))
-		arraySize = float(stateA.size) * (maxValue - minValue) # have to convert this to a float to prevent a Numpy overflow
+		# max and min have to be converted to longs or we get an OverflowWarning because they are 32-bit integers (and multiplying them later on will take them over 32-bits)
+		maxValue = long(max(np.max(stateA), np.max(stateB)))
+		minValue = long(min(np.min(stateA), np.min(stateB)))
+		arraySize = (stateA.size) * (maxValue - minValue)
 		return float(arraySize - difference) / arraySize # doesn't account for position in the matrix, which is important

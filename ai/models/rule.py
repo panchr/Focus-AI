@@ -16,22 +16,24 @@ class Rule(Model):
 		"state": Gamestate(),
 		"condition": Condition(),
 		"response": Response(),
-		"weight": int, # might want to store it as a double instead so that all the weights can be normalized (instead of -infinity to +infinity, weights are 0 to 1)
+		"weight": float, # although weights are initially stored as integers, they are occasionally changed to floats so that they can be normalized
 		}
 	
 	required_fields = ["state", "weight", "condition", "response"]
 
 	default_values = {
-		"weight": 0
+		"weight": 0.0
 		}
 
 	@staticmethod
-	def new(state, condition, response):
+	def new(state, condition, response, initialWeight = None):
 		'''Creates a new rule'''
 		rule = Model.connection.Rule()
 		rule.state = state
 		rule.condition = condition
 		rule.response = response
+		if initialWeight is not None:
+			rule.weight = initialWeight
 		rule.save()
 		return rule
 
@@ -52,7 +54,7 @@ class Rule(Model):
 	@classmethod
 	def normalize(cls): # UNTESTED
 		'''Normalizes all of the weights between 0 and 1'''
-		rules = list(cls.find())
+		rules = list(cls.connection.Rule.find())
 		sumWeights = float(sum(map(lambda rule: rule.weight, rules)))
 		for rule in rules:
 			rule.weight = rule.weight / sumWeights
