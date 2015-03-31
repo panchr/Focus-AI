@@ -173,6 +173,8 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 
 		self.assertEquals(self.testObject.state, copyC)
 
+		# Need to add more robust test cases
+
 	def test_analyzeStimuli(self):
 		'''DynamicScriptingAI.analyzeStimuli works'''
 		self.testObject.setState(self.stateA)
