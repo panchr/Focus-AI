@@ -10,3 +10,4 @@ pymongo==2.8
 pytz==2014.10
 six==1.9.0
 shortid==0.1.0
+zmq==14.5.0
