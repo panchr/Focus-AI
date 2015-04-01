@@ -5,7 +5,7 @@ import zmq
 
 class Server(object):
 	'''A basic web server that handles connections'''
-	def __init__(self, host = None, port = None, database = None, handler = None, recvSize = 1024):
+	def __init__(self, host = None, port = None, database = None, handler = None):
 		self.host = host or "127.0.0.1"
 		self.port = port or 3000
 		self.handler = handler

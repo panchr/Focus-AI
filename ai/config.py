@@ -7,8 +7,11 @@ from numpy import int32
 ENV = "development" # development mode
 DEV_MODE = (ENV == "development")
 
-HOST = "localhost"
-PORT = 27017
+APP_HOST = "127.0.0.1"
+APP_PORT = 7337
+
+DB_HOST = "localhost"
+DB_PORT = 27017
 
 # AI Settings
 RULE_MATCHES = 3

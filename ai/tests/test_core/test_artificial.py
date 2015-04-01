@@ -19,7 +19,7 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		'''Set up the class for unit testing'''
-		cls.db = Database(host = config.HOST, port = config.PORT)
+		cls.db = Database(host = config.DB_HOST, port = config.DB_PORT)
 		cls.db.register(models.Rule)
 		models.register(cls.db)
 		
