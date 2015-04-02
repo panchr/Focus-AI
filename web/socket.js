@@ -8,8 +8,6 @@ var zmq = require("zmq"),
 	short_id = require("shortid").generate,
 	_ = require("underscore");
 
-var functions = require("./functions");
-
 function Socket(config, log) {
 	// Creates a new socket connection
 	this.config = _.extend({

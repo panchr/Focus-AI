@@ -28,8 +28,7 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 
 		cls.testObject = cls.testClass(database = cls.db, engine = cls.engine, game = cls.game_id)
 
-		models.Rule.new(
-			np.asarray([
+		cls.stateC = np.asarray([
 			[0, 1, 0, 1, 0, 1, 0, 1],
 			[1, 0, 1, 0, 1, 0, 1, 0],
 			[0, 1, 0, 1, 0, 1, 0, 0],
@@ -38,18 +37,94 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 			[2, 0, 0, 0, 2, 0, 2, 0],
 			[0, 2, 0, 2, 0, 2, 0, 2],
 			[2, 0, 2, 0, 2, 0, 2, 0]
-			], dtype = np.int32),
+			], dtype = np.int32)
+
+		models.Rule.new(
+			cls.stateC,
 			np.asarray([
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 1, 0, 0],
-			[0, 0, 0, 0, 0, 0, 2, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0]
-			], dtype = np.int32),
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 1, 0, 0],
+				[0, 0, 0, 0, 0, 0, 2, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
 			[(5, 6), [(3, 4)]]
+			)
+
+		cls.stateD = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 0, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[0, 0, 0, 0, 0, 0, 2, 0],
+			[0, 1, 0, 2, 0, 0, 0, 0],
+			[2, 0, 2, 0, 0, 0, 0, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = np.int32)
+
+		modifiedStateD = np.copy(cls.stateD)
+		modifiedStateD[-1, -1] = 2 # make this state less similar than the rest
+
+		# For the complex rules only
+		models.Rule.new(
+			modifiedStateD,
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 1],
+				[0, 0, 0, 0, 0, 0, 2, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			[(3, 6), (2, 5)]
+			)
+		models.Rule.new(
+			modifiedStateD,
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 1, 0, 0, 0, 0, 0, 0],
+				[2, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			[(5, 0), [(3, 2)]]
+			)
+		models.Rule.new(
+			modifiedStateD,
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 1, 0, 0],
+				[0, 0, 0, 0, 0, 0, 2, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			[(3, 6), [(1, 4)]]
+			)
+		models.Rule.new(
+			cls.stateD,
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 1, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 1, 0, 0, 0, 0, 0, 0],
+				[2, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			[(5, 0), [(3, 2), (1, 4)]],
+			initialWeight = 2
 			)
 
 	@classmethod
@@ -100,6 +175,46 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 				[0, 0, 0, 0, 0, 0, 2, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 1],
+				[0, 0, 0, 0, 0, 0, 2, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 1, 0, 0, 0, 0, 0, 0],
+				[2, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 1, 0, 0],
+				[0, 0, 0, 0, 0, 0, 2, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
+				], dtype = np.int32),
+			np.asarray([
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 1, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 1, 0, 0, 0, 0, 0, 0],
+				[2, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0]
 				], dtype = np.int32)
 			]
 		self.testObject.possibleStimuli = self.stimuli
@@ -122,16 +237,6 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[2, 2, 2, 0, 2, 2, 2, 2],
 			[2, 2, 2, -1, 2, 2, 2, 2],
-			], dtype = np.int32)
-		self.stateC = np.asarray([
-			[0, 1, 0, 1, 0, 1, 0, 1],
-			[1, 0, 1, 0, 1, 0, 1, 0],
-			[0, 1, 0, 1, 0, 1, 0, 0],
-			[0, 0, 2, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 1, 0, 0],
-			[2, 0, 0, 0, 2, 0, 2, 0],
-			[0, 2, 0, 2, 0, 2, 0, 2],
-			[2, 0, 2, 0, 2, 0, 2, 0]
 			], dtype = np.int32)
 
 	def test_hasMakeMove(self):
@@ -173,7 +278,22 @@ class TestDynamicScriptingAI(baseTests.NumpyTest, unittest.TestCase):
 
 		self.assertEquals(self.testObject.state, copyC)
 
-		# Need to add more robust test cases
+	def test_makeMoveComplex(self):
+		'''DynamicScriptingAI.makeMove works (with more complicated moves'''
+		self.engine.gameMeta[self.game_id]["move"] = 2
+		self.testObject.setState(self.stateD)
+		copyD = np.copy(self.stateD)
+
+		# Make sure the states are equal to start with
+		self.assertEquals(self.testObject.state, copyD)
+
+		self.testObject.makeMove()
+		copyD[5, 0] = 0
+		copyD[4, 1] = 0
+		copyD[2, 3] = 0
+		copyD[1, 4] = 2
+
+		self.assertEquals(self.testObject.state, copyD)
 
 	def test_analyzeStimuli(self):
 		'''DynamicScriptingAI.analyzeStimuli works'''
