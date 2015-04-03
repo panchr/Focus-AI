@@ -7,7 +7,7 @@ import sys
 # Set up database connection for the unit tests
 import subprocess
 
-from baseTests import TEST_HOST, TEST_PORT
+from baseTests import TEST_HOST, TEST_PORT, GENERATED_COLLECTIONS
 from pymongo.errors import ConnectionFailure
 from mongokit import Connection
 
@@ -37,6 +37,11 @@ def setup():
 
 def teardown():
 	'''Tear down the test package'''
+	conn = Connection(host = TEST_HOST, port = TEST_PORT)
+
+	for db, coll in GENERATED_COLLECTIONS:
+		conn[db].drop_collection(coll)
+
 	if devServer:
 		devServer.kill()
 	if devNull:

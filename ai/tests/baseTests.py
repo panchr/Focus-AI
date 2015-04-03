@@ -3,7 +3,10 @@
 
 import types
 import unittest
+
 import numpy as np
+import random
+import string
 
 dev = True
 
@@ -15,6 +18,8 @@ CALLABLE_TYPES = (
 	types.LambdaType,
 	types.MethodType,
 	)
+
+GENERATED_COLLECTIONS = []
 
 class BaseTest(object):
 	'''A collection of general unit testing'''
@@ -81,3 +86,16 @@ class DatabaseTest(BaseTest):
 		'''Tests the database connection'''
 		self.assertHasAttr(self, "connection")
 		self.assertEquals(self.connection.server_info()["ok"], 1.0)
+
+	@staticmethod
+	def randomCollectionName(db):
+		'''Generates a random collection name'''
+		current = db.collection_names()
+		generateName = lambda length = 12: ''.join(random.choice(string.letters) for i in xrange(length))
+
+		name = generateName()
+		while name in current:
+			name = generateName(random.randint(10, 100))
+
+		GENERATED_COLLECTIONS.append((db.name, name))
+		return name

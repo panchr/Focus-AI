@@ -12,37 +12,52 @@ from core.database import Database
 import config
 import models
 
-class TestBaseAI(baseTests.NumpyTest, unittest.TestCase):
+def setup():
+	'''Set up the test suite'''
+	global conn
+	conn = Database(host = config.DB_HOST, port = config.DB_PORT)
+	models.Rule.__collection__ = baseTests.DatabaseTest.randomCollectionName(conn[models.Rule.__database__])
+	conn.register(models.Rule)
+	models.register(conn)
+
+	engine = Engine(database = conn)
+
+	TestBaseAI.connection = conn
+	TestBaseAI.engine = engine
+
+def tearDown():
+	'''Tear down the test suite'''
+	conn[models.Rule.__database__].drop_collection(models.Rule.__collection__)
+
+class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase):
 	'''Test the core.artificial.BaseAI class'''
 	testClass = BaseAI
 
 	@classmethod
 	def setUpClass(cls):
-		'''Sets up the class of testing'''
-		cls.db = Database(host = config.DB_HOST, port = config.DB_PORT)
-		cls.db.register(models.Rule)
-		models.register(cls.db)
-		
-		cls.engine = Engine(database = cls.db)
-		cls.game_id = cls.engine.newGame()
-		
-		cls.testObject = cls.testClass(database = cls.db, engine = cls.engine, game = cls.game_id)
+		'''Sets up the class of testing'''	
+		cls.game_id = cls.engine.newGame()	
+		cls.testObject = cls.testClass(database = cls.connection, engine = cls.engine, game = cls.game_id)
 
 	@classmethod
 	def tearDownClass(cls):
 		'''Cleanup the test class'''
-		cls.db.close()
+		cls.connection.close()
 
 	def test_hasMakeMove(self):
-		'''DynamicScriptingAI.makeMove method exists'''
+		'''BaseAI.makeMove method exists'''
 		self.assertFunctionExists(self.testObject, "makeMove")
 
 	def test_hasSetState(self):
-		'''DynamicScriptingAI.setState method exists'''
+		'''BaseAI.setState method exists'''
 		self.assertFunctionExists(self.testObject, "setState")
 
+	def test_makeMove(self):
+		'''Raises proper error'''
+		self.assertRaises(NotImplementedError, self.testObject.makeMove)
+
 	def test_setState(self):
-		'''DynamicScriptingAI.setState works'''
+		'''BaseAI.setState works'''
 		newState = "newState"
 
 		self.assertNotEquals(self.testObject.state, newState)
@@ -53,21 +68,22 @@ class TestBaseAI(baseTests.NumpyTest, unittest.TestCase):
 		self.assertEquals(self.testObject.state, newState)
 		self.assertEquals(self.engine.games[self.game_id], newState)
 
-class TestDynamicScriptingAI(TestBaseAI):
+class TestStaticAI(TestBaseAI):
+	'''Tests the core.artificial.StaticAI class'''
+	def test_makeMove(self):
+		'''StaticAI.makeMove works'''
+		pass
+
+class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 	'''Test the core.artificial.DynamicScriptingAI class'''
 	testClass = DynamicScriptingAI
 
 	@classmethod
 	def setUpClass(cls):
 		'''Set up the class for unit testing'''
-		cls.db = Database(host = config.DB_HOST, port = config.DB_PORT)
-		cls.db.register(models.Rule)
-		models.register(cls.db)
-		
-		cls.engine = Engine(database = cls.db)
 		cls.game_id = cls.engine.newGame()
 
-		cls.testObject = cls.testClass(database = cls.db, engine = cls.engine, game = cls.game_id)
+		cls.testObject = cls.testClass(database = cls.connection, engine = cls.engine, game = cls.game_id)
 
 		cls.rulesAdded = []
 
@@ -183,7 +199,7 @@ class TestDynamicScriptingAI(TestBaseAI):
 		'''Tear down the class after unit testing'''
 		for rule in cls.rulesAdded:
 			rule.delete()
-		cls.db.close()
+		cls.connection.close()
 
 	def setUp(self):
 		'''Sets up the test case'''

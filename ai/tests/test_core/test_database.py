@@ -13,10 +13,16 @@ from models.state import Gamestate
 
 def setup():
 	'''Setup the test suite'''
+	global conn
 	conn = Database(host = baseTests.TEST_HOST, port = baseTests.TEST_PORT)
+	models.Rule.__collection__ = baseTests.DatabaseTest.randomCollectionName(conn[models.Rule.__database__])
 	conn.register(models.Rule)
 	models.register(conn)
 	TestDatabase.connection = conn
+
+def tearDown():
+	'''Tear down the test suite'''
+	conn[models.Rule.__database__].drop_collection(models.Rule.__collection__)
 
 class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase):
 	'''Test the core.database.Database class'''

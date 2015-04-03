@@ -14,10 +14,16 @@ import config
 
 def setup():
 	'''Setup the test suite'''
+	global conn
 	conn = mongokit.Connection(host = baseTests.TEST_HOST, port = baseTests.TEST_PORT)
+	models.Rule.__collection__ = baseTests.DatabaseTest.randomCollectionName(conn[models.Rule.__database__])
 	conn.register(models.Rule)
 	models.register(conn)
 	TestRule.connection = conn
+
+def tearDown():
+	'''Tear down the test suite'''
+	conn[models.Rule.__database__].drop_collection(models.Rule.__collection__)
 
 class TestRule(baseTests.DatabaseTest, ModelTestBase, unittest.TestCase):
 	'''Tests the models.rule.Rule Model'''

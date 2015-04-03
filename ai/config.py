@@ -12,6 +12,7 @@ APP_PORT = 7337
 
 DB_HOST = "localhost"
 DB_PORT = 27017
+DB_NAME = "senior_focus"
 
 # AI Settings
 RULE_MATCHES = 3

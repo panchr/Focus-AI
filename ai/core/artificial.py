@@ -39,8 +39,10 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 		'''Makes the AI's move'''
 		stimuli = self.analyzeStimuli()
 		possibleMoves = self.db.getMatchingRules(self.state, stimuli)
+
 		if not possibleMoves:
 			return self.bestNewMove()
+			
 		moveSuccess = False
 
 		for move in possibleMoves:
@@ -50,7 +52,7 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 			except InvalidMove:
 				continue
 		
-		return moveSuccess
+		return moveSuccess, move
 
 	def analyzeStimuli(self):
 		'''Analyzes the stimuli from the game and returns a list of potential stimuli'''
@@ -58,4 +60,4 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 
 	def bestNewMove(self):
 		'''Makes a randomized move that is weakly evaluated --- only should be executed if no valid moves exist in the database'''
-		super(DynamicScriptingAI, self).makeMove()
+		return super(DynamicScriptingAI, self).makeMove()

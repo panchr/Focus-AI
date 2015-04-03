@@ -18,7 +18,6 @@ class TestServer(baseTests.BaseTest, unittest.TestCase):
 		'''Set up the class'''
 		def handler(db, data):
 			'''Mock data handler'''
-			print data
 			return data
 		cls.handler = handler
 		cls.server = cls.base(host = "127.0.0.1", port = 7337, handler = handler)

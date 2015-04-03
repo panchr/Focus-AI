@@ -3,9 +3,11 @@
 
 import mongokit
 
+import config
+
 class Model(mongokit.Document, object):
 	'''Base class for all Models'''
-	__database__ = "senior_focus"
+	__database__ = config.DB_NAME
 
 	use_dot_notation = True
 	skip_validation = True
