@@ -5,11 +5,14 @@ from core.errors import InvalidMove, WrongPlayerMove
 
 import numpy as np
 import random
+import operator
 
 import config
 
 class BaseAI(object):
 	'''Base for all AI'''
+	ADJACENT = [(y, x) for y in xrange(-1, 2) for x in xrange(-1, 2) if (x != 0 or y != 0)] # pre-compute the adjacent values
+
 	def __init__(self, database = None, engine = None, game = "", piece = 0):
 		'''Initialize the AI'''
 		self.db = database
@@ -29,6 +32,28 @@ class BaseAI(object):
 		'''Should be overridden in the child class'''
 		raise NotImplementedError("{cls}.makeMove not implemented".format(cls = self.__class__.__name__))
 
+	def getAdjacent(self, position):
+		'''Get the surrounding indices of a given position'''
+		maxY, maxX = self.state.shape
+		possible = map(lambda item: tuple( # need to explicitly convert to a tuple to allow for Numpy accesses
+			map(operator.add, item, position)
+			), self.ADJACENT) 
+		return filter(lambda item: 0 <= item[0] < maxY and 0 <= item[1] < maxX, possible)
+
+	def getOpenings(self, position):
+		'''Get all adjacent openings for a given position'''
+		possibilities = position if isinstance(position, list) else self.getAdjacent(position)
+		# if adjacent positions are already provided, no need to recompute
+
+		return filter(lambda possibility: self.state[possibility] == 0, possibilities)
+
+	def getOpponentOccupied(self, position):
+		'''Get all the adjacent occupied (by the opponent) for a given position'''
+		possibilities = position if isinstance(position, list) else self.getAdjacent(position)
+		# if adjacent positions are already provided, no need to recompute
+
+		return filter(lambda possibility: self.state[possibility] != 0 and  self.state[possibility] != self.piece, possibilities)
+
 class StaticAI(BaseAI):
 	'''Represents a Static AI'''
 	def makeMove(self):
@@ -36,18 +61,11 @@ class StaticAI(BaseAI):
 		positions = zip(*np.where(self.state == self.piece))
 		openings = []
 		for position in positions:
-			openings.extend(self.getOpenings(position))
-
-	def getOpenings(self, position):
-		'''Get all openings for a given position'''
-		possibilities = [(0, 0)] * 9 # allocate all memory required beforehand
-		index = 0
-		for deltaX in xrange(-1, 2):
-			for deltaY in xrange(-1, 2):
-				possibilities[index] = (position[0] + deltaY, position[1] + deltaX)
-				index += 1
-		confirmedOpen = filter(lambda possibility: self.state[possibility] == 0, possibilities)
-		return confirmedOpen
+			adjacent = self.getAdjacent(position)
+			openings.extend(self.getOpenings(adjacent))
+		# need to pick a random move from this
+		# it would be best to evaluate the "score" of the given position to find the best option
+		# then choose a random move out of the top 3 or so of these positions
 
 class DynamicScriptingAI(StaticAI, BaseAI):
 	'''Represents a Dynamic Scripting AI'''

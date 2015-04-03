@@ -52,6 +52,18 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 		'''BaseAI.setState method exists'''
 		self.assertFunctionExists(self.testObject, "setState")
 
+	def test_hasGetAdjacent(self):
+		'''StaticAI.getAdjacent method exists'''
+		self.assertFunctionExists(self.testObject, "getAdjacent")
+
+	def test_hasGetOpenings(self):
+		'''StaticAI.getOpenings method exists'''
+		self.assertFunctionExists(self.testObject, "getOpenings")
+
+	def test_hasGetOpponentOccupied(self):
+		'''StaticAI.getOpponentOccupied method exists'''
+		self.assertFunctionExists(self.testObject, "getOpponentOccupied")
+
 	def test_makeMove(self):
 		'''Raises proper error'''
 		self.assertRaises(NotImplementedError, self.testObject.makeMove)
@@ -68,19 +80,37 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 		self.assertEquals(self.testObject.state, newState)
 		self.assertEquals(self.engine.games[self.game_id], newState)
 
-class TestStaticAI(TestBaseAI):
-	'''Tests the core.artificial.StaticAI class'''
-	testClass = StaticAI
+	def test_getAdjacent(self):
+		'''StaticAI.getAdjacent works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = np.int32)
+		self.testObject.setState(state)
 
-	def test_inheritsBaseAI(self):
-		'''Inherits from BaseAI'''
-		self.assertIsSubclass(self.testClass, BaseAI)
-		self.assertIsSubclass(self.testClass, object)
+		adjacent1 = sorted(self.testObject.getAdjacent((4, 4)))
+		adjacent1_real = sorted([(3, 3), (3, 4), (3, 5), (4, 3), (4, 5), (5, 3), (5, 4), (5, 5)])
+		adjacent2 = sorted(self.testObject.getAdjacent((6, 5)))
+		adjacent2_real = sorted([(5, 4), (5, 5), (5, 6), (6, 4), (6, 6), (7, 4), (7, 5), (7, 6)])
 
-	def test_instanceBaseAI(self):
-		'''Instance of BaseAI'''
-		self.assertIsInstance(self.testObject, BaseAI)
-		self.assertIsInstance(self.testObject, object)
+		partial_adjacent1 = sorted(self.testObject.getAdjacent((5, 0)))
+		partial_adjacent1_real = sorted([(4, 0), (4, 1), (5, 1), (6, 0), (6, 1)])
+		partial_adjacent2 = sorted(self.testObject.getAdjacent((0, 0)))
+		partial_adjacent2_real = sorted([(0, 1), (1, 1), (1, 0)])
+		partial_adjacent3 = sorted(self.testObject.getAdjacent((7, 4)))
+		partial_adjacent3_real = sorted([(7, 3), (7, 5), (6, 3), (6, 4), (6, 5)])
+
+		self.assertEquals(adjacent1, adjacent1_real)
+		self.assertEquals(adjacent2, adjacent2_real)
+		self.assertEquals(partial_adjacent1, partial_adjacent1_real)
+		self.assertEquals(partial_adjacent2, partial_adjacent2_real)
+		self.assertEquals(partial_adjacent3, partial_adjacent3_real)
 
 	def test_getOpenings(self):
 		'''StaticAI.getOpenings works'''
@@ -96,9 +126,51 @@ class TestStaticAI(TestBaseAI):
 			], dtype = np.int32)
 		self.testObject.setState(state)
 
-		openings = self.testObject.getOpenings((4, 5))
+		openings = sorted(self.testObject.getOpenings((4, 5)))
+		openings_real = sorted([(4, 4), (4, 6), (3, 4), (3, 5), (3, 6), (5, 5)])
 
-		self.assertEquals(sorted(openings), sorted([(4, 4), (4, 6), (3, 4), (3, 5), (3, 6), (5, 5)]))
+		partial_openings = sorted(self.testObject.getOpenings((6, 7)))
+		partial_openings_real = sorted([(5, 7), (6, 6), (7, 7)])
+
+		self.assertEquals(openings, openings_real)
+		self.assertEquals(partial_openings, partial_openings_real)
+
+	def test_getOpponentOccupied(self):
+		'''StaticAI.getOpponentOccupied works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = np.int32)
+		self.testObject.setState(state)
+
+		occupied = sorted(self.testObject.getOpponentOccupied((3, 2)))
+		occupied_real = sorted([(2, 1), (2, 3)])
+
+		occupied_partial = sorted(self.testObject.getOpponentOccupied((5, 0)))
+		occupied_partial_real = []
+
+		self.assertEquals(occupied, occupied_real)
+		self.assertEquals(occupied_partial, occupied_partial_real)
+
+class TestStaticAI(TestBaseAI):
+	'''Tests the core.artificial.StaticAI class'''
+	testClass = StaticAI
+
+	def test_inheritsBaseAI(self):
+		'''Inherits from BaseAI'''
+		self.assertIsSubclass(self.testClass, BaseAI)
+		self.assertIsSubclass(self.testClass, object)
+
+	def test_instanceBaseAI(self):
+		'''Instance of BaseAI'''
+		self.assertIsInstance(self.testObject, BaseAI)
+		self.assertIsInstance(self.testObject, object)
 
 	def test_makeMove(self):
 		'''StaticAI.makeMove works'''
