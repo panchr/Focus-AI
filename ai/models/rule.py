@@ -16,17 +16,18 @@ class Rule(Model):
 		"state": Gamestate(),
 		"condition": Condition(),
 		"response": Response(),
+		"piece": int,
 		"weight": float, # although weights are initially stored as integers, they are occasionally changed to floats so that they can be normalized
 		}
 	
-	required_fields = ["state", "weight", "condition", "response"]
+	required_fields = ["state", "weight", "condition", "response", "piece"]
 
 	default_values = {
 		"weight": 0.0
 		}
 
 	@staticmethod
-	def new(state, condition, response, initialWeight = None):
+	def new(state, condition, response, piece = None, initialWeight = None):
 		'''Creates a new rule'''
 		rule = Model.connection.Rule()
 		rule.state = state
@@ -34,6 +35,9 @@ class Rule(Model):
 		rule.response = response
 		if initialWeight is not None:
 			rule.weight = initialWeight
+		if piece is None:
+			piece = state[response[0]] if len(response) > 0 else 0
+		rule.piece = piece
 		rule.save()
 		return rule
 

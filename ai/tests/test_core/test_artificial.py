@@ -37,7 +37,7 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 	def setUpClass(cls):
 		'''Sets up the class of testing'''	
 		cls.game_id = cls.engine.newGame()	
-		cls.testObject = cls.testClass(database = cls.connection, engine = cls.engine, game = cls.game_id)
+		cls.testObject = cls.testClass(database = cls.connection, engine = cls.engine, game = cls.game_id, piece = 2)
 
 	@classmethod
 	def tearDownClass(cls):
@@ -70,6 +70,36 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 
 class TestStaticAI(TestBaseAI):
 	'''Tests the core.artificial.StaticAI class'''
+	testClass = StaticAI
+
+	def test_inheritsBaseAI(self):
+		'''Inherits from BaseAI'''
+		self.assertIsSubclass(self.testClass, BaseAI)
+		self.assertIsSubclass(self.testClass, object)
+
+	def test_instanceBaseAI(self):
+		'''Instance of BaseAI'''
+		self.assertIsInstance(self.testObject, BaseAI)
+		self.assertIsInstance(self.testObject, object)
+
+	def test_getOpenings(self):
+		'''StaticAI.getOpenings works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = np.int32)
+		self.testObject.setState(state)
+
+		openings = self.testObject.getOpenings((4, 5))
+
+		self.assertEquals(sorted(openings), sorted([(4, 4), (4, 6), (3, 4), (3, 5), (3, 6), (5, 5)]))
+
 	def test_makeMove(self):
 		'''StaticAI.makeMove works'''
 		pass
@@ -83,7 +113,7 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 		'''Set up the class for unit testing'''
 		cls.game_id = cls.engine.newGame()
 
-		cls.testObject = cls.testClass(database = cls.connection, engine = cls.engine, game = cls.game_id)
+		cls.testObject = cls.testClass(database = cls.connection, engine = cls.engine, game = cls.game_id, piece = 2)
 
 		cls.rulesAdded = []
 
@@ -307,15 +337,13 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			[2, 2, 2, -1, 2, 2, 2, 2],
 			], dtype = np.int32)
 
-	def test_inheritsBaseAI(self):
-		'''DynamicScriptingAI inherits from BaseAI'''
-		self.assertIsSubclass(self.testClass, BaseAI)
-		self.assertIsSubclass(self.testClass, object)
+	def test_inheritsStaticAI(self):
+		'''DynamicScriptingAI inherits from StaticAI'''
+		self.assertIsSubclass(self.testClass, StaticAI)
 
-	def test_instanceBaseAI(self):
-		'''DynamicScriptingAI is instance of BaseAI'''
-		self.assertIsInstance(self.testObject, BaseAI)
-		self.assertIsInstance(self.testObject, object)
+	def test_instanceStaticAI(self):
+		'''Instance of StaticAI'''
+		self.assertIsInstance(self.testObject, StaticAI)
 
 	def test_hasAnalyzeStimuli(self):
 		'''DynamicScriptingAI.analyzeStimuli method exists'''

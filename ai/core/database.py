@@ -16,13 +16,14 @@ class Database(mongokit.Connection):
 		cursor = self.Rule.find({}, {"condition": 1})
 		return map(lambda rule: rule.condition, list(cursor))
 
-	def getMatchingRules(self, state, stimuli):
+	def getMatchingRules(self, state, stimuli, piece):
 		'''Finds the rules matching the patterns'''
 		if len(stimuli) > 0 and isinstance(stimuli[0], np.ndarray):
 			converter = Gamestate()
 			stimuli = map(converter.to_bson, stimuli)
 		results = list(self.Rule.find({
 			"condition": {"$in": stimuli}, # might need to provide an encoded instance of Gamestate here
+			"piece": {"$in": [piece, 0]},
 			}).sort("weight", -1).limit(config.RULE_MATCHES))
 		results.sort(key = lambda item: Gamestate.compare(state, item.state), reverse = True)
 		return results

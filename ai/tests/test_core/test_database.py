@@ -111,7 +111,7 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 
 		for board_stimuli, rule in zip(toMatch, self.rules):
 			board, stimuli = board_stimuli
-			matched = self.connection.getMatchingRules(board, [stimuli])
+			matched = self.connection.getMatchingRules(board, [stimuli], 2)
 			for key, value in rule.items():
 				self.assertEquals(value, matched[0][key])
 

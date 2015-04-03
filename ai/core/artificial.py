@@ -1,19 +1,23 @@
 # Rushy Panchal
 # ai/core/artificial.py
 
-from core.errors import InvalidMove
+from core.errors import InvalidMove, WrongPlayerMove
+
+import numpy as np
+import random
 
 import config
 
 class BaseAI(object):
 	'''Base for all AI'''
-	def __init__(self, database = None, engine = None, game = ""):
+	def __init__(self, database = None, engine = None, game = "", piece = 0):
 		'''Initialize the AI'''
 		self.db = database
 		self.engine = engine
 		self.gameID = game
 		self.state = self.engine.getGame(self.gameID) if self.engine else ""
 		self.possibleStimuli = self.engine.gameStimuli if self.db else []
+		self.piece = piece
 
 	def setState(self, newState):
 		'''Sets the game state'''
@@ -29,7 +33,21 @@ class StaticAI(BaseAI):
 	'''Represents a Static AI'''
 	def makeMove(self):
 		'''Make the AI's move'''
-		pass
+		positions = zip(*np.where(self.state == self.piece))
+		openings = []
+		for position in positions:
+			openings.extend(self.getOpenings(position))
+
+	def getOpenings(self, position):
+		'''Get all openings for a given position'''
+		possibilities = [(0, 0)] * 9 # allocate all memory required beforehand
+		index = 0
+		for deltaX in xrange(-1, 2):
+			for deltaY in xrange(-1, 2):
+				possibilities[index] = (position[0] + deltaY, position[1] + deltaX)
+				index += 1
+		confirmedOpen = filter(lambda possibility: self.state[possibility] == 0, possibilities)
+		return confirmedOpen
 
 class DynamicScriptingAI(StaticAI, BaseAI):
 	'''Represents a Dynamic Scripting AI'''
@@ -38,7 +56,7 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 	def makeMove(self):
 		'''Makes the AI's move'''
 		stimuli = self.analyzeStimuli()
-		possibleMoves = self.db.getMatchingRules(self.state, stimuli)
+		possibleMoves = self.db.getMatchingRules(self.state, stimuli, self.piece)
 
 		if not possibleMoves:
 			return self.bestNewMove()
@@ -51,6 +69,8 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 				break
 			except InvalidMove:
 				continue
+			except WrongPlayerMove:
+				break
 		
 		return moveSuccess, move
 
