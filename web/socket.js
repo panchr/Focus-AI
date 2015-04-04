@@ -28,7 +28,7 @@ Socket.prototype.connect = function() {
 	// Connect to the socket
 	var socket = this;
 	this.connection.connect(this.socketPath);
-	this.logger.info("Connected to: " + this.socketPath);
+	this.logger("Connected to: " + this.socketPath);
 	this.connection.on("message", function (data) {
 		socket.waiting--;
 		var data = JSON.parse(data);
@@ -55,7 +55,7 @@ Socket.prototype.close = function() {
 	catch (e) {
 		// do nothing, because the error was that the socket is already closed
 		}
-	this.logger.info("Disconnected from: " + this.socketPath);
+	this.logger("Disconnected from: " + this.socketPath);
 	return this;
 	}
 
