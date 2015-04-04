@@ -27,3 +27,8 @@ class Database(mongokit.Connection):
 			}).sort("weight", -1).limit(config.RULE_MATCHES))
 		results.sort(key = lambda item: Gamestate.compare(state, item.state), reverse = True)
 		return results
+
+	def newRule(self, *args, **kwargs):
+		'''Creates a new Rule in the database'''
+		rule = self.Rule.new(*args, **kwargs)
+		return rule

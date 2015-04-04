@@ -58,14 +58,41 @@ class StaticAI(BaseAI):
 	'''Represents a Static AI'''
 	def makeMove(self):
 		'''Make the AI's move'''
+		takingFound = False
+		openings, occupied = [], []
 		positions = zip(*np.where(self.state == self.piece))
-		openings = []
+
 		for position in positions:
-			adjacent = self.getAdjacent(position)
-			openings.extend(self.getOpenings(adjacent))
+			position_adjacent = self.getAdjacent(position)
+			position_occupied = self.getOpponentOccupied(position_adjacent)
+
+			# This implements a basic heuristic: if we have already found a taking move, no need to search for any simple moves (taking moves are always better)
+			if (position_occupied or takingFound):
+				occupied.extend(map(lambda newPosition: [position, newPosition],position_occupied))
+				takingFound = True
+			else:
+				position_openings = self.getOpenings(position_adjacent)
+				openings.extend(map(lambda newPosition: [position, newPosition],position_openings))
+
 		# need to pick a random move from this
 		# it would be best to evaluate the "score" of the given position to find the best option
 		# then choose a random move out of the top 3 or so of these positions
+
+		moveSuccess, playedMove = False, None
+
+		random.shuffle(openings) # make sure we choose a random one each item
+		for move in openings:
+			try:
+				moveSuccess = self.engine.makeMove(self.gameID, move)
+				self.db.newRule(self.state, None, move, piece = self.piece) # need to find an actual stimulus - perhaps the pieces involved?
+				playedMove = move
+				break
+			except InvalidMove:
+				continue
+			except WrongPlayerMove:
+				break
+
+		return moveSuccess, playedMove
 
 class DynamicScriptingAI(StaticAI, BaseAI):
 	'''Represents a Dynamic Scripting AI'''
@@ -79,18 +106,19 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 		if not possibleMoves:
 			return self.bestNewMove()
 			
-		moveSuccess = False
+		moveSuccess, playedMove = False, None
 
 		for move in possibleMoves:
 			try:
 				moveSuccess = self.engine.makeMove(self.gameID, *move.response)
+				playedMove = move
 				break
 			except InvalidMove:
 				continue
 			except WrongPlayerMove:
 				break
 		
-		return moveSuccess, move
+		return moveSuccess, playedMove
 
 	def analyzeStimuli(self):
 		'''Analyzes the stimuli from the game and returns a list of potential stimuli'''

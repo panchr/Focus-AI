@@ -84,6 +84,10 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 		'''Database has getStimuli method'''
 		self.assertFunctionExists(self.testClass, "getStimuli") 
 
+	def test_hasNewRule(self):
+		'''Database.newRule method exists'''
+		self.assertFunctionExists(self.testClass, "newRule")
+
 	def test_getMatchingRules(self):
 		'''Database.getMatchingRules works'''
 		toMatch = [
@@ -122,3 +126,21 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 		for stimulus in rawStimuli:
 			self.assertInArray(stimulus, stimuliToTest)
 		self.assertEquals(len(stimuliToTest), len(rawStimuli))
+
+	def test_newRule(self):
+		'''Database.newRule works'''
+		current_rules = map(lambda rule: rule.condition, list(self.connection.Rule.find({}, {"condition": 1})))
+
+		state = np.random.random_integers(-2, 2, (8, 8))
+		condition = np.random.random_integers(-2, 2, (8, 8))
+		response = [(5, 5), (2, 3)] # random response, not actually valid
+
+		while self.inArray(condition, current_rules):
+			condition = np.random.random_integers(-2, 2, (8, 8))
+
+		rule = self.connection.newRule(state, condition, response)
+		self.rules.append(rule)
+		converter = Gamestate()
+		newRule = self.connection.Rule.find_one({"state": converter.to_bson(state), "condition": converter.to_bson(condition)})
+
+		self.assertNotEquals(newRule, None) # if newRule is None, then the find was not successful

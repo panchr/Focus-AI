@@ -67,12 +67,20 @@ class NumpyTest(BaseTest):
 		else:
 			super(BaseTest, self).assertEquals(a, b)
 
+	def inArray(self, element, array):
+		'''Asserts that the element is in the array'''
+		if isinstance(array, np.ndarray) or isinstance(element, np.ndarray):
+			for x in array:
+				if (element == x).all():
+					return True
+		else:
+			print array
+			return element in array
+
 	def assertInArray(self, element, array):
 		'''Asserts that element is in the array'''
-		for x in array:
-			if (element == x).all():
-				return True
-		self.fail("{element} not found in {array}".format(element = element, array = array))
+		if not self.inArray(element, array):
+			self.fail("{element} not found in {array}".format(element = element, array = array))
 
 	def assertArrayEquals(self, a, b):
 		'''Asserts that two arrays are equal'''
