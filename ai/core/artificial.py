@@ -12,7 +12,9 @@ import config
 
 class BaseAI(object):
 	'''Base for all AI'''
-	ADJACENT = [(y, x) for y in xrange(-1, 2) for x in xrange(-1, 2) if (x != 0 or y != 0)] # pre-compute the adjacent values
+	DIAGONAL = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+	DIAGONAL_TOP = [(-1, -1), (-1, 1)]
+	DIAGONAL_BOTTOM = [(1, -1), (1, 1)]
 
 	def __init__(self, database = None, engine = None, game = "", piece = 0):
 		'''Initialize the AI'''
@@ -36,9 +38,16 @@ class BaseAI(object):
 	def getAdjacent(self, position):
 		'''Get the surrounding indices of a given position'''
 		maxY, maxX = self.state.shape
+		piece = self.state[position]
+		if piece == 1:
+			check =self.DIAGONAL_BOTTOM
+		elif piece == 2:
+			check = self.DIAGONAL_TOP
+		else:
+			check = self.DIAGONAL
 		possible = map(lambda item: tuple( # need to explicitly convert to a tuple to allow for Numpy accesses
 			map(operator.add, item, position)
-			), self.ADJACENT) 
+			), check) 
 		return filter(lambda item: 0 <= item[0] < maxY and 0 <= item[1] < maxX, possible)
 
 	def getOpenings(self, position):
