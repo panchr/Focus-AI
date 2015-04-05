@@ -3,6 +3,7 @@
 
 from core.errors import InvalidMove, WrongPlayerMove
 from models.state import Gamestate
+from models.game import Game
 
 import numpy as np
 import random
@@ -24,6 +25,8 @@ class BaseAI(object):
 		self.state = self.engine.getGame(self.gameID) if self.engine else ""
 		self.possibleStimuli = self.engine.gameStimuli if self.db else []
 		self.piece = piece
+		self.playedMoves = []
+		self.history = []
 
 	def setState(self, newState):
 		'''Sets the game state'''
@@ -122,13 +125,15 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 			try:
 				moveSuccess = self.engine.makeMove(self.gameID, *move.response)
 				playedMove = move
+				self.history.append(np.copy(self.state)) # it may be inefficient to keep so many copies of the game
+				self.playedMoves.append(move)
 				break
 			except InvalidMove:
 				continue
 			except WrongPlayerMove:
 				break
 		
-		return moveSuccess, playedMove
+		return moveSuccess, playedMove.response
 
 	def analyzeStimuli(self):
 		'''Analyzes the stimuli from the game and returns a list of potential stimuli'''
@@ -137,3 +142,13 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 	def bestNewMove(self):
 		'''Makes a randomized move that is weakly evaluated --- only should be executed if no valid moves exist in the database'''
 		return super(DynamicScriptingAI, self).makeMove()
+
+	def feedback(self, seemedHuman = False, details = ""):
+		'''Provide feedback to the AI'''
+		rules = map(lambda move: move._id, self.playedMoves)
+		for rule in self.playedMoves:
+			if seemedHuman:
+				rule.increaseWeight()
+			else:
+				rule.decreaseWeight()
+		return Game.new(feedback = details, history = self.history, rules = rules)

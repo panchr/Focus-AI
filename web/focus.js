@@ -27,6 +27,9 @@ function focus(app, server, config) {
 		socket.on('move', function (move) {
 			// proxy to the main server and give the proper response
 			});
+		socket.on('feedback', function (data) {
+			// proxy to main server
+			});
 		socket.on('disconnect', function() {
 			// tell the game server to end the game
 			});

@@ -14,6 +14,14 @@ class Model(mongokit.Document, object):
 
 	connection = None
 
+	@classmethod
+	def new(cls, **values):
+		'''Create a new object in the database'''
+		o = cls.connection[cls.__name__]
+		o.update(values)
+		o.save()
+		return o
+
 	@staticmethod
 	def autosave(func):
 		'''Returns a decorated function to add implicit saving'''

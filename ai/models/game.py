@@ -8,13 +8,20 @@ from models.state import Gamestate
 
 class Game(Model):
 	'''Contains all of the data about a single game that was played'''
-	__collection__ = "games"
+	__collection__ = "history"
 
 	structure = {
-		"players": [ObjectId], # User.id
-		"history": [Gamestate()], # should be [Gamestate], but Mongokit throws a SchemaError --- this works so Gamestate is definitely a valid type
-		"rulesUsed": [ObjectId], # Rule.id, only needed if AI
+		"history": [Gamestate()],
+		"rules": [ObjectId], # Rule.id, only needed if AI
 		"feedback": basestring,
+		"seemedHuman": bool
 		}
 
-	required = ["players", "history", "feedback"]
+	required = ["rules", "history", "feedback", "seemedHuman"]
+
+	default_values = {
+		"feedback": "",
+		"seemedHuman": False,
+		"history": [],
+		"rules": []
+		}
