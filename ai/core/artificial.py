@@ -151,4 +151,4 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 				rule.increaseWeight()
 			else:
 				rule.decreaseWeight()
-		return Game.new(feedback = details, history = self.history, rules = rules)
+		return Game.new(feedback = details, history = self.history, rules = rules, seemedHuman = seemedHuman)

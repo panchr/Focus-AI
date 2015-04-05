@@ -16,8 +16,11 @@ def setup():
 	'''Set up the test suite'''
 	global conn
 	conn = Database(host = config.DB_HOST, port = config.DB_PORT)
-	models.Rule.__collection__ = baseTests.DatabaseTest.randomCollectionName(conn[models.Rule.__database__])
+	db = conn[models.Model.__database__]
+	models.Rule.__collection__ = baseTests.DatabaseTest.randomCollectionName(db)
+	models.Game.__collection__ = baseTests.DatabaseTest.randomCollectionName(db)
 	conn.register(models.Rule)
+	conn.register(models.Game)
 	models.register(conn)
 
 	engine = Engine(database = conn)
@@ -447,3 +450,23 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 		self.testObject.setState(self.stateB)
 		stimuli = self.testObject.analyzeStimuli()
 		self.assertEquals(stimuli, self.stimuli[:2])
+
+	def test_feedback(self):
+		'''DynamicScriptingAI.feedback works'''
+		self.testObject.playedMoves = self.rulesAdded
+		self.testObject.history = [np.ndarray((8, 8), dtype = np.int32) for i in xrange(10)]
+		initialCount = self.connection.Game.find().count()
+
+		self.testObject.feedback(True, "It sure fooled me!")
+
+		feedback = self.connection.Game.find_one()
+		if not feedback:
+			self.fail("Feedback not inserted into database")
+
+		self.assertEquals(self.connection.Game.find().count(), initialCount + 1)
+		self.assertEquals(feedback.feedback, "It sure fooled me!")
+		self.assertEquals(feedback.seemedHuman, True)
+		self.assertEquals(len(feedback.history), len(self.testObject.history))
+		for x in feedback.history:
+			self.assertInArray(x, self.testObject.history)
+		self.assertEquals(sorted(feedback.rules), sorted(map(lambda move: move._id, self.rulesAdded)))

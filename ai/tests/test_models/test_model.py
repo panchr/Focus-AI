@@ -35,8 +35,16 @@ class TestModel(baseTests.BaseTest, unittest.TestCase):
 		'''Model.autosave exists'''
 		self.assertFunctionExists(self.base, "autosave")
 
+	def test_hasNew(self):
+		'''Model.new exists'''
+		self.assertFunctionExists(self.base, "new")
+
 	def test_autosave(self):
 		'''Model.autosave works'''
+		pass # not implemented yet
+
+	def test_new(self):
+		'''Model.new works'''
 		pass # not implemented yet
 
 class TestCustomTypeBase(baseTests.BaseTest, unittest.TestCase):
