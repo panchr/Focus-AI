@@ -2,6 +2,7 @@
 # ai/core/artificial.py
 
 from core.errors import InvalidMove, WrongPlayerMove
+from models.state import Gamestate
 
 import numpy as np
 import random
@@ -60,7 +61,7 @@ class StaticAI(BaseAI):
 		'''Make the AI's move'''
 		takingFound = False
 		openings, occupied = [], []
-		positions = zip(*np.where(self.state == self.piece))
+		positions = Gamestate.findLocations(self.state, self.piece)
 
 		for position in positions:
 			position_adjacent = self.getAdjacent(position)

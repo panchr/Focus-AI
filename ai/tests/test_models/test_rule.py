@@ -29,18 +29,6 @@ class TestRule(baseTests.DatabaseTest, ModelTestBase, unittest.TestCase):
 	'''Tests the models.rule.Rule Model'''
 	model = models.Rule
 
-	def test_hasIncreaseWeight(self):
-		'''Has function increaseWeight'''
-		self.assertFunctionExists(self.modelObject, "increaseWeight")
-
-	def test_hasDecreaseWeight(self):
-		'''Has function decreaseWeight'''
-		self.assertFunctionExists(self.modelObject, "decreaseWeight")
-
-	def test_hasNormalize(self):
-		'''Has method normalize'''
-		self.assertFunctionExists(self.model, "normalize")
-
 	def test_increaseWeight(self):
 		'''increaseWeight works'''
 		currentWeight = self.modelObject.weight

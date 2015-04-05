@@ -275,3 +275,14 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 		copyE[6, 1] = -1
 		self.model.movePiece(self.stateE, (5, 2), (6, 1))
 		self.assertTrue((self.stateE == copyE).all())
+
+	def test_findLocations(self):
+		'''Gamestate.findLocations method works'''
+		state = np.zeros((8, 8), dtype = np.int32)
+		state[3, 5] = 1
+		state[3, 6] = 2
+		state[1, 4] = 1
+
+		self.assertEquals(sorted(self.model.findLocations(state, 1)), sorted([(3, 5), (1, 4)]))
+		self.assertEquals(self.model.findLocations(state, 2), [(3, 6)])
+		self.assertEquals(self.model.findLocations(state, 3), [])

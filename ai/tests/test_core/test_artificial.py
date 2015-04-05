@@ -44,26 +44,6 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 		'''Cleanup the test class'''
 		cls.connection.close()
 
-	def test_hasMakeMove(self):
-		'''BaseAI.makeMove method exists'''
-		self.assertFunctionExists(self.testObject, "makeMove")
-
-	def test_hasSetState(self):
-		'''BaseAI.setState method exists'''
-		self.assertFunctionExists(self.testObject, "setState")
-
-	def test_hasGetAdjacent(self):
-		'''StaticAI.getAdjacent method exists'''
-		self.assertFunctionExists(self.testObject, "getAdjacent")
-
-	def test_hasGetOpenings(self):
-		'''StaticAI.getOpenings method exists'''
-		self.assertFunctionExists(self.testObject, "getOpenings")
-
-	def test_hasGetOpponentOccupied(self):
-		'''StaticAI.getOpponentOccupied method exists'''
-		self.assertFunctionExists(self.testObject, "getOpponentOccupied")
-
 	def test_makeMove(self):
 		'''Raises proper error'''
 		self.assertRaises(NotImplementedError, self.testObject.makeMove)
@@ -416,10 +396,6 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 	def test_instanceStaticAI(self):
 		'''Instance of StaticAI'''
 		self.assertIsInstance(self.testObject, StaticAI)
-
-	def test_hasAnalyzeStimuli(self):
-		'''DynamicScriptingAI.analyzeStimuli method exists'''
-		self.assertFunctionExists(self.testObject, "analyzeStimuli")
 
 	def test_makeMove(self):
 		'''DynamicScriptingAI.makeMove works'''

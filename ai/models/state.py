@@ -134,3 +134,8 @@ class Gamestate(CustomTypeBase):
 		minValue = long(min(np.min(stateA), np.min(stateB)))
 		arraySize = (stateA.size) * (maxValue - minValue)
 		return float(arraySize - difference) / arraySize # doesn't account for position in the matrix, which is important
+
+	@classmethod
+	def findLocations(cls, state, piece):
+		'''Find the locations of the piece on the board'''
+		return zip(*np.where(state == piece))

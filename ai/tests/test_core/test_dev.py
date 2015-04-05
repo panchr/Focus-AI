@@ -16,14 +16,6 @@ class TestDevelopmentServer(unittest.TestCase, baseTests.BaseTest):
 		'''Set up the test case'''
 		self.testObject = self.testClass()
 
-	def test_hasStart(self):
-		'''DevelopmentServer has start method'''
-		self.assertFunctionExists(self.testObject, "start")
-
-	def test_hasStop(self):
-		'''DevelopmentServer has stop method'''
-		self.assertFunctionExists(self.testObject, "stop")
-
 	def test_startStop(self):
 		'''DevelopmentServer.start and stop work'''
 		self.assertEquals(self.testObject.running, False)

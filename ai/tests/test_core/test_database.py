@@ -76,18 +76,6 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 		for rule in cls.rules:
 			rule.delete()
 
-	def test_hasGetMatchingRules(self):
-		'''Database has getMatchingRules method'''
-		self.assertFunctionExists(self.testClass, "getMatchingRules")
-
-	def test_hasGetStimuli(self):
-		'''Database has getStimuli method'''
-		self.assertFunctionExists(self.testClass, "getStimuli") 
-
-	def test_hasNewRule(self):
-		'''Database.newRule method exists'''
-		self.assertFunctionExists(self.testClass, "newRule")
-
 	def test_getMatchingRules(self):
 		'''Database.getMatchingRules works'''
 		toMatch = [
