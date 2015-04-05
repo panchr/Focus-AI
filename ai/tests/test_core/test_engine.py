@@ -7,6 +7,7 @@ import numpy as np
 
 from core.engine import Engine
 from core.errors import WrongPlayerMove, InvalidMove
+import config
 
 class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 	'''Tests the core.engine.Engine class'''
@@ -81,7 +82,7 @@ class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 			[2, 0, 0, 0, 2, 0, 2, 0],
 			[0, 2, 0, 2, 0, 2, 0, 2],
 			[2, 0, 2, 0, 2, 0, 2, 0]
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 		self.testObject.games[game_id] = state
 
 		self.assertEquals(self.testObject.checkWin(game_id), 0)

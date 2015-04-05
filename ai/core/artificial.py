@@ -96,7 +96,7 @@ class StaticAI(BaseAI):
 		random.shuffle(openings) # make sure we choose a random one each item
 		for move in openings:
 			try:
-				moveSuccess = self.engine.makeMove(self.gameID, move)
+				moveSuccess = self.engine.makeMove(self.gameID, *move)
 				self.db.newRule(self.state, None, move, piece = self.piece) # need to find an actual stimulus - perhaps the pieces involved?
 				playedMove = move
 				break
@@ -137,7 +137,14 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 
 	def analyzeStimuli(self):
 		'''Analyzes the stimuli from the game and returns a list of potential stimuli'''
-		return filter(lambda stimulus: ((self.state & stimulus) == stimulus).all(), self.possibleStimuli)
+		results = []
+		for stimulus in self.possibleStimuli:
+			emptyRequired = (self.state == 0) & (stimulus == 3) # select the spots that need to be empty and that are already empty
+			self.state[emptyRequired] = 3 # set those spots to empty
+			if ((self.state & stimulus) == stimulus).all():
+				results.append(stimulus)
+			self.state[emptyRequired] = 0 # reset for next step
+		return results
 
 	def bestNewMove(self):
 		'''Makes a randomized move that is weakly evaluated --- only should be executed if no valid moves exist in the database'''

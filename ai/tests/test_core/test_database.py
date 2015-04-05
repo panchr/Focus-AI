@@ -4,12 +4,12 @@
 import unittest
 import baseTests
 
-from core.database import Database
-
-import models
 import numpy as np
+import models
 
+import config
 from models.state import Gamestate
+from core.database import Database
 
 def setup():
 	'''Setup the test suite'''
@@ -41,7 +41,7 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
@@ -51,7 +51,7 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 2, 0, 0, 0, 0, 0],
 				[0, 0, 0, -1, 0, 0, 0, 0],
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
@@ -61,11 +61,11 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 				[0, 0, 0, 2, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				], dtype = np.int32)
+				], dtype = config.STORAGE_DATATYPE)
 			]
 		rules = []
 		for condition in conditions:
-			rule = models.Rule.new(np.ndarray((8, 8), dtype = np.int32), condition, [])
+			rule = models.Rule.new(np.ndarray((8, 8), dtype = config.STORAGE_DATATYPE), condition, [])
 			rules.append(rule)
 		cls.rules = rules
 		cls.conditions = conditions
@@ -88,7 +88,7 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 				[0, 0, 0, 1, 0, 0, 0, 0],
 				[2, 2, 2, 2, 2, 2, 2, 2],
 				[2, 2, 2, 2, 2, 2, 2, 2],
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 1, 0, 0],
@@ -98,7 +98,7 @@ class TestDatabase(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCas
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				], dtype = np.int32)]
+				], dtype = config.STORAGE_DATATYPE)]
 			]
 
 		for board_stimuli, rule in zip(toMatch, self.rules):

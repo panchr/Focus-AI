@@ -7,6 +7,7 @@ import numpy as np
 
 from modelTestBase import CustomTypeTestBase
 from models.state import Gamestate
+import config
 
 class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 	'''Tests the models.state.Gamestate Model'''
@@ -34,14 +35,14 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 			[0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0]
 			],
-		np.zeros((2, 5), dtype = np.int32)
+		np.zeros((2, 5), dtype = config.STORAGE_DATATYPE)
 		)
 		]
 
 	def setUp(self):
 		'''Set up the test case'''
 		self.modelObject = self.model()
-		self.stateA = np.zeros((8, 8), dtype = np.int32)
+		self.stateA = np.zeros((8, 8), dtype = config.STORAGE_DATATYPE)
 		self.stateB = np.zeros(self.stateA.shape, dtype = self.stateA.dtype)
 		self.stateB[1] = 1 # difference of at least self.stateA.shape[0]
 		self.stateB[2, 3] = 1
@@ -66,7 +67,7 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 			[0, 0, 0, 2, 2, 0, 0 ,0],
 			[0, 0, -1, 0, 0, 0, 0 ,0],
 			[0, 0, 0, 2, 0, 0, 0 ,0],
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 
 	def test_toPython(self): # has to be custom because numpy array equality returns an array of booleans
 		'''BSON to Python conversions'''
@@ -78,8 +79,8 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 	def test_initialize(self):
 		'''Gamestate.initialize works'''
 		size = (8, 8)
-		mockBoard = np.zeros(size, dtype = np.int32)
-		newGame = Gamestate.new(*size, dataType = np.int32, initialize = True)
+		mockBoard = np.zeros(size, dtype = config.STORAGE_DATATYPE)
+		newGame = Gamestate.new(*size, dataType = config.STORAGE_DATATYPE, initialize = True)
 
 		rows = size[0]
 		midPoint = (rows + 1) / 2 - 1
@@ -278,7 +279,7 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 
 	def test_findLocations(self):
 		'''Gamestate.findLocations method works'''
-		state = np.zeros((8, 8), dtype = np.int32)
+		state = np.zeros((8, 8), dtype = config.STORAGE_DATATYPE)
 		state[3, 5] = 1
 		state[3, 6] = 2
 		state[1, 4] = 1

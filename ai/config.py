@@ -1,7 +1,7 @@
 # Rushy Panchal
 # ai/config.py
 
-from numpy import int32
+from numpy import int32, float32
 
 # Global configuration options
 ENV = "development" # development mode

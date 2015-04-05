@@ -44,7 +44,7 @@ class TestRule(baseTests.DatabaseTest, ModelTestBase, unittest.TestCase):
 	def test_normalize(self):
 		'''Rule.normalize works'''
 		numTests = 100
-		newArray = lambda: np.zeros((8, 8), dtype = np.int32)
+		newArray = lambda: np.zeros((8, 8), dtype = config.STORAGE_DATATYPE)
 
 		rules = [models.Rule.new(newArray(), newArray(), [], initialWeight = random.randint(0, numTests)) for i in xrange(numTests)]
 

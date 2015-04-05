@@ -56,7 +56,7 @@ class Rule(Model):
 			self.connection.Rule.normalize()
 
 	@classmethod
-	def normalize(cls): # UNTESTED
+	def normalize(cls):
 		'''Normalizes all of the weights between 0 and 1'''
 		rules = list(cls.connection.Rule.find())
 		sumWeights = float(sum(map(lambda rule: rule.weight, rules)))

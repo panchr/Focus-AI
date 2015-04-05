@@ -74,7 +74,7 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 			[2, 0, 0, 0, 2, 0, 2, 0],
 			[0, 2, 0, 2, 0, 2, 0, 2],
 			[2, 0, 2, 0, 2, 0, 2, 0]
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 		self.testObject.setState(state)
 
 		adjacent1 = sorted(self.testObject.getAdjacent((4, 4)))
@@ -109,7 +109,7 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 			[2, 0, 0, 0, 2, 0, 2, 0],
 			[0, 2, 0, 2, 0, 2, 0, 2],
 			[2, 0, 2, 0, 2, 0, 2, 0]
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 		self.testObject.setState(state)
 
 		openings = sorted(self.testObject.getOpenings((4, 5)))
@@ -138,7 +138,7 @@ class TestBaseAI(baseTests.DatabaseTest, baseTests.NumpyTest, unittest.TestCase)
 			[2, 0, 0, 0, 2, 0, 2, 0],
 			[0, 2, 0, 2, 0, 2, 0, 2],
 			[2, 0, 2, 0, 2, 0, 2, 0]
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 		self.testObject.setState(state)
 
 		occupied = sorted(self.testObject.getOpponentOccupied((3, 2)))
@@ -190,7 +190,7 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			[2, 0, 0, 0, 2, 0, 2, 0],
 			[0, 2, 0, 2, 0, 2, 0, 2],
 			[2, 0, 2, 0, 2, 0, 2, 0]
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 
 		cls.rulesAdded.append(
 			models.Rule.new(
@@ -199,12 +199,12 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 3, 0, 0, 0],
 				[0, 0, 0, 0, 0, 1, 0, 0],
 				[0, 0, 0, 0, 0, 0, 2, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			[(5, 6), [(3, 4)]]
 			))
 
@@ -217,7 +217,7 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			[2, 0, 2, 0, 0, 0, 0, 0],
 			[0, 2, 0, 2, 0, 2, 0, 2],
 			[2, 0, 2, 0, 2, 0, 2, 0]
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 
 		modifiedStateD = np.copy(cls.stateD)
 		modifiedStateD[-1, -1] = 2 # make this state less similar than the rest
@@ -231,11 +231,11 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 1],
 				[0, 0, 0, 0, 0, 0, 2, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 3, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			[(3, 6), (2, 5)]
 			))
 
@@ -246,12 +246,12 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 3, 0, 0, 0, 0, 0],
 				[0, 1, 0, 0, 0, 0, 0, 0],
 				[2, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			[(5, 0), [(3, 2)]]
 			))
 
@@ -260,14 +260,14 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			modifiedStateD,
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 3, 0, 0, 0],
 				[0, 0, 0, 0, 0, 1, 0, 0],
 				[0, 0, 0, 0, 0, 0, 2, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			[(3, 6), [(1, 4)]]
 			))
 
@@ -276,14 +276,14 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			cls.stateD,
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 3, 0, 0, 0],
 				[0, 0, 0, 1, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 3, 0, 0, 0, 0, 0],
 				[0, 1, 0, 0, 0, 0, 0, 0],
 				[2, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			[(5, 0), [(3, 2), (1, 4)]],
 			initialWeight = 2
 			))
@@ -299,89 +299,89 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 		'''Sets up the test case'''
 		self.stimuli = [
 			np.asarray([
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 3, 0],
 				[0, 0, 0, 0, 0, 1, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 3, 0, 0, 0],
 				[0, 0, 0, 1, 0, 0, 0, 0],
 				[0, 0, 2, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 2, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 3, 0, 0, 0, 0, 0, 0],
 				[0, 0, 2, 0, 0, 0, 0, 0],
 				[0, 0, 0, -1, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 3, 0, 0, 0, 0],
 				[0, 0, 0, 0, 1, 0, 0, 0],
 				[0, 0, 0, 0, 0, 2, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 2, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 3, 0, 0, 0],
 				[0, 0, 0, 0, 0, 1, 0, 0],
 				[0, 0, 0, 0, 0, 0, 2, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 1],
 				[0, 0, 0, 0, 0, 0, 2, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 3, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 3, 0, 0, 0, 0, 0],
 				[0, 1, 0, 0, 0, 0, 0, 0],
 				[2, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 3, 0, 0, 0],
 				[0, 0, 0, 0, 0, 1, 0, 0],
 				[0, 0, 0, 0, 0, 0, 2, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32),
+				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 3, 0, 0, 0],
 				[0, 0, 0, 1, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 3, 0, 0, 0, 0, 0],
 				[0, 1, 0, 0, 0, 0, 0, 0],
 				[2, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0],
 				[0, 0, 0, 0, 0, 0, 0, 0]
-				], dtype = np.int32)
+				], dtype = config.STORAGE_DATATYPE)
 			]
 		self.testObject.possibleStimuli = self.stimuli
 		self.stateA = np.asarray([
-			[1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 0, 1],
 			[1, 1, 1, 1, 1, 1, 1, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 1, 0, 1, 0, 0],
@@ -389,9 +389,9 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[2, 2, 0, 2, 2, 2, 2, 2],
 			[2, 2, 2, 2, 2, 2, 2, 2],
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 		self.stateB = np.asarray([
-			[1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 0, 1],
 			[1, 1, 1, 1, 1, 1, 1, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 1, 0, 1, 0, 0],
@@ -399,7 +399,7 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[2, 2, 2, 0, 2, 2, 2, 2],
 			[2, 2, 2, -1, 2, 2, 2, 2],
-			], dtype = np.int32)
+			], dtype = config.STORAGE_DATATYPE)
 
 	def test_inheritsStaticAI(self):
 		'''DynamicScriptingAI inherits from StaticAI'''
@@ -454,7 +454,7 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 	def test_feedback(self):
 		'''DynamicScriptingAI.feedback works'''
 		self.testObject.playedMoves = self.rulesAdded
-		self.testObject.history = [np.ndarray((8, 8), dtype = np.int32) for i in xrange(10)]
+		self.testObject.history = [np.ndarray((8, 8), dtype = config.STORAGE_DATATYPE) for i in xrange(10)]
 		initialCount = self.connection.Game.find().count()
 
 		self.testObject.feedback(True, "It sure fooled me!")
