@@ -25,6 +25,7 @@ class BaseAI(object):
 		self.state = self.engine.getGame(self.gameID) if self.engine else ""
 		self.possibleStimuli = self.engine.gameStimuli if self.db else []
 		self.piece = piece
+		self.opponentPiece = (1 if self.piece == 2 else 2)
 		self.playedMoves = []
 		self.history = []
 
@@ -140,10 +141,15 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 		results = []
 		for stimulus in self.possibleStimuli:
 			emptyRequired = (self.state == 0) & (stimulus == 3) # select the spots that need to be empty and that are already empty
+			opponentKings = (self.state == self.opponentPiece)
 			self.state[emptyRequired] = 3 # set those spots to empty
-			if ((self.state & stimulus) == stimulus).all():
+			self.state[opponentKings] *= -1 # change opponent kings to regular pieces
+
+			if ((self.state & stimulus) == stimulus).all(): # check if the state matches the stimulus
 				results.append(stimulus)
+
 			self.state[emptyRequired] = 0 # reset for next step
+			self.state[opponentKings] *= -1 # revert opponent kings
 		return results
 
 	def bestNewMove(self):

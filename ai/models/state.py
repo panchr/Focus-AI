@@ -84,39 +84,41 @@ class Gamestate(CustomTypeBase):
 			]
 		takenPieces = []
 
-		if simpleMove: # simple move
-			conditions.extend([
-				(new[0] >= 0),
-				(new[1] >= 0),
-				(state[new] == 0),
-				(absDeltaY == 1), # can only be moving one piece
-				(absDeltaX == 1)
-				])
-		else: # taking move
-			currentPos = old
-			for nextPos in new:
-				takeDeltaY = nextPos[0] - currentPos[0]
-				takeDeltaX = nextPos[1] - currentPos[1]
-				inBetween = (currentPos[0] + takeDeltaY / 2, currentPos[1] + takeDeltaX / 2)
-
-				takenPieces.append(inBetween)
+		try:
+			if simpleMove: # simple move
 				conditions.extend([
-					(nextPos[0] >= 0), 
-					(nextPos[1] >= 0),
-					(state[nextPos] == 0), # spot must be empty
-					(state[inBetween] != toMove), # cannot take own type of piece
-					(state[inBetween] != 0), # middle spot cannot be empty, either
-					(abs(takeDeltaX) == 2), # must be moving two spaces in either direction
-					(abs(takeDeltaY) == 2),
+					(new[0] >= 0),
+					(new[1] >= 0),
+					(state[new] == 0),
+					(absDeltaY == 1), # can only be moving one piece
+					(absDeltaX == 1)
 					])
+			else: # taking move
+				currentPos = old
+				for nextPos in new:
+					takeDeltaY = nextPos[0] - currentPos[0]
+					takeDeltaX = nextPos[1] - currentPos[1]
+					inBetween = (currentPos[0] + takeDeltaY / 2, currentPos[1] + takeDeltaX / 2)
 
-				currentPos = nextPos # advance a move
+					takenPieces.append(inBetween)
+					conditions.extend([
+						(nextPos[0] >= 0), 
+						(nextPos[1] >= 0),
+						(state[nextPos] == 0), # spot must be empty
+						(state[inBetween] != toMove), # cannot take own type of piece
+						(state[inBetween] != 0), # middle spot cannot be empty, either
+						(abs(takeDeltaX) == 2), # must be moving two spaces in either direction
+						(abs(takeDeltaY) == 2),
+						])
 
-			conditions.extend([
-				(absDeltaX % 2 == 0), # must move an even amount of spaces overall  
-				(absDeltaY % 2 == 0),
-				])
+					currentPos = nextPos # advance a move
 
+				conditions.extend([
+					(absDeltaX % 2 == 0), # must move an even amount of spaces overall  
+					(absDeltaY % 2 == 0),
+					])
+		except IndexError:
+			return False, []
 		boardValid = all(conditions)
 		return boardValid, takenPieces if boardValid else []
 

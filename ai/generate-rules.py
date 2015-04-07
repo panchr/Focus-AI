@@ -13,6 +13,7 @@ import models
 import config
 
 response_to_tuple = models.response.Response().to_python
+validMove = models.state.Gamestate.isValid
 
 def main():
 	'''Main process'''
@@ -47,16 +48,28 @@ def main():
 				special = []
 			x_only = "x-only" in special
 
-			# Calculate the flipped and translated values
+			# Get the flipped, reflected, and flipped+reflected values
 			flippedRule = changeRulePiece(state, condition, response, piece, group, initialWeight)
-			translated = translateRule(state, condition, response, piece, group, initialWeight, x_only)
-			translatedFlipped = translateRule(flippedRule["state"], flippedRule["condition"], flippedRule["response"], flippedRule["piece"], group, initialWeight, x_only)
-
-			# Get the reflected values (and then the flipped and translated for the reflected)
 			reflectedRule = reflectRule(state, condition, response, piece, group, initialWeight)
-			flippedReflected = changeRulePiece(reflectedRule["state"], reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], group, initialWeight)
-			translatedReflected = translateRule(reflectedRule["state"], reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], group, initialWeight, x_only)
-			translatedReflectedFlipped = translateRule(flippedReflected["state"], flippedReflected["condition"], flippedReflected["response"], flippedReflected["piece"], group, initialWeight, x_only)
+			flippedReflected = changeRulePiece(state, reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], group, initialWeight)
+
+			# Translate the moves
+			translated = translateRule(state, condition, response, piece, group, initialWeight, x_only)
+			translatedFlipped = translateRule(state, flippedRule["condition"], flippedRule["response"], flippedRule["piece"], group, initialWeight, x_only)
+			translatedReflected = translateRule(state, reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], group, initialWeight, x_only)
+			translatedReflectedFlipped = translateRule(state, flippedReflected["condition"], flippedReflected["response"], flippedReflected["piece"], group, initialWeight, x_only)
+
+			# Get the king values (and then flipped, reflected, and flipped+reflected for the kings)
+			kingRule = ruleToKing(state, condition, response, piece, group, initialWeight)
+			flippedKingRule =changeRulePiece(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight)
+			reflectedKingRule = reflectRule(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight)
+			flippedReflectedKingRule = changeRulePiece(state, reflectedKingRule["condition"], reflectedKingRule["response"], reflectedKingRule["piece"], kingRule["group"], initialWeight)
+
+			# Get the translated king values, for all 4 types
+			translatedKing = translateRule(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight, x_only)
+			translatedFlippedKing = translateRule(state, flippedKingRule["condition"], flippedKingRule["response"], flippedKingRule["piece"], kingRule["group"], initialWeight, x_only)
+			translatedReflectedKing = translateRule(state, reflectedKingRule["condition"], reflectedKingRule["response"], reflectedKingRule["piece"], kingRule["group"], initialWeight, x_only)
+			translatedFlippedReflectedKing = translateRule(state, flippedReflectedKingRule["condition"], flippedReflectedKingRule["response"], flippedReflectedKingRule["piece"], kingRule["group"], initialWeight, x_only)
 
 			# Set the initial values for the condit
 			state = mergeCondition(state ,condition)
@@ -64,10 +77,18 @@ def main():
 			rule["state"] = state
 			rule["response"] = response
 
-			for baseRule, translatedRule in zip([rule, flippedRule, reflectedRule, flippedReflected],
-				[translated, translatedFlipped, translatedReflected, translatedReflectedFlipped]):
-				rules.append(baseRule)
-				rules.extend(translatedRule)
+			for baseRule, translatedRule in zip(
+				[rule, flippedRule, reflectedRule, flippedReflected,
+				kingRule, reflectedKingRule, flippedKingRule, flippedReflectedKingRule],
+				[translated, translatedFlipped, translatedReflected, translatedReflectedFlipped,
+				translatedKing, translatedFlippedKing, translatedReflectedKing, translatedFlippedReflectedKing
+				]
+				):
+				if validMove(baseRule["state"], *baseRule["response"]):
+					rules.append(baseRule)
+				for trans in translatedRule:
+					if validMove(trans["state"], *trans["response"]):
+						rules.append(trans)
 
 		for index, rule in enumerate(rules, 1):
 			#db.newRule(**rule)
@@ -109,6 +130,34 @@ def changeRulePiece(state, condition, response, piece, group, initialWeight = No
 
 	return newRule
 
+def ruleToKing(state, condition, response, piece, group, initialWeight = None):
+	'''Convert the rule to a king-based rule'''
+	state, condition, response = map(copy.deepcopy, [state, condition, response])
+
+	deltaResponse = lambda coord: (coord[0], coord[1] + 1)
+	condition = np.roll(condition[::-1, :], 1, axis = 1)
+	condition[condition == piece] *= -1
+
+	response = flipResponse(response, h = state.shape[0], w = 0)
+	response[0] = deltaResponse(response[0])
+	if isinstance(response[1], list):
+		response[1] = map(deltaResponse, response[1])
+	else:
+		response[1] = deltaResponse(response[1])
+
+	kingRule = {
+		"state": mergeCondition(state, condition),
+		"condition": condition,
+		"response": response,
+		"piece": -1 * piece,
+		"group": group + "-king",
+		}
+
+	if initialWeight is not None:
+		kingRule["initialWeight"] = initialWeight
+
+	return kingRule
+
 def translateRule(state, condition, response, piece, group, initialWeight = None, x_only = False):
 	'''Translates a rule to match new positions'''
 	changeNum = lambda delta: lambda n: n + delta
@@ -147,7 +196,7 @@ def translateRule(state, condition, response, piece, group, initialWeight = None
 
 				translatedRule = {
 					"condition": translatedCond,
-					"state": mergeCondition(copy.copy(state), translatedCond),
+					"state": mergeCondition(copy.deepcopy(state), translatedCond),
 					"response": translatedResp,
 					"piece": piece,
 					"group": group,
