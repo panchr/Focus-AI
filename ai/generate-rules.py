@@ -39,17 +39,24 @@ def main():
 			response, piece = response_to_tuple(rule["response"]), rule["piece"]
 
 			initialWeight = rule.get('initialWeight', None)
+			group = rule.get('group', "")
+			if "special" in rule:
+				special = rule["special"]
+				del rule["special"]
+			else:
+				special = []
+			x_only = "x-only" in special
 
 			# Calculate the flipped and translated values
-			flippedRule = changeRulePiece(state, condition, response, piece, initialWeight)
-			translated = translateRule(state, condition, response, piece, initialWeight)
-			translatedFlipped = translateRule(flippedRule["state"], flippedRule["condition"], flippedRule["response"], flippedRule["piece"], initialWeight)
+			flippedRule = changeRulePiece(state, condition, response, piece, group, initialWeight)
+			translated = translateRule(state, condition, response, piece, group, initialWeight, x_only)
+			translatedFlipped = translateRule(flippedRule["state"], flippedRule["condition"], flippedRule["response"], flippedRule["piece"], group, initialWeight, x_only)
 
 			# Get the reflected values (and then the flipped and translated for the reflected)
-			reflectedRule = reflectRule(state, condition, response, piece, initialWeight)
-			flippedReflected = changeRulePiece(reflectedRule["state"], reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], initialWeight)
-			translatedReflected = translateRule(reflectedRule["state"], reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], initialWeight)
-			translatedReflectedFlipped = translateRule(flippedReflected["state"], flippedReflected["condition"], flippedReflected["response"], flippedReflected["piece"], initialWeight)
+			reflectedRule = reflectRule(state, condition, response, piece, group, initialWeight)
+			flippedReflected = changeRulePiece(reflectedRule["state"], reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], group, initialWeight)
+			translatedReflected = translateRule(reflectedRule["state"], reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], group, initialWeight, x_only)
+			translatedReflectedFlipped = translateRule(flippedReflected["state"], flippedReflected["condition"], flippedReflected["response"], flippedReflected["piece"], group, initialWeight, x_only)
 
 			# Set the initial values for the condit
 			state = mergeCondition(state ,condition)
@@ -81,7 +88,7 @@ def main():
 
 	return True
 
-def changeRulePiece(state, condition, response, piece, initialWeight = None):
+def changeRulePiece(state, condition, response, piece, group, initialWeight = None):
 	'''Changes the board structure so that it works for a different piece'''
 	state, condition, response = map(copy.deepcopy, [state, condition, response])
 	condition = condition[::-1, ::-1]
@@ -94,14 +101,15 @@ def changeRulePiece(state, condition, response, piece, initialWeight = None):
 		"state": state,
 		"condition": condition,
 		"response": flipResponse(response, *state.shape),
-		"piece": (1 if piece == 2 else 2)
+		"piece": (1 if piece == 2 else 2),
+		"group": group,
 		}
 	if initialWeight is not None:
 		newRule["initialWeight"] = initialWeight
 
 	return newRule
 
-def translateRule(state, condition, response, piece, initialWeight = None):
+def translateRule(state, condition, response, piece, group, initialWeight = None, x_only = False):
 	'''Translates a rule to match new positions'''
 	changeNum = lambda delta: lambda n: n + delta
 	translated = []
@@ -121,7 +129,9 @@ def translateRule(state, condition, response, piece, initialWeight = None):
 		for deltaX in xrange(-6, 7, 2):
 			if deltaX == 0 and deltaY == 0:
 				continue # this would duplicate the original rule
-			if all(map(all, [
+			elif x_only and deltaY != 0:
+				continue # pass to the next iteration if Y is being modified
+			elif all(map(all, [
 				map(lambda y: (0 <= y <= maxY), map(changeNum(deltaY), condY)),
 				map(lambda x: (0 <= x <= maxX), map(changeNum(deltaX), condX)),
 				map(lambda y: (0 <= y <= maxY), map(changeNum(deltaY), respY)),
@@ -140,6 +150,7 @@ def translateRule(state, condition, response, piece, initialWeight = None):
 					"state": mergeCondition(copy.copy(state), translatedCond),
 					"response": translatedResp,
 					"piece": piece,
+					"group": group,
 					}
 				if initialWeight is not None:
 					translatedRule["initialWeight"] = initialWeight
@@ -148,7 +159,7 @@ def translateRule(state, condition, response, piece, initialWeight = None):
 			
 	return translated
 
-def reflectRule(state, condition, response, piece, initialWeight = None):
+def reflectRule(state, condition, response, piece, group, initialWeight = None):
 	'''Reflect the rule across the x-axis to get a mirror image'''
 	state, condition, response = map(copy.deepcopy, [state, condition, response])
 	condition = np.roll(condition[:, ::-1], -1, axis = 1)
@@ -158,7 +169,8 @@ def reflectRule(state, condition, response, piece, initialWeight = None):
 		"state": mergeCondition(state, condition),
 		"condition": condition,
 		"response": response,
-		"piece": piece
+		"piece": piece,
+		"group": group
 		}
 	if initialWeight is not None:
 		reflected["initialWeight"] = initialWeight
