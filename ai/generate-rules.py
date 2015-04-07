@@ -51,7 +51,6 @@ def main():
 			translatedReflected = translateRule(reflectedRule["state"], reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], initialWeight)
 			translatedReflectedFlipped = translateRule(flippedReflected["state"], flippedReflected["condition"], flippedReflected["response"], flippedReflected["piece"], initialWeight)
 
-
 			# Set the initial values for the condit
 			state = mergeCondition(state ,condition)
 			rule["condition"] = condition
@@ -62,8 +61,6 @@ def main():
 				[translated, translatedFlipped, translatedReflected, translatedReflectedFlipped]):
 				rules.append(baseRule)
 				rules.extend(translatedRule)
-
-			# add a reflected version that only flips to the x-axis (condition[:, ::-1])
 
 		for index, rule in enumerate(rules, 1):
 			#db.newRule(**rule)
@@ -125,10 +122,10 @@ def translateRule(state, condition, response, piece, initialWeight = None):
 			if deltaX == 0 and deltaY == 0:
 				continue # this would duplicate the original rule
 			if all(map(all, [
-				map(lambda y: (0 <= y < maxY), map(changeNum(deltaY), condY)),
-				map(lambda x: (0 <= x < maxX), map(changeNum(deltaX), condX)),
-				map(lambda y: (0 <= y < maxY), map(changeNum(deltaY), respY)),
-				map(lambda x: (0 <= x < maxX), map(changeNum(deltaX), respX)),
+				map(lambda y: (0 <= y <= maxY), map(changeNum(deltaY), condY)),
+				map(lambda x: (0 <= x <= maxX), map(changeNum(deltaX), condX)),
+				map(lambda y: (0 <= y <= maxY), map(changeNum(deltaY), respY)),
+				map(lambda x: (0 <= x <= maxX), map(changeNum(deltaX), respX)),
 				])): # make sure the rule is still within the given bounds
 
 				# Perform all the necessary translations
@@ -142,7 +139,7 @@ def translateRule(state, condition, response, piece, initialWeight = None):
 					"condition": translatedCond,
 					"state": mergeCondition(copy.copy(state), translatedCond),
 					"response": translatedResp,
-					"piece": piece
+					"piece": piece,
 					}
 				if initialWeight is not None:
 					translatedRule["initialWeight"] = initialWeight
