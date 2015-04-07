@@ -2,6 +2,7 @@
 
 ### Other files
 TODO
+*.output
 
 ### Windows ###
 # Windows image file caches
