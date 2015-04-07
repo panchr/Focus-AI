@@ -6,6 +6,8 @@ from models.state import Gamestate
 from models.condition import Condition
 from models.response import Response
 
+from mongokit import ConnectionError
+
 import config
 
 class Rule(Model):
@@ -17,27 +19,30 @@ class Rule(Model):
 		"condition": Condition(),
 		"response": Response(),
 		"piece": int,
+		"group": basestring,
 		"weight": float, # although weights are initially stored as integers, they are occasionally changed to floats so that they can be normalized
 		}
 	
-	required_fields = ["state", "weight", "condition", "response", "piece"]
+	required_fields = ["state", "condition", "response", "piece", "group", "weight"]
 
 	default_values = {
-		"weight": 0.0
+		"weight": 0.0,
+		"group": ""
 		}
 
 	@staticmethod
-	def new(state, condition, response, piece = None, initialWeight = None):
+	def new(state, condition, response, piece = None, group = "", initialWeight = None):
 		'''Creates a new rule'''
 		rule = Model.connection.Rule()
 		rule.state = state
 		rule.condition = condition
 		rule.response = response
-		if initialWeight is not None:
-			rule.weight = initialWeight
 		if piece is None:
 			piece = state[response[0]] if len(response) > 0 else 0
 		rule.piece = piece
+		rule.group = group
+		if initialWeight is not None:
+			rule.weight = initialWeight
 		rule.save()
 		return rule
 
@@ -45,15 +50,18 @@ class Rule(Model):
 	def increaseWeight(self):
 		'''Increments the weight'''
 		self.weight += config.WEIGHT_DELTA
-		if (self.weight + 1) >= config.NORMALIZE_THRESHOLD:
-			self.connection.Rule.normalize()
+		self.collection.update({"group": self.group}, {"$inc": {"weight": config.WEIGHT_DELTA_GROUP}}) # update the weights of this group as well
+		if (self.weight + 1) >= config.NORMALIZE_THRESHOLD: # if the weight exceeds the threshold, normalize all of the values
+			Rule.normalize()
 
 	@Model.autosave
 	def decreaseWeight(self):
-		'''Decreases the weight'''
+		'''Decreases the weight
+		Similar to Rule.increaseWeight except with a negative delta value.'''
 		self.weight -= config.WEIGHT_DELTA
+		self.collection.update({"group": self.group}, {"$inc": {"weight": -config.WEIGHT_DELTA_GROUP}})
 		if (self.weight - 1) <= config.NORMALIZE_THRESHOLD_NEG:
-			self.connection.Rule.normalize()
+			Rule.normalize()
 
 	@classmethod
 	def normalize(cls):

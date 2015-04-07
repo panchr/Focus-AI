@@ -14,6 +14,11 @@ class Model(mongokit.Document, object):
 
 	connection = None
 
+	def __init__(self, *args, **kwargs):
+		'''Wrapper to the mongokit.Document.__init__'''
+		super(Model, self).__init__(*args, **kwargs)
+		self.collection = Model.connection[self.__database__][self.__collection__]
+
 	@classmethod
 	def new(cls, **values):
 		'''Create a new object in the database'''
