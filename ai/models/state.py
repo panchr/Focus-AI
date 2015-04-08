@@ -203,7 +203,7 @@ class Gamestate(CustomTypeBase):
 		if not originalPosition:
 			originalPosition = position
 		try:
-			if state[newPos] == 0 and newPos not in baseAttack:
+			if newPos[0] >= 0 and newPos[1] >= 0 and state[newPos] == 0 and newPos not in baseAttack:
 				attacks = baseAttack + [newPos]
 				vector = [originalPosition, attacks]
 				found.append(vector)

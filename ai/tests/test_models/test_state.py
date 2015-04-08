@@ -418,4 +418,9 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 		attackVectors = self.modelObject.getAttackVectors(state, (3, 2), (2, 3))
 		attackVectors_real = [[(3, 2), [(1, 4)]]]
 
+		length = lambda x: len(x[1])
+		attackVectors2 = sorted(self.modelObject.getAttackVectors(state, (5, 4), (4, 5)), key = length)
+		attackVectors2_real = sorted([[(5, 4), [(3, 6), (1, 4)]], [(5, 4), [(3, 6)]]], key = length)
+
 		self.assertEquals(attackVectors, attackVectors_real)
+		self.assertEquals(attackVectors2, attackVectors2_real)

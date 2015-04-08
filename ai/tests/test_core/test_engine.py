@@ -87,5 +87,28 @@ class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 
 		self.assertEquals(self.testObject.checkWin(game_id, 1), False)
 
+		# No opponent pieces left
 		state[state == 1] = 0
 		self.assertEquals(self.testObject.checkWin(game_id, 1), True)
+
+	def test_checkWinComplex(self):
+		'''Engine.checkWin works for no-move wins'''
+		game_id = "checkWin_id_complex"
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 1, 0, 2],
+			[0, 0, 0, 0, 2, 0, 2, 0],
+			[0, 0, 0, 2, 0, 0, 0, 2],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+			], dtype = config.STORAGE_DATATYPE)
+		self.testObject.games[game_id] = state
+
+		self.assertEquals(self.testObject.checkWin(game_id, 1), True)
+		self.assertEquals(self.testObject.checkWin(game_id, 2), False)
+
+		# This frees up (6, 7), which allows for an attack
+		state[6, 7] = 0
+		self.assertEquals(self.testObject.checkWin(game_id, 1), False)
