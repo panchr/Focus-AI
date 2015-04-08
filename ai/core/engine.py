@@ -55,18 +55,19 @@ class Engine(object):
 			if not boardValid:
 				raise InvalidMove("Move is not valid")
 			else:
-				gameMeta["move"] = (1 if playerToMove == 2 else 2)
-				possibleWin = self.checkWin(gameID)
-				return boardValid, piecesTaken, possibleWin
+				newPiece = (1 if playerToMove == 2 else 2)
+				gameMeta["move"] = newPiece
+				possibleWin = self.checkWin(gameID, newPiece)
+				return boardValid, piecesTaken, (playerToMove if possibleWin else 0)
 		else:
 			raise WrongPlayerMove("Opposite Player Move or attempting to move a blank space")
 
-	def checkWin(self, gameID):
+	def checkWin(self, gameID, opponent):
 		'''Check if a player has won the game'''
 		state = self.games[gameID]
-		if not Gamestate.findLocations(state, 1):
-			return 2
-		elif not Gamestate.findLocations(state, 2):
-			return 1
-		# need to make sure that both players can move as well
-		return 0
+		positions = Gamestate.findLocations(state, opponent)
+		for pos in positions: # if the list is empty (i.e no pieces left), then no iterations occur
+			piece = state[pos]
+			if Gamestate.getOpenings(state, pos) or Gamestate.getAttacks(state, pos): # there is an opening for an opponent move, either as a simple- or take- move
+				return False
+		return True

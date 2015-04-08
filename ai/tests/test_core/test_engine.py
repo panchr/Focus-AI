@@ -85,7 +85,7 @@ class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 			], dtype = config.STORAGE_DATATYPE)
 		self.testObject.games[game_id] = state
 
-		self.assertEquals(self.testObject.checkWin(game_id), 0)
+		self.assertEquals(self.testObject.checkWin(game_id, 1), False)
 
 		state[state == 1] = 0
-		self.assertEquals(self.testObject.checkWin(game_id), 2)
+		self.assertEquals(self.testObject.checkWin(game_id, 1), True)

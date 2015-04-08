@@ -148,12 +148,13 @@ class Gamestate(CustomTypeBase):
 		return zip(*np.where(state == piece))
 
 	@classmethod
-	def getDiagonal(cls, state, position):
+	def getDiagonal(cls, state, position, piece = None):
 		'''Get the diagonal positions in the state near a given position'''
 		maxY, maxX = state.shape
-		piece = state[position]
+		if piece is None:
+			piece = state[position]
 		if piece == 1:
-			check =DIAGONAL_BOTTOM
+			check = DIAGONAL_BOTTOM
 		elif piece == 2:
 			check = DIAGONAL_TOP
 		else:
@@ -164,17 +165,52 @@ class Gamestate(CustomTypeBase):
 		return filter(lambda item: 0 <= item[0] < maxY and 0 <= item[1] < maxX, possible)
 
 	@classmethod
-	def getOpenings(cls, state, position):
+	def getOpenings(cls, state, position, piece = None):
 		'''Get the open positions near a given board position'''
-		possibilities = position if isinstance(position, list) else cls.getDiagonal(state, position)
-		# if adjacent positions are already provided, no need to recompute
+		possibilities = cls.getDiagonal(state, position, piece)
 
 		return filter(lambda possibility: state[possibility] == 0, possibilities)
 
 	@classmethod
-	def getOpponentOccupied(cls, state, position, piece):
+	def getOpponentOccupied(cls, state, position, piece = None):
 		'''Get the positions diagonal to the current piece that are occupied by the opponent'''
-		possibilities = position if isinstance(position, list) else cls.getDiagonal(state, position)
-		# if adjacent positions are already provided, no need to recompute
+		piece = piece if piece is not None else state[position]
+		possibilities = cls.getDiagonal(state, position, piece)
 
 		return filter(lambda possibility: state[possibility] != 0 and  state[possibility] != piece, possibilities)
+
+	@classmethod
+	def getAttacks(cls, state, position):
+		'''Get all possible attack vectors from the given position'''
+		occupied = cls.getOpponentOccupied(state, position)
+
+		vectors = []
+		for newPos in occupied:
+			vectors.extend(cls.getAttackVectors(state, position, newPos))
+
+		return vectors
+
+	@classmethod
+	def getAttackVectors(cls, state, position, nextPosition, baseAttack = None, originalPosition = None):
+		'''Get all the attack vectors between position and nextPosition'''
+		found = []
+		deltaY = (nextPosition[0] - position[0])
+		deltaX = (nextPosition[1] - position[1])
+		newPos = (nextPosition[0] + deltaY, nextPosition[1] + deltaX)
+
+		if not baseAttack:
+			baseAttack = []
+		if not originalPosition:
+			originalPosition = position
+		try:
+			if state[newPos] == 0 and newPos not in baseAttack:
+				attacks = baseAttack + [newPos]
+				vector = [originalPosition, attacks]
+				found.append(vector)
+
+				for thirdStep in cls.getOpponentOccupied(state, newPos, state[originalPosition]):
+					found.extend(cls.getAttackVectors(state, newPos, thirdStep, attacks, position))
+		except IndexError:
+			pass
+
+		return found

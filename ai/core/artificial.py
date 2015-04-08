@@ -107,7 +107,7 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 		results = []
 		for stimulus in self.possibleStimuli:
 			emptyRequired = (self.state == 0) & (stimulus == 3) # select the spots that need to be empty and that are already empty
-			opponentKings = (self.state == self.opponentPiece)
+			opponentKings = (self.state == (-1 * self.opponentPiece))
 			self.state[emptyRequired] = 3 # set those spots to empty
 			self.state[opponentKings] *= -1 # change opponent kings to regular pieces
 

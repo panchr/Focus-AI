@@ -363,11 +363,59 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 			[2, 0, 2, 0, 2, 0, 2, 0]
 			], dtype = config.STORAGE_DATATYPE)
 
-		occupied = sorted(self.modelObject.getOpponentOccupied(state, (3, 2), 2))
+		occupied = sorted(self.modelObject.getOpponentOccupied(state, (3, 2)))
 		occupied_real = sorted([(2, 1), (2, 3)])
 
-		occupied_partial = sorted(self.modelObject.getOpponentOccupied(state, (5, 0), 2))
+		occupied_partial = sorted(self.modelObject.getOpponentOccupied(state, (5, 0)))
 		occupied_partial_real = []
 
 		self.assertEquals(occupied, occupied_real)
 		self.assertEquals(occupied_partial, occupied_partial_real)
+
+	def test_getAttacks(self):
+		'''Gamestate.getAttacks method works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[0, 0, 1, 0, 0, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		key = lambda item: item[1][0]
+		attackVectors = sorted(self.modelObject.getAttacks(state, (5, 4)), key = key)
+		attackVectors_real = sorted([
+			[(5, 4), [(3, 6)]],
+			[(5, 4), [(3, 6), (1, 4)]]
+			], key = key)
+
+		key = lambda item: item[1][0][1]
+		attackVectors2 = sorted(self.modelObject.getAttacks(state, (3, 2)), key = key)
+		attackVectors2_real = sorted([
+			[(3, 2), [(1, 4)]],
+			[(3, 2), [(1, 0)]]
+			], key = key)
+
+		self.assertEquals(attackVectors, attackVectors_real)
+		self.assertEquals(attackVectors2, attackVectors2_real)
+
+	def test_getAttackVectors(self):
+		'''Gamestate.getAttackVectors works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[0, 0, 1, 0, 0, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		attackVectors = self.modelObject.getAttackVectors(state, (3, 2), (2, 3))
+		attackVectors_real = [[(3, 2), [(1, 4)]]]
+
+		self.assertEquals(attackVectors, attackVectors_real)

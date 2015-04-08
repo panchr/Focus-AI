@@ -229,7 +229,7 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 				[0, 0, 2, 0, 0, 0, 0, 0],
 				[0, 3, 0, 0, 0, 0, 0, 0],
 				[0, 0, 2, 0, 0, 0, 0, 0],
-				[0, 0, 0, -1, 0, 0, 0, 0]
+				[0, 0, 0, 1, 0, 0, 0, 0]
 				], dtype = config.STORAGE_DATATYPE),
 			np.asarray([
 				[0, 0, 0, 0, 0, 0, 0, 0],
