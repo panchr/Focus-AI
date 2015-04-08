@@ -142,9 +142,11 @@ class TestStaticAI(TestBaseAI):
 		self.testObject.setState(state)
 
 		success, playedMove = self.testObject.makeMove()
+		matchedRule = self.connection.Rule.find_one({"response": playedMove})
 
 		self.assertTrue(success)
 		self.assertIn(playedMove, possibleMoves)
+		self.assertEquals(matchedRule["response"], playedMove)
 
 class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 	'''Test the core.artificial.DynamicScriptingAI class'''

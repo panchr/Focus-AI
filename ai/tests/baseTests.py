@@ -90,6 +90,11 @@ class DatabaseTest(BaseTest):
 	'''A wrapper around BaseTest that tests for Database connections'''
 	connection = None
 
+	def assertDocumentEquals(self, a, b):
+		'''Assert that two documents are equal'''
+		for key in a:
+			self.assertEquals(a[key], b[key])
+
 	def test_connection(self):
 		'''Tests the database connection'''
 		self.assertHasAttr(self, "connection")
