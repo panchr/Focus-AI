@@ -5,8 +5,13 @@ from models.model import CustomTypeBase
 
 import numpy as np
 import math
+import operator
 
 import config
+
+DIAGONAL = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+DIAGONAL_TOP = [(-1, -1), (-1, 1)]
+DIAGONAL_BOTTOM = [(1, -1), (1, 1)]
 
 class Gamestate(CustomTypeBase):
 	'''Depicts the game state
@@ -141,3 +146,35 @@ class Gamestate(CustomTypeBase):
 	def findLocations(cls, state, piece):
 		'''Find the locations of the piece on the board'''
 		return zip(*np.where(state == piece))
+
+	@classmethod
+	def getDiagonal(cls, state, position):
+		'''Get the diagonal positions in the state near a given position'''
+		maxY, maxX = state.shape
+		piece = state[position]
+		if piece == 1:
+			check =DIAGONAL_BOTTOM
+		elif piece == 2:
+			check = DIAGONAL_TOP
+		else:
+			check = DIAGONAL
+		possible = map(lambda item: tuple( # need to explicitly convert to a tuple to allow for Numpy accesses
+			map(operator.add, item, position)
+			), check) 
+		return filter(lambda item: 0 <= item[0] < maxY and 0 <= item[1] < maxX, possible)
+
+	@classmethod
+	def getOpenings(cls, state, position):
+		'''Get the open positions near a given board position'''
+		possibilities = position if isinstance(position, list) else cls.getDiagonal(state, position)
+		# if adjacent positions are already provided, no need to recompute
+
+		return filter(lambda possibility: state[possibility] == 0, possibilities)
+
+	@classmethod
+	def getOpponentOccupied(cls, state, position, piece):
+		'''Get the positions diagonal to the current piece that are occupied by the opponent'''
+		possibilities = position if isinstance(position, list) else cls.getDiagonal(state, position)
+		# if adjacent positions are already provided, no need to recompute
+
+		return filter(lambda possibility: state[possibility] != 0 and  state[possibility] != piece, possibilities)

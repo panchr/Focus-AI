@@ -7,16 +7,11 @@ from models.game import Game
 
 import numpy as np
 import random
-import operator
 
 import config
 
 class BaseAI(object):
 	'''Base for all AI'''
-	DIAGONAL = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
-	DIAGONAL_TOP = [(-1, -1), (-1, 1)]
-	DIAGONAL_BOTTOM = [(1, -1), (1, 1)]
-
 	def __init__(self, database = None, engine = None, game = "", piece = 0):
 		'''Initialize the AI'''
 		self.db = database
@@ -39,35 +34,6 @@ class BaseAI(object):
 		'''Should be overridden in the child class'''
 		raise NotImplementedError("{cls}.makeMove not implemented".format(cls = self.__class__.__name__))
 
-	def getAdjacent(self, position):
-		'''Get the surrounding indices of a given position'''
-		maxY, maxX = self.state.shape
-		piece = self.state[position]
-		if piece == 1:
-			check =self.DIAGONAL_BOTTOM
-		elif piece == 2:
-			check = self.DIAGONAL_TOP
-		else:
-			check = self.DIAGONAL
-		possible = map(lambda item: tuple( # need to explicitly convert to a tuple to allow for Numpy accesses
-			map(operator.add, item, position)
-			), check) 
-		return filter(lambda item: 0 <= item[0] < maxY and 0 <= item[1] < maxX, possible)
-
-	def getOpenings(self, position):
-		'''Get all adjacent openings for a given position'''
-		possibilities = position if isinstance(position, list) else self.getAdjacent(position)
-		# if adjacent positions are already provided, no need to recompute
-
-		return filter(lambda possibility: self.state[possibility] == 0, possibilities)
-
-	def getOpponentOccupied(self, position):
-		'''Get all the adjacent occupied (by the opponent) for a given position'''
-		possibilities = position if isinstance(position, list) else self.getAdjacent(position)
-		# if adjacent positions are already provided, no need to recompute
-
-		return filter(lambda possibility: self.state[possibility] != 0 and  self.state[possibility] != self.piece, possibilities)
-
 class StaticAI(BaseAI):
 	'''Represents a Static AI'''
 	def makeMove(self):
@@ -77,15 +43,15 @@ class StaticAI(BaseAI):
 		positions = Gamestate.findLocations(self.state, self.piece)
 
 		for position in positions:
-			position_adjacent = self.getAdjacent(position)
-			position_occupied = self.getOpponentOccupied(position_adjacent)
+			position_adjacent = Gamestate.getAdjacent(self.state, position)
+			position_occupied = Gamestate.getOpponentOccupied(self.state, position_adjacent, self.piece)
 
 			# This implements a basic heuristic: if we have already found a taking move, no need to search for any simple moves (taking moves are always better)
 			if (position_occupied or takingFound):
 				occupied.extend(map(lambda newPosition: [position, newPosition],position_occupied))
 				takingFound = True
 			else:
-				position_openings = self.getOpenings(position_adjacent)
+				position_openings = Gamestate.getOpenings(self.state, position_adjacent)
 				openings.extend(map(lambda newPosition: [position, newPosition],position_openings))
 
 		# need to pick a random move from this

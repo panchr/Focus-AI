@@ -287,3 +287,87 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 		self.assertEquals(sorted(self.model.findLocations(state, 1)), sorted([(3, 5), (1, 4)]))
 		self.assertEquals(self.model.findLocations(state, 2), [(3, 6)])
 		self.assertEquals(self.model.findLocations(state, 3), [])
+
+	def test_getDiagonal(self):
+		'''Gamestate.getDiagonal method works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		adjacent1 = sorted(self.modelObject.getDiagonal(state, (4, 4)))
+		adjacent1_real = sorted([(3, 3), (3, 5), (5, 3), (5, 5)])
+		adjacent2 = sorted(self.modelObject.getDiagonal(state, (6, 5)))
+		adjacent2_real = sorted([(5, 4), (5, 6)])
+		adjacent3 = sorted(self.modelObject.getDiagonal(state, (2, 3)))
+		adjacent3_real = sorted([(3, 2), (3, 4)])
+
+		partial_adjacent1 = sorted(self.modelObject.getDiagonal(state, (5, 0)))
+		partial_adjacent1_real = sorted([(4, 1)])
+		partial_adjacent2 = sorted(self.modelObject.getDiagonal(state, (0, 0)))
+		partial_adjacent2_real = sorted([(1, 1)])
+		partial_adjacent3 = sorted(self.modelObject.getDiagonal(state, (7, 4)))
+		partial_adjacent3_real = sorted([(6, 3), (6, 5)])
+
+		self.assertEquals(adjacent1, adjacent1_real)
+		self.assertEquals(adjacent2, adjacent2_real)
+		self.assertEquals(adjacent3, adjacent3_real)
+		self.assertEquals(partial_adjacent1, partial_adjacent1_real)
+		self.assertEquals(partial_adjacent2, partial_adjacent2_real)
+		self.assertEquals(partial_adjacent3, partial_adjacent3_real)
+
+	def test_getOpenings(self):
+		'''Gamestate.getOpenings method works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		openings = sorted(self.modelObject.getOpenings(state, (4, 5)))
+		openings_real = sorted([])
+		openings2 = sorted(self.modelObject.getOpenings(state, (2, 5)))
+		openings2_real = sorted([(3, 4), (3, 6)])
+
+		partial_openings = sorted(self.modelObject.getOpenings(state, (6, 7)))
+		partial_openings_real = sorted([])
+		partial_openings2 = sorted(self.modelObject.getOpenings(state, (5, 0)))
+		partial_openings2_real = sorted([(4, 1)])
+
+		self.assertEquals(openings, openings_real)
+		self.assertEquals(openings2, openings2_real)
+		self.assertEquals(partial_openings, partial_openings_real)
+		self.assertEquals(partial_openings2, partial_openings2_real)
+
+	def test_getOpponentOccupied(self):
+		'''Gamestate.getOpponentOccupied method works'''
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 2, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 1, 0, 0],
+			[2, 0, 0, 0, 2, 0, 2, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		occupied = sorted(self.modelObject.getOpponentOccupied(state, (3, 2), 2))
+		occupied_real = sorted([(2, 1), (2, 3)])
+
+		occupied_partial = sorted(self.modelObject.getOpponentOccupied(state, (5, 0), 2))
+		occupied_partial_real = []
+
+		self.assertEquals(occupied, occupied_real)
+		self.assertEquals(occupied_partial, occupied_partial_real)
