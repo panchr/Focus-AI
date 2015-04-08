@@ -67,6 +67,11 @@ class TestStaticAI(TestBaseAI):
 	'''Tests the core.artificial.StaticAI class'''
 	testClass = StaticAI
 
+	@classmethod
+	def tearDownClass(cls):
+		'''Tears down the class'''
+		cls.connection.close()
+
 	def test_inheritsBaseAI(self):
 		'''Inherits from BaseAI'''
 		self.assertIsSubclass(self.testClass, BaseAI)
@@ -77,9 +82,69 @@ class TestStaticAI(TestBaseAI):
 		self.assertIsInstance(self.testObject, BaseAI)
 		self.assertIsInstance(self.testObject, object)
 
+	def test_evaluateAttack(self):
+		'''StaticAI.evaluateAttack works'''
+		attack1 = [(5, 1), [(3, 3), (1, 5)]]
+		attack2 = [(5, 1), [(3, 3)]]
+
+		self.assertEquals(self.testObject.evaluateAttack(attack1), 2)
+		self.assertEquals(self.testObject.evaluateAttack(attack2), 1)
+
+	def test_generateStimulus(self):
+		'''StaticAI.generateStimulus works'''
+		move1 = [(5, 1), (4, 2)]
+		stimulus1 = np.asarray([
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 3, 0, 0, 0, 0, 0],
+			[0, 2, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		move2 = [(7, 0), [(5, 2), (3, 4), (1, 2)]]
+		stimulus2 = np.asarray([
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 3, 0, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 3, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 3, 0, 0, 0, 0, 0],
+			[0, 1, 0, 0, 0, 0, 0, 0],
+			[2, 0, 0, 0, 0, 0, 0, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		self.assertEquals(self.testObject.generateStimulus(move1), stimulus1)
+		self.assertEquals(self.testObject.generateStimulus(move2), stimulus2)
+
 	def test_makeMove(self):
 		'''StaticAI.makeMove works'''
-		pass
+		state = np.asarray([
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[0, 0, 1, 0, 1, 0, 1, 0],
+			[0, 1, 0, 0, 0, 1, 0, 0],
+			[1, 0, 0, 0, 0, 0, 1, 0],
+			[0, 1, 0, 0, 0, 2, 0, 0],
+			[2, 0, 2, 0, 2, 0, 0, 0],
+			[0, 2, 0, 2, 0, 2, 0, 2],
+			[2, 0, 2, 0, 2, 0, 2, 0]
+			], dtype = config.STORAGE_DATATYPE)
+
+		possibleMoves = [
+			[(5, 0), [(3, 2), (1, 0)]],
+			[(5, 0), [(3, 2)]],
+			[(4, 5), [(2, 7)]]
+			]
+
+		self.testObject.possibleStimuli = []
+		self.testObject.setState(state)
+
+		success, playedMove = self.testObject.makeMove()
+
+		self.assertTrue(success)
+		self.assertIn(playedMove, possibleMoves)
 
 class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 	'''Test the core.artificial.DynamicScriptingAI class'''
@@ -200,13 +265,6 @@ class TestDynamicScriptingAI(TestStaticAI, TestBaseAI):
 			[(5, 0), [(3, 2), (1, 4)]],
 			initialWeight = 2
 			))
-
-	@classmethod
-	def tearDownClass(cls):
-		'''Tear down the class after unit testing'''
-		for rule in cls.rulesAdded:
-			rule.delete()
-		cls.connection.close()
 
 	def setUp(self):
 		'''Sets up the test case'''

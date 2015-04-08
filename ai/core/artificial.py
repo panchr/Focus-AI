@@ -39,32 +39,38 @@ class StaticAI(BaseAI):
 	def makeMove(self):
 		'''Make the AI's move'''
 		takingFound = False
-		openings, occupied = [], []
+		openings, attacks = [], []
 		positions = Gamestate.findLocations(self.state, self.piece)
 
 		for position in positions:
-			position_adjacent = Gamestate.getAdjacent(self.state, position)
-			position_occupied = Gamestate.getOpponentOccupied(self.state, position_adjacent, self.piece)
+			position_attacks = Gamestate.getAttacks(self.state, position)
 
 			# This implements a basic heuristic: if we have already found a taking move, no need to search for any simple moves (taking moves are always better)
-			if (position_occupied or takingFound):
-				occupied.extend(map(lambda newPosition: [position, newPosition],position_occupied))
+			if (position_attacks or takingFound):
+				attacks.extend(position_attacks)
 				takingFound = True
 			else:
-				position_openings = Gamestate.getOpenings(self.state, position_adjacent)
+				position_openings = Gamestate.getOpenings(self.state, position)
 				openings.extend(map(lambda newPosition: [position, newPosition],position_openings))
 
-		# need to pick a random move from this
-		# it would be best to evaluate the "score" of the given position to find the best option
-		# then choose a random move out of the top 3 or so of these positions
+		if attacks:
+			attacks.sort(key = self.evaluateAttack)
 
-		moveSuccess, playedMove = False, None
+			segmentOne, segmentTwo = attacks[:config.RULE_MATCHES], attacks[config.RULE_MATCHES:]
+			# Shuffle the best and the worst segments separately, then re-combine them
+			random.shuffle(segmentOne)
+			random.shuffle(segmentTwo)
 
-		random.shuffle(openings) # make sure we choose a random one each item
-		for move in openings:
+			moves = segmentOne + segmentTwo
+		else:
+			moves = position_openings
+			random.shuffle(moves) # shuffle the moves to pick a random opening
+
+		for move in moves:
 			try:
 				moveSuccess = self.engine.makeMove(self.gameID, *move)
-				self.db.newRule(self.state, None, move, piece = self.piece) # need to find an actual stimulus - perhaps the pieces involved?
+				stimulus = self.generateStimulus(move)
+				self.db.newRule(self.state, stimulus, move, piece = self.piece)
 				playedMove = move
 				break
 			except InvalidMove:
@@ -73,6 +79,32 @@ class StaticAI(BaseAI):
 				break
 
 		return moveSuccess, playedMove
+
+	def evaluateAttack(self, attack):
+		'''Evaluates the attack
+
+		Currently, the evaluation simply consists of the number of pieces taken'''
+		return len(attack[1])
+
+	def generateStimulus(self, move):
+		'''Generates a stimulus based on the move'''
+		stimulus = Gamestate.new(initialize = False)
+
+		start, end = move
+		stimulus[start] = self.piece
+
+		if isinstance(end, list): # "taking" move
+			currentPiece = start
+			for step in end:
+				dY, dX = step[0] - currentPiece[0], step[1] - currentPiece[1]
+				inBetween = (currentPiece[0] + dY / 2, currentPiece[1] + dX / 2)
+				stimulus[inBetween] = self.opponentPiece # should take an opponent piece
+				stimulus[step] = 3 # each step should be empty
+				currentPiece = step
+		else:
+			stimulus[end] = 3 # for a simple move, the ending spot should be empty (3)
+
+		return stimulus
 
 class DynamicScriptingAI(StaticAI, BaseAI):
 	'''Represents a Dynamic Scripting AI'''

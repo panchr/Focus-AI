@@ -177,7 +177,9 @@ class Gamestate(CustomTypeBase):
 		piece = piece if piece is not None else state[position]
 		possibilities = cls.getDiagonal(state, position, piece)
 
-		return filter(lambda possibility: state[possibility] != 0 and  state[possibility] != piece, possibilities)
+		king = -1 * piece
+
+		return filter(lambda possibility: state[possibility] != 0 and state[possibility] != piece and state[possibility] != king, possibilities)
 
 	@classmethod
 	def getAttacks(cls, state, position):
