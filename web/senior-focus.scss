@@ -1,6 +1,16 @@
 // Rushy Panchal
 // senior-focus.scss
 
+// Replace these with the values from _vars.scss when moved to the main location
+$primary: blue;
+$secondary: green;
+$game-tile-color-main: white;
+$game-tile-color-secondary: black;
+
+@mixin transition($value) {
+	transition: $value;
+	}
+
 .right-align {
 	float: right;
 	}
@@ -10,10 +20,13 @@
 	}
 
 #online-players {
+	z-index: 9001;
 	position: fixed;
 	max-width: 25vw;
 	background-color: white;
-	border-radius: 25px;
+	border-radius: 10px;
+	border: 1px solid;
+	border-color: $primary;
 	padding: 2em;
 	margin: 1em;
 	ul.players-list {
@@ -21,25 +34,55 @@
 		max-height: 50vh;
 		overflow-y: scroll;
 		.online-player {
-			// @include transition(color 0.3s);
-			&:before {
-				content: "- ";
-				color: green;
-				}
+			@include transition(color 0.3s);
 			&:hover {
-				color: green;
+				color: $secondary;
 				}
 			}
 		}
-	}
+		}
 
 .toggle-icon {
 	color: black;
 	font-size: 50px;
-	//  @include transition(color 0.3s);
+	@include transition(color 0.3s);
 	&:hover {
 		cursor: hand;
 		cursor: pointer;
-		color: blue;
+		color: $primary;
 		}
+	}
+
+.game-board {
+	max-width: 50vw;
+	float: right;
+	.board-row {
+		}
+	.board-tile {
+		width: 64px;
+		height: 64px;
+		float: left;
+		border: 1px solid;
+		background-color: $game-tile-color-main;
+		@include transition(background-color 0.25s);
+		&:hover {
+			background-color: darken($game-tile-color-main, 25%);
+			}
+		}
+	.tile-main {
+		@extend .board-tile;
+		}
+	.tile-secondary {
+		@extend .board-tile;
+		background-color: $game-tile-color-secondary;
+		&:hover {
+			background-color: darken($game-tile-color-secondary, 10%);
+			}
+		}
+	}
+
+#footer {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
 	}
