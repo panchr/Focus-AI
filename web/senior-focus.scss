@@ -1,0 +1,45 @@
+// Rushy Panchal
+// senior-focus.scss
+
+.right-align {
+	float: right;
+	}
+
+.left-align {
+	float: left;
+	}
+
+#online-players {
+	position: fixed;
+	max-width: 25vw;
+	background-color: white;
+	border-radius: 25px;
+	padding: 2em;
+	margin: 1em;
+	ul.players-list {
+		list-style-type: none;
+		max-height: 50vh;
+		overflow-y: scroll;
+		.online-player {
+			// @include transition(color 0.3s);
+			&:before {
+				content: "- ";
+				color: green;
+				}
+			&:hover {
+				color: green;
+				}
+			}
+		}
+	}
+
+.toggle-icon {
+	color: black;
+	font-size: 50px;
+	//  @include transition(color 0.3s);
+	&:hover {
+		cursor: hand;
+		cursor: pointer;
+		color: blue;
+		}
+	}
