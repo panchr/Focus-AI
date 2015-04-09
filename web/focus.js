@@ -22,6 +22,7 @@ function focus(app, server, config) {
 	app.use("/focus", focusRouter);
 
 	clientSocket.on('connection', function (socket) {
+		clientSocket.emit('user-connect', {user: user_id});
 		// using serverSocket, create a new game and then send back the game ID
 
 		socket.on('move', function (move) {
@@ -31,6 +32,7 @@ function focus(app, server, config) {
 			// proxy to main server
 			});
 		socket.on('disconnect', function() {
+			clientSocket.emit('user-disconnect', {user: user_id});
 			// tell the game server to end the game
 			});
 		});

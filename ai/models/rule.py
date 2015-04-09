@@ -47,19 +47,23 @@ class Rule(Model):
 		return rule
 
 	@Model.autosave
-	def increaseWeight(self):
+	def increaseWeight(self, group = True):
 		'''Increments the weight'''
 		self.weight += config.WEIGHT_DELTA
-		self.collection.update({"group": self.group}, {"$inc": {"weight": config.WEIGHT_DELTA_GROUP}}) # update the weights of this group as well
-		if (self.weight + 1) >= config.NORMALIZE_THRESHOLD: # if the weight exceeds the threshold, normalize all of the values
+		if group and self.group: # if the group is not empty (because empty groups aren't shared)
+			self.collection.update({"group": self.group}, {"$inc": {"weight": config.WEIGHT_DELTA}}, multi = True)
+			# update the weights of this group as well
+		if (self.weight + 1) >= config.NORMALIZE_THRESHOLD:
+		# if the weight exceeds the threshold, normalize all of the values
 			Rule.normalize()
 
 	@Model.autosave
-	def decreaseWeight(self):
+	def decreaseWeight(self, group = True):
 		'''Decreases the weight
 		Similar to Rule.increaseWeight except with a negative delta value.'''
 		self.weight -= config.WEIGHT_DELTA
-		self.collection.update({"group": self.group}, {"$inc": {"weight": -config.WEIGHT_DELTA_GROUP}})
+		if group and self.group:
+			self.collection.update({"group": self.group}, {"$inc": {"weight": -1 * config.WEIGHT_DELTA}}, multi = True)
 		if (self.weight - 1) <= config.NORMALIZE_THRESHOLD_NEG:
 			Rule.normalize()
 

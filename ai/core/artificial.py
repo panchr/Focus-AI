@@ -57,6 +57,7 @@ class StaticAI(BaseAI):
 			attacks.sort(key = self.evaluateAttack)
 
 			segmentOne, segmentTwo = attacks[:config.RULE_MATCHES], attacks[config.RULE_MATCHES:]
+
 			# Shuffle the best and the worst segments separately, then re-combine them
 			random.shuffle(segmentOne)
 			random.shuffle(segmentTwo)

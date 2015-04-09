@@ -29,23 +29,89 @@ class TestRule(baseTests.DatabaseTest, ModelTestBase, unittest.TestCase):
 	'''Tests the models.rule.Rule Model'''
 	model = models.Rule
 
+	@classmethod
+	def setUpClass(cls):
+		'''Sets up the class of test cases'''
+		cls.modelObject = cls.model()
+
+		cls.groupName = "test_group"
+
+	def setUp(self):
+		'''Setup the test cases'''
+		self.getWeights = lambda rules: map(lambda item: item.weight, rules)
+		self.reloadRules = lambda rules: map(lambda item: item.reload(), rules)
+		self.deleteRules = lambda rules: map(lambda item: item.delete(), rules)
+
 	def test_increaseWeight(self):
 		'''increaseWeight works'''
 		currentWeight = self.modelObject.weight
 		self.modelObject.increaseWeight(save = False)
 		self.assertEquals(self.modelObject.weight, currentWeight + config.WEIGHT_DELTA)
-		
+
 	def test_decreaseWeight(self):
 		'''decreaseWeight works'''
 		currentWeight = self.modelObject.weight
 		self.modelObject.decreaseWeight(save = False)
 		self.assertEquals(self.modelObject.weight, currentWeight - config.WEIGHT_DELTA)
 
+	def test_increaseWeightGroup(self):
+		'''increaseWeight works for groups'''
+		state = np.zeros((8, 8), dtype = np.int32)
+		self.baseRule = self.model.new(state, state, [], group = self.groupName)
+		self.testRules = [self.model.new(state, state, [], group = self.groupName) for i in xrange(5)]
+		self.testRules_groupB = [self.model.new(state, state, [], group = self.groupName + "_b") for i in xrange(5)]
+
+		initialWeights = self.getWeights(self.testRules)
+		initialWeightsB = self.getWeights(self.testRules_groupB)
+		initialBaseWeight = self.baseRule.weight
+
+		self.baseRule.increaseWeight()
+
+		self.baseRule.reload()
+		self.reloadRules(self.testRules)
+		self.reloadRules(self.testRules_groupB)
+
+		newWeights = self.getWeights(self.testRules)	
+		newWeightsB = self.getWeights(self.testRules_groupB)
+
+		self.assertEquals(newWeights, map(lambda x: x + config.WEIGHT_DELTA, initialWeights))
+		self.assertEquals(newWeightsB, initialWeightsB)
+		self.assertEquals(self.baseRule.weight, initialBaseWeight + config.WEIGHT_DELTA)
+
+		self.deleteRules(self.testRules + self.testRules_groupB + [self.baseRule])
+
+	def test_decreaseWeightGroup(self):
+		'''decreaseWeight works for groups'''
+		state = np.zeros((8, 8), dtype = np.int32)
+		self.baseRule = self.model.new(state, state, [], group = self.groupName)
+		self.testRules = [self.model.new(state, state, [], group = self.groupName) for i in xrange(5)]
+		self.testRules_groupB = [self.model.new(state, state, [], group = self.groupName + "_b") for i in xrange(5)]
+
+		initialWeights = self.getWeights(self.testRules)
+		initialWeightsB = self.getWeights(self.testRules_groupB)
+		initialBaseWeight = self.baseRule.weight
+
+		self.baseRule.decreaseWeight()
+
+		self.baseRule.reload()
+		self.reloadRules(self.testRules)
+		self.reloadRules(self.testRules_groupB)
+
+		newWeights = self.getWeights(self.testRules)	
+		newWeightsB = self.getWeights(self.testRules_groupB)
+
+		self.assertEquals(newWeights, map(lambda x: x - config.WEIGHT_DELTA, initialWeights))
+		self.assertEquals(newWeightsB, initialWeightsB)
+		self.assertEquals(self.baseRule.weight, initialBaseWeight - config.WEIGHT_DELTA)
+
+		self.deleteRules(self.testRules + self.testRules_groupB + [self.baseRule])
+
 	def test_normalize(self):
 		'''Rule.normalize works'''
 		numTests = 100
 		newArray = lambda: np.zeros((8, 8), dtype = config.STORAGE_DATATYPE)
 
+		self.deleteRules(self.connection.Rule.find()) # clear any previous rules
 		rules = [models.Rule.new(newArray(), newArray(), [], initialWeight = random.randint(0, numTests)) for i in xrange(numTests)]
 
 		sumWeight = float(sum(map(lambda rule: rule.weight, rules)))
