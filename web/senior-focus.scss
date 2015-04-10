@@ -93,3 +93,19 @@ $tile-size: 64px;
 	clear: left;
 	width: 100%;
 	}
+
+.small-screen {
+	display: none;
+	}
+.large-screen {
+	display: block;
+	}
+
+@media (max-width: $tile-size * 8 * 2) {
+	.large-screen {
+		display: none;
+		}
+	.small-screen {
+		display: block;
+		}
+	}

@@ -3,6 +3,7 @@
 ### Other files
 TODO
 *.output
+*.map
 
 ### Windows ###
 # Windows image file caches

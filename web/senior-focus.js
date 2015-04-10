@@ -6,6 +6,16 @@ function initializeFocus() {
 	// Main function
 	socket.create();
 	board.create(8, 8);
+	resizeGameTiles();
+	}
+
+function resizeGameTiles() {
+	// Resize all of the game tiles to fit all 8 inside the board
+	$board = $("#board");
+	var boardWidth = $board.width();
+	var tileSize = boardWidth / 8;
+	$('.board-tile').css('width', tileSize).css('height', tileSize);
+	$board.css('margin-left', $(window).width() / 4); // NOT WORKING: attempt to move the board to center it exactly
 	}
 
 function toggleInterface(elem) {
@@ -28,6 +38,7 @@ var socket = {
 
 var board = {
 	pieces: {},
+	workingMove: [],
 	create: function(height, width) {
 		var board = this;
 		var gameBoard = $("#board");
@@ -37,11 +48,28 @@ var board = {
 			for (w = 0; w < width; w++) {
 				var tile = document.createElement("div");
 				tile.className = "board-tile";
+				var tileData = tile.dataset;
+				tileData["y"] = h;
+				tileData["x"] = w;
 				row.appendChild(tile);
-				(function(t) {
+				(function(t) { // this has to be an explicit function or otherwise, each .click event handler is the same
 					$(t).click(function() {
-						// $(".board-tile").removeClass("active");
-						$(t).addClass("active");
+						var $t = $(this);
+						var location = [this.dataset.y, this.dataset.x];
+						var locationString = location.toString();
+						if ($t.hasClass("active")) {
+							// Remove the current activation if already activated
+							$t.removeClass("active");
+							board.workingMove.forEach(function (elem, index) {
+								if (elem.toString() == locationString) {
+									board.workingMove.splice(index, 1);
+									}
+								});
+							}
+						else { // because it's not currently active, activate the tile
+							$t.addClass("active");
+							board.workingMove.push(location);
+							}
 						});
 					}(tile));
 				}
@@ -53,6 +81,12 @@ var board = {
 	init: function(height, width) {
 		// Initialize the game board
 		return null;
+		},
+	submit: function() {
+		// Submit the game move
+		$('.board-tile').removeClass("active");
+		console.log(this.workingMove);
+		this.workingMove = [];
 		}
 	}
 
@@ -91,3 +125,4 @@ var players = {
 	};
 
 $(document).ready(initializeFocus);
+$(window).resize(resizeGameTiles);
