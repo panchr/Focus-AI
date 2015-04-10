@@ -4,18 +4,32 @@
 
 function initializeFocus() {
 	// Main function
-	var socket = createSocketConnection();
+	socket.create();
 	board.create(8, 8);
 	}
 
-function createSocketConnection() {
-	// Create the main socket connection
-	return null; // not yet implemented
+function toggleInterface(elem) {
+	// Toggle the element
+	$elem = $(elem);
+	if ($elem.css('display') == 'none') {
+		$elem.slideDown();
+		}
+	else {
+		$elem.slideUp();
+		}
 	}
+
+var socket = {
+	conn: null,
+	create: function(settings) {
+		// create the socket connection here
+		}
+	};
 
 var board = {
 	pieces: {},
 	create: function(height, width) {
+		var board = this;
 		var gameBoard = $("#board");
 		for (h = 0; h < height; h++) {
 			var row = document.createElement("div");
@@ -24,10 +38,21 @@ var board = {
 				var tile = document.createElement("div");
 				tile.className = "board-tile";
 				row.appendChild(tile);
+				(function(t) {
+					$(t).click(function() {
+						// $(".board-tile").removeClass("active");
+						$(t).addClass("active");
+						});
+					}(tile));
 				}
 			gameBoard.append(row);
 			gameBoard.append(document.createElement("br"));
 			}
+		this.init(height, width);
+		},
+	init: function(height, width) {
+		// Initialize the game board
+		return null;
 		}
 	}
 

@@ -4,24 +4,18 @@
 // Replace these with the values from _vars.scss when moved to the main location
 $primary: blue;
 $secondary: green;
+$tertiary: red;
 $game-tile-color-main: white;
 $game-tile-color-secondary: black;
+$tile-size: 64px;
 
 @mixin transition($value) {
 	transition: $value;
 	}
 
-.right-align {
-	float: right;
-	}
-
-.left-align {
-	float: left;
-	}
-
-#online-players {
-	z-index: 9001;
+.fixed-panel {
 	position: fixed;
+	z-index: 9001;
 	max-width: 25vw;
 	background-color: white;
 	border-radius: 10px;
@@ -29,6 +23,16 @@ $game-tile-color-secondary: black;
 	border-color: $primary;
 	padding: 2em;
 	margin: 1em;
+	}
+
+#control-panel {
+	@extend .fixed-panel;
+	left: 0px;
+	}
+
+#online-players {
+	@extend .fixed-panel;
+	right: 0px;
 	ul.players-list {
 		list-style-type: none;
 		max-height: 50vh;
@@ -40,7 +44,7 @@ $game-tile-color-secondary: black;
 				}
 			}
 		}
-		}
+	}
 
 .toggle-icon {
 	color: black;
@@ -55,18 +59,22 @@ $game-tile-color-secondary: black;
 
 .game-board {
 	max-width: 50vw;
-	float: right;
+	margin-left: 25vw;
+	float: left;
 	.board-row {
 		}
 	.board-tile {
-		width: 64px;
-		height: 64px;
+		width: $tile-size;
+		height: $tile-size;
 		float: left;
 		border: 1px solid;
 		background-color: $game-tile-color-main;
 		@include transition(background-color 0.25s);
-		&:hover {
+		&:hover, &.active:hover {
 			background-color: darken($game-tile-color-main, 25%);
+			}
+		&.active {
+			background-color: darken($game-tile-color-main, 15%);
 			}
 		}
 	.tile-main {
@@ -82,7 +90,6 @@ $game-tile-color-secondary: black;
 	}
 
 #footer {
-	position: absolute;
-	bottom: 0px;
+	clear: left;
 	width: 100%;
 	}
