@@ -127,6 +127,44 @@ var board = {
 		$('.board-tile').removeClass("active");
 		console.log(this.workingMove.toString());
 		this.workingMove = [];
+		},
+	getTile: function(location) {
+		// Get the tile at the given location
+		return $(this.pieces[location[0]][location[1]]);
+		},
+	pieceChange: function(location, callback, animate) {
+		var tile = this.getTile(location);
+		var piece = tile.children('.game-piece');
+		if (animate != false) {
+			piece.addClass("changing").on("transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd", 
+				function() {
+					callback(piece);
+					piece.removeClass('changing');
+					});
+			}
+		else {
+			callback(piece);
+			}
+		},
+	pieceUpgrade: function(location) {
+		// Upgrade a given piece
+		return this.pieceChange(location, function(piece) {
+			piece.addClass("king");
+			});
+		//return this.getPiece(location).addClass("king");
+		},
+	pieceKill: function(location) {
+		// Kill a piece
+		return this.pieceChange(location, function(piece) {
+			piece.remove();
+			});
+		},
+	pieceMove: function(location, newLocation) {
+		var board = this;
+		return this.pieceChange(location, function(piece) {
+			piece.remove();
+			board.getTile(newLocation).append(piece);
+			});
 		}
 	}
 

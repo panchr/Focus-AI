@@ -12,7 +12,7 @@ $tile-size: 64px;
 $piece-black: #2c3e50;
 $piece-red: #c0392b;
 
-@mixin transition($value) {
+@mixin transition($value...) {
 	transition: $value;
 	}
 
@@ -99,6 +99,7 @@ $piece-red: #c0392b;
 			// Sizing
 			width: 50%;
 			height: 50%;
+
 			&.black {
 				background-color: $piece-black;
 				}
@@ -109,6 +110,9 @@ $piece-red: #c0392b;
 				box-shadow: 0 0 0 2px black;
 				width: 60%;
 				height: 60%;
+				}
+			&.changing {
+				opacity: 0;
 				}
 			}
 		}
