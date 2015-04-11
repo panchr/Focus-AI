@@ -68,9 +68,9 @@ $piece-red: #c0392b;
 		}
 	.board-tile {
 		position: relative;
+		float: left; // this makes sure all the tiles are aligned
 		width: $tile-size;
 		height: $tile-size;
-		float: left;
 		border: 1px solid;
 		background-color: $game-tile-color-main;
 		@include transition(background-color 0.25s);
@@ -81,13 +81,22 @@ $piece-red: #c0392b;
 			background-color: darken($game-tile-color-main, 15%);
 			}
 		.game-piece {
+			// Opacity 
+			@include transition(opacity 0.3s);
+			opacity: 1;
+
+			// Center the piece
 			position: absolute;
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
+
+			// Border styling
 			border-radius: 50%;
 			border: 2px dashed white;
 			background-color: transparent;
+
+			// Sizing
 			width: 50%;
 			height: 50%;
 			&.black {

@@ -36,21 +36,39 @@ var socket = {
 		}
 	};
 
+
+
 var board = {
+	rawPieces: {
+		black: document.createElement("p"),
+		red: document.createElement("p"),
+		blackKing: document.createElement("p"),
+		redKing: document.createElement("p")
+		},
+	pieces: { // first index is height, second is width
+		},
 	workingMove: [],
 	create: function(height, width) {
+		// Create the game board
 		var board = this;
 		var gameBoard = $("#board");
+
 		for (h = 0; h < height; h++) {
 			var row = document.createElement("div");
 			row.className = "board-row";
+			var rowArray = board.pieces[h] = {};
+
 			for (w = 0; w < width; w++) {
 				var tile = document.createElement("div");
 				tile.className = "board-tile";
+
 				var tileData = tile.dataset;
 				tileData["y"] = h;
 				tileData["x"] = w;
+
 				row.appendChild(tile);
+				rowArray[w] = tile;
+
 				(function(t) { // this has to be an explicit function or otherwise, each .click event handler is the same
 					$(t).click(function() {
 						var $t = $(this);
@@ -60,18 +78,14 @@ var board = {
 							// Remove the current activation if already activated
 							$t.removeClass("active");
 							board.workingMove.forEach(function (elem, index) {
-								if (elem.toString() == locationString) {
+								if (elem.toString() == locationString) { // it is easiest to match arrays as strings
 									board.workingMove.splice(index, 1);
 									}
 								});
-							$t.empty();
 							}
 						else { // because it's not currently active, activate the tile
 							$t.addClass("active");
 							board.workingMove.push(location);
-							var piece = document.createElement("p");
-							piece.className = "game-piece black";
-							$t.append(piece);
 							}
 						});
 					}(tile));
@@ -83,12 +97,35 @@ var board = {
 		},
 	init: function(height, width) {
 		// Initialize the game board
-		return null;
+		this.rawPieces.black.className = "game-piece black";
+		this.rawPieces.red.className = "game-piece red";
+		this.rawPieces.blackKing.className = "game-piece black king";
+		this.rawPieces.redKing.className = "game-piece red king";
+
+		var lastRow = height - 1,
+			secondLastRow = height - 2,
+			thirdLastRow = height - 3;
+
+		for (h = 0; h < height; h++) {
+			for (w = 0; w < height; w++) {
+				var isEven = w % 2 == 0,
+					toAdd = null;
+				if (((h == 0 || h == 2) && ! isEven) || (h == 1 && isEven)) {
+					toAdd = this.rawPieces.black;
+					}
+				else if (((h == thirdLastRow || h == lastRow) && isEven) || (h == secondLastRow && ! isEven)) {
+					toAdd= this.rawPieces.red;
+					}
+				if (toAdd) {
+					this.pieces[h][w].appendChild(toAdd.cloneNode());
+					}
+				}
+			}
 		},
 	submit: function() {
 		// Submit the game move
 		$('.board-tile').removeClass("active");
-		console.log(this.workingMove);
+		console.log(this.workingMove.toString());
 		this.workingMove = [];
 		}
 	}
