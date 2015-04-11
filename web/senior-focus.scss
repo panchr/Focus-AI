@@ -9,6 +9,9 @@ $game-tile-color-main: white;
 $game-tile-color-secondary: black;
 $tile-size: 64px;
 
+$piece-black: #2c3e50;
+$piece-red: #c0392b;
+
 @mixin transition($value) {
 	transition: $value;
 	}
@@ -64,6 +67,7 @@ $tile-size: 64px;
 	.board-row {
 		}
 	.board-tile {
+		position: relative;
 		width: $tile-size;
 		height: $tile-size;
 		float: left;
@@ -75,6 +79,28 @@ $tile-size: 64px;
 			}
 		&.active {
 			background-color: darken($game-tile-color-main, 15%);
+			}
+		.game-piece {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			border-radius: 50%;
+			border: 2px dashed white;
+			background-color: transparent;
+			width: 50%;
+			height: 50%;
+			&.black {
+				background-color: $piece-black;
+				}
+			&.red {
+				background-color: $piece-red;
+				}
+			&.king {
+				box-shadow: 0 0 0 2px black;
+				width: 60%;
+				height: 60%;
+				}
 			}
 		}
 	.tile-main {

@@ -37,7 +37,6 @@ var socket = {
 	};
 
 var board = {
-	pieces: {},
 	workingMove: [],
 	create: function(height, width) {
 		var board = this;
@@ -65,10 +64,14 @@ var board = {
 									board.workingMove.splice(index, 1);
 									}
 								});
+							$t.empty();
 							}
 						else { // because it's not currently active, activate the tile
 							$t.addClass("active");
 							board.workingMove.push(location);
+							var piece = document.createElement("p");
+							piece.className = "game-piece black";
+							$t.append(piece);
 							}
 						});
 					}(tile));
