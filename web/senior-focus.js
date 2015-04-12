@@ -2,6 +2,8 @@
 // senior-focus.js
 // Client-side library for my Senior Focus project
 
+var TRANSITION_END ="transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd";
+
 function initializeFocus() {
 	// Main function
 	socket.create();
@@ -132,11 +134,11 @@ var board = {
 		// Get the tile at the given location
 		return $(this.pieces[location[0]][location[1]]);
 		},
-	pieceChange: function(location, callback, animate) {
+	changePiece: function(location, callback, animate) {
 		var tile = this.getTile(location);
 		var piece = tile.children('.game-piece');
 		if (animate != false) {
-			piece.addClass("changing").on("transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd", 
+			piece.addClass("changing").on(TRANSITION_END, 
 				function() {
 					callback(piece);
 					piece.removeClass('changing');
@@ -146,26 +148,58 @@ var board = {
 			callback(piece);
 			}
 		},
-	pieceUpgrade: function(location) {
+	upgradePiece: function(location, callback, animate) {
 		// Upgrade a given piece
-		return this.pieceChange(location, function(piece) {
+		return this.changePiece(location, function(piece) {
 			piece.addClass("king");
-			});
-		//return this.getPiece(location).addClass("king");
+			if (callback) callback(piece);
+			}, animate);
 		},
-	pieceKill: function(location) {
+	killPiece: function(location, callback, animate) {
 		// Kill a piece
-		return this.pieceChange(location, function(piece) {
+		return this.changePiece(location, function(piece) {
 			piece.remove();
-			});
+			if (callback) callback(piece);
+			}, animate);
 		},
-	pieceMove: function(location, newLocation) {
+	movePiece: function(location, newLocation, callback, animate) {
 		var board = this;
-		return this.pieceChange(location, function(piece) {
+		return this.changePiece(location, function(piece) {
 			piece.remove();
 			board.getTile(newLocation).append(piece);
-			});
+			if (callback) callback(piece);
+			}, animate);
+		},
+	simpleMove: function(move) {
+		/* Perform a simple move
+		move[0] is the current location, and
+		move[1] is the new location
+		*/
+		return this.movePiece(move[0], move[1]);
+		},
+	takeMove: function(move) {
+		/* Perform a "take" move
+		move[0] is the list of moves taken, and
+		move[1] is a list of pieces taken
+		*/
+		var	moves = move[0],
+			taken = move[1];
+
+		this.movePiece(moves[0], moves[moves.length - 1]);
+
+		for (index = 0; index < taken.length -1 ; index++) {
+			console.log(index);
+			console.log(taken[index]);
+			// this.getTile(taken[index]).children('.game-piece').remove();
+			this.killPiece(taken[index], null, false);
+			}
 		}
+	}
+
+function test() {
+	board.movePiece([5, 2], [3, 2]);
+	board.movePiece([6, 3], [5, 2]);
+	board.takeMove([[[2, 3], [4, 1], [6, 3]], [[3, 2], [5, 2]]]);
 	}
 
 var players = {
@@ -201,6 +235,21 @@ var players = {
 			}
 		}
 	};
+
+var modal = {
+	open: function(id) {
+		// Open a modal
+		$(id).addClass("active").on(TRANSITION_END, function() {
+			$(this).css("display", "block");
+			});
+		},
+	close: function(id) {
+		// Close a modal
+		$(id).removeClass("active").on(TRANSITION_END, function() {
+			$(this).css("display", "none");
+			});
+		}
+	}
 
 $(document).ready(initializeFocus);
 $(window).resize(resizeGameTiles);

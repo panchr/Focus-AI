@@ -16,9 +16,16 @@ $piece-red: #c0392b;
 	transition: $value;
 	}
 
+.center-horizontal {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	}
+
 .fixed-panel {
 	position: fixed;
-	z-index: 9001;
+	z-index: 9000;
 	max-width: 25vw;
 	background-color: white;
 	border-radius: 10px;
@@ -86,10 +93,7 @@ $piece-red: #c0392b;
 			opacity: 1;
 
 			// Center the piece
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
+			@extend .center-horizontal;
 
 			// Border styling
 			border-radius: 50%;
@@ -125,6 +129,21 @@ $piece-red: #c0392b;
 		&:hover {
 			background-color: darken($game-tile-color-secondary, 10%);
 			}
+		}
+	}
+
+.modal {
+	@extend .center-horizontal;
+	position: fixed;
+	z-index: 9001;
+
+	background-color: white;
+	border: 1px solid $primary;
+
+	opacity: 0;
+	@include transition(opacity 0.5s);
+	&.active {
+		opacity: 1;
 		}
 	}
 
