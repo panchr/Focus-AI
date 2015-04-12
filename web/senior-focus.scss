@@ -135,7 +135,7 @@ $piece-red: #c0392b;
 .modal {
 	@extend .center-horizontal;
 	position: fixed;
-	z-index: 9001;
+	z-index: -100;
 
 	background-color: white;
 	border: 1px solid $primary;
@@ -144,6 +144,7 @@ $piece-red: #c0392b;
 	@include transition(opacity 0.5s);
 	&.active {
 		opacity: 1;
+		z-index: 9001;
 		}
 	}
 

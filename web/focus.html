@@ -73,14 +73,14 @@ c
 	<link rel = "stylesheet" href = "senior-focus.css"></link>
 	<script type = "text/javascript" src = "senior-focus.js"></script>
 	<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
-	<div id = "help" class = "box modal">
-		Derp Derp
+	<div id = "help" class = "box modal center">
+		INSERT HELP TEXT HERE
 		<br/><br/>
-		<button class = "button special" onclick = "modal.close('#help')">Close</button>
+		<button class = "button" onclick = "modal.close('#help')">Close</button>
 	</div>
 	<div id="control-panel" class="center large-screen">
 		<h3>Control Panel</h3>
-		<button class = "button special" onclick="showModal('#help-interface');">Help</button><br><br>
+		<button class = "button special" onclick="modal.open('#help');">Help</button><br><br>
 		<button class="button special" onclick="toggleInterface('#online-players');">Toggle Players List</button>
 	</div>
 	<div id = "online-players" class = "center large-screen">

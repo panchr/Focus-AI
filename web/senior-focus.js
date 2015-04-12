@@ -138,7 +138,7 @@ var board = {
 		var tile = this.getTile(location);
 		var piece = tile.children('.game-piece');
 		if (animate != false) {
-			piece.addClass("changing").on(TRANSITION_END, 
+			piece.addClass("changing").one(TRANSITION_END, 
 				function() {
 					callback(piece);
 					piece.removeClass('changing');
@@ -187,19 +187,11 @@ var board = {
 
 		this.movePiece(moves[0], moves[moves.length - 1]);
 
-		for (index = 0; index < taken.length -1 ; index++) {
-			console.log(index);
-			console.log(taken[index]);
-			// this.getTile(taken[index]).children('.game-piece').remove();
-			this.killPiece(taken[index], null, false);
+		for (index in taken) {
+			this.killPiece(taken[index]);
 			}
-		}
-	}
 
-function test() {
-	board.movePiece([5, 2], [3, 2]);
-	board.movePiece([6, 3], [5, 2]);
-	board.takeMove([[[2, 3], [4, 1], [6, 3]], [[3, 2], [5, 2]]]);
+		}
 	}
 
 var players = {
@@ -239,15 +231,11 @@ var players = {
 var modal = {
 	open: function(id) {
 		// Open a modal
-		$(id).addClass("active").on(TRANSITION_END, function() {
-			$(this).css("display", "block");
-			});
+		$(id).addClass("active");
 		},
 	close: function(id) {
 		// Close a modal
-		$(id).removeClass("active").on(TRANSITION_END, function() {
-			$(this).css("display", "none");
-			});
+		$(id).removeClass("active");
 		}
 	}
 
