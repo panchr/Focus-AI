@@ -25,6 +25,7 @@ class Application(object):
 		self.devServer = core.dev.DevelopmentServer() if (devMode or config.DEV_MODE) else None
 		self.db = None
 		self.server = None
+		self.engine = None
 		self.serverThread = None
 
 	def run(self):
@@ -47,7 +48,13 @@ class Application(object):
 			host = config.APP_HOST,
 			port = config.APP_PORT,
 			database = self.db,
-			handler = lambda data: core.route.routeRequest(engine, data)
+			handler = lambda data: core.route.routeRequest(self.db, self.engine, data)
+			)
+
+		self.engine = core.engine.Engine(
+			rows = 8,
+			columns = 8,
+			database = self.db
 			)
 		
 		signal.signal(signal.SIGINT, self.handleSignal)
