@@ -47,7 +47,7 @@ class Application(object):
 			host = config.APP_HOST,
 			port = config.APP_PORT,
 			database = self.db,
-			handler = lambda data: core.route.routeRequest(self.db, data)
+			handler = lambda data: core.route.routeRequest(engine, data)
 			)
 		
 		signal.signal(signal.SIGINT, self.handleSignal)
