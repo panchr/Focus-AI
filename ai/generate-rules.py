@@ -91,7 +91,7 @@ def main():
 						rules.append(trans)
 
 		for index, rule in enumerate(rules, 1):
-			#db.newRule(**rule)
+			db.newRule(**rule)
 			addedOutput = "Rule {index} added: {n}".format(index = index, n = hex(id(rule)))
 			print(addedOutput)
 			output += "{base}\n{rule}\n".format(base = addedOutput, rule = pprint.pformat(rule))

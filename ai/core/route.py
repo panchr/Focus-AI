@@ -5,6 +5,9 @@ import json
 
 from core.response import Response
 from core.errors import MalformedQuery, InvalidMove, WrongPlayerMove
+from core.artifical import DynamicScriptingAI
+
+import random
 
 ALL_AI = {}
 
@@ -26,10 +29,12 @@ def routeRequest(db, engine, data):
 
 def newGame(db, engine, data):
 	'''Create a new game'''
-	# need to choose a piece for the player and for the AI
-	
 	gameID = engine.newGame()
-	return Response.json("Game created", "Success", 200, gameID = gameID)
+	playerPiece = random.randint(1, 2)
+	aiPiece = 2 if playerPiece == 1 else 1
+	ai = DynamicScriptingAI(self.db, self.engine, gameID, aiPiece)
+	ALL_AI[gameID] = ai
+	return Response.json("Game created", "Success", 200, gameID = gameID, piece = playerPiece)
 
 def makeMove(db, engine, data):
 	'''Make the game move'''
@@ -43,6 +48,8 @@ def makeMove(db, engine, data):
 	except WrongPlayerMove:
 		return Response.json("Not Your Turn", "Wrong Player", 409)
 
+	if winner:
+		return Response.json("Game end", "Success", 201, winner = winner)
 	return Response.json("Move executed", "Success", 200)
 
 def makeMoveAI(db, engine, data):
