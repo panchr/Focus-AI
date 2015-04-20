@@ -5,7 +5,7 @@ import json
 
 from core.response import Response
 from core.errors import MalformedQuery, InvalidMove, WrongPlayerMove
-from core.artifical import DynamicScriptingAI
+from core.artificial import DynamicScriptingAI
 
 import random
 
@@ -22,7 +22,7 @@ def routeRequest(db, engine, data):
 		return "", Response.error(MalformedQuery("msg_id field could not be found"))
 
 	try:
-		response = ROUTES[data["action"]](engine, data["data"])
+		response = ROUTES[data["action"]](db, engine, data["data"])
 		return msg_id, response
 	except KeyError:
 		return msg_id, Response.error(MalformedQuery("action or data field not provided"))
@@ -32,7 +32,7 @@ def newGame(db, engine, data):
 	gameID = engine.newGame()
 	playerPiece = random.randint(1, 2)
 	aiPiece = 2 if playerPiece == 1 else 1
-	ai = DynamicScriptingAI(self.db, self.engine, gameID, aiPiece)
+	ai = DynamicScriptingAI(db, engine, gameID, aiPiece)
 	ALL_AI[gameID] = ai
 	return Response.json("Game created", "Success", 200, gameID = gameID, piece = playerPiece)
 
@@ -49,15 +49,19 @@ def makeMove(db, engine, data):
 		return Response.json("Not Your Turn", "Wrong Player", 409)
 
 	if winner:
-		return Response.json("Game end", "Success", 201, winner = winner)
-	return Response.json("Move executed", "Success", 200)
+		return Response.json("Game end", "Success", 201, winner = winner, pieces = pieces)
+
+	return Response.json("Move executed", "Success", 200, pieces = pieces)
 
 def makeMoveAI(db, engine, data):
 	'''Make the AI game move'''
 	gameID = data["gameID"]
-	success, move = ALL_AI[gameID].makeMove()
+	move, success, pieces, winner = ALL_AI[gameID].makeMove()
+	
+	if winner:
+		return Response.json("Game end", "Success", 201, winner = winner, pieces = pieces, move = move)
 
-	return Response.json("Move executed", "Success", 200, move = move)
+	return Response.json("Move executed", "Success", 200, move = move, pieces = pieces)
 
 ROUTES = {
 	"game.new": newGame,

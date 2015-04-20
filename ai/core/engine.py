@@ -2,9 +2,12 @@
 # ai/core/engine.py
 
 from models.state import Gamestate
+from models.response import Response
 from core.errors import WrongPlayerMove, InvalidMove
 
 import shortid
+
+TO_TUPLE = Response().to_python
 
 class Engine(object):
 	'''Basic Game Engine class'''
@@ -47,6 +50,7 @@ class Engine(object):
 	# old and new are tuples of (x, y) coordinates
 	def makeMove(self, gameID, old, new):
 		'''Move a piece to a new position'''
+		old, new = TO_TUPLE([old, new])
 		game = self.games[gameID]
 		gameMeta = self.gameMeta[gameID]
 		playerToMove = game[old]

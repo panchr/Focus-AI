@@ -33,7 +33,7 @@ class Application(object):
 		if self.devServer:
 			self.devServer.start()
 
-		self.db = mongokit.Connection(
+		self.db = core.database.Database(
 			host = config.DB_HOST,
 			port = config.DB_PORT
 			)

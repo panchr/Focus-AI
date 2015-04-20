@@ -69,7 +69,7 @@ class StaticAI(BaseAI):
 
 		for move in moves:
 			try:
-				moveSuccess = self.engine.makeMove(self.gameID, *move)
+				moveSuccess, piecesTaken, winner = self.engine.makeMove(self.gameID, *move)
 				stimulus = self.generateStimulus(move)
 				self.db.newRule(self.state, stimulus, move, piece = self.piece)
 				playedMove = move
@@ -79,7 +79,7 @@ class StaticAI(BaseAI):
 			except WrongPlayerMove:
 				break
 
-		return moveSuccess, playedMove
+		return playedMove, moveSuccess, piecesTaken, winner
 
 	def evaluateAttack(self, attack):
 		'''Evaluates the attack
@@ -123,7 +123,7 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 
 		for move in possibleMoves:
 			try:
-				moveSuccess = self.engine.makeMove(self.gameID, *move.response)
+				moveSuccess, piecesTaken, winner = self.engine.makeMove(self.gameID, *move.response)
 				playedMove = move
 				self.history.append(np.copy(self.state)) # it may be inefficient to keep so many copies of the game
 				self.playedMoves.append(move)
@@ -133,7 +133,9 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 			except WrongPlayerMove:
 				break
 		
-		return moveSuccess, playedMove.response
+		return playedMove.response, moveSuccess, piecesTaken, winner # causes a problem when a move cannot be found
+		# this is because it tries to return None.response, which doesn't exist
+		# need to check if a move is possible
 
 	def analyzeStimuli(self):
 		'''Analyzes the stimuli from the game and returns a list of potential stimuli'''
