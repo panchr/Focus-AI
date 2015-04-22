@@ -42,26 +42,26 @@ def makeMove(db, engine, data):
 	move = data["move"]
 
 	try:
-		valid, pieces, winner = engine.makeMove(gameID, *move)
+		valid, pieces, winner, upgraded = engine.makeMove(gameID, *move)
 	except InvalidMove:
 		return Response.json("Invalid Move", "Move Error", 401)
 	except WrongPlayerMove:
 		return Response.json("Not Your Turn", "Wrong Player", 409)
 
 	if winner:
-		return Response.json("Game end", "Success", 201, winner = winner, pieces = pieces)
+		return Response.json("Game end", "Success", 201, winner = winner, pieces = pieces, upgraded = upgraded)
 
-	return Response.json("Move executed", "Success", 200, pieces = pieces)
+	return Response.json("Move executed", "Success", 200, pieces = pieces, upgraded = upgraded)
 
 def makeMoveAI(db, engine, data):
 	'''Make the AI game move'''
 	gameID = data["gameID"]
-	move, success, pieces, winner = ALL_AI[gameID].makeMove()
+	move, success, pieces, winner, upgraded = ALL_AI[gameID].makeMove()
 	
 	if winner:
-		return Response.json("Game end", "Success", 201, winner = winner, pieces = pieces, move = move)
+		return Response.json("Game end", "Success", 201, winner = winner, pieces = pieces, move = move, upgraded = upgraded)
 
-	return Response.json("Move executed", "Success", 200, move = move, pieces = pieces)
+	return Response.json("Move executed", "Success", 200, move = move, pieces = pieces, upgraded = upgraded)
 
 ROUTES = {
 	"game.new": newGame,

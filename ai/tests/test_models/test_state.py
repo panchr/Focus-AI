@@ -178,7 +178,7 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 			]
 
 		for old, new, expected in moves:
-			received, taken = self.model.movePiece(self.stateC, old, new)
+			received, taken, upgraded = self.model.movePiece(self.stateC, old, new)
 
 			if expected:
 				piece = copyC[old]
@@ -187,6 +187,8 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 
 			self.assertTrue((self.stateC == copyC).all())
 			self.assertEquals(expected, received)
+			self.assertEquals(upgraded, False)
+			self.assertEquals(taken, [])
 
 			# revert the move for the next test
 			if expected:
@@ -208,7 +210,7 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 			]
 
 		for old, new, rawTakenPieces, expected in moves:
-			received, takenPieces = self.model.movePiece(self.stateF, old, new)
+			received, takenPieces, upgraded = self.model.movePiece(self.stateF, old, new)
 
 			if expected:
 				oldPieces = []
@@ -222,6 +224,7 @@ class TestGamestate(baseTests.NumpyTest, CustomTypeTestBase, unittest.TestCase):
 			self.assertTrue((self.stateF == copyF).all())
 			self.assertEquals(rawTakenPieces, takenPieces)
 			self.assertEquals(expected, received)
+			self.assertEquals(upgraded, False)
 
 			# revert the move for the next test
 			if expected:

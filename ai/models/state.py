@@ -56,19 +56,21 @@ class Gamestate(CustomTypeBase):
 			simpleMove = isinstance(new[0], int)
 			boardValid, piecesTaken = cls.boardValidAndTaken(state, old, new)
 			if not boardValid:
-				return False, []
+				return False, [], False
 		except IndexError:
-			return False, []
+			return False, [], False
 		current = state[old]
 		state[old] = 0
 		for taken in piecesTaken: # won't run if it's a simple move because piecesTaken will be an empty list in that case
 			state[taken] = 0
 		newMove = new if simpleMove else new[-1]
+		upgraded =False
 
 		if ((current == 1 and newMove[0] == 7) or (current == 2 and newMove[0] == 0)):
 			current *= -1 # piece reached the end of the board, so let's promote it to a King
+			upgraded = True
 		state[newMove] = current
-		return True, piecesTaken
+		return True, piecesTaken, upgraded
 
 	@classmethod
 	def boardValidAndTaken(cls, state, old, new):

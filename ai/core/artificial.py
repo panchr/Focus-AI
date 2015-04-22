@@ -67,9 +67,11 @@ class StaticAI(BaseAI):
 			moves = position_openings
 			random.shuffle(moves) # shuffle the moves to pick a random opening
 
+		playedMove, moveSuccess, piecesTaken, winner, upgraded = None, False, [], 0, False
+
 		for move in moves:
 			try:
-				moveSuccess, piecesTaken, winner = self.engine.makeMove(self.gameID, *move)
+				moveSuccess, piecesTaken, winner, upgraded = self.engine.makeMove(self.gameID, *move)
 				stimulus = self.generateStimulus(move)
 				self.db.newRule(self.state, stimulus, move, piece = self.piece)
 				playedMove = move
@@ -119,11 +121,11 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 		if not possibleMoves:
 			return self.bestNewMove()
 			
-		moveSuccess, playedMove = False, None
+		moveSuccess, playedMove, upgraded = False, None, False
 
 		for move in possibleMoves:
 			try:
-				moveSuccess, piecesTaken, winner = self.engine.makeMove(self.gameID, *move.response)
+				moveSuccess, piecesTaken, winner, upgraded = self.engine.makeMove(self.gameID, *move.response)
 				playedMove = move
 				self.history.append(np.copy(self.state)) # it may be inefficient to keep so many copies of the game
 				self.playedMoves.append(move)
@@ -133,9 +135,10 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 			except WrongPlayerMove:
 				break
 		
-		return playedMove.response, moveSuccess, piecesTaken, winner # causes a problem when a move cannot be found
-		# this is because it tries to return None.response, which doesn't exist
-		# need to check if a move is possible
+		if not playedMove:
+			return self.bestNewMove()
+
+		return playedMove.response, moveSuccess, piecesTaken, winner, upgraded
 
 	def analyzeStimuli(self):
 		'''Analyzes the stimuli from the game and returns a list of potential stimuli'''

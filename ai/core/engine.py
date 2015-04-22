@@ -55,14 +55,14 @@ class Engine(object):
 		gameMeta = self.gameMeta[gameID]
 		playerToMove = game[old]
 		if gameMeta["move"] == abs(playerToMove):
-			boardValid, piecesTaken = Gamestate.movePiece(game, old, new)
+			boardValid, piecesTaken, upgraded = Gamestate.movePiece(game, old, new)
 			if not boardValid:
 				raise InvalidMove("Move is not valid")
 			else:
 				newPiece = (1 if playerToMove == 2 else 2)
 				gameMeta["move"] = newPiece
 				possibleWin = self.checkWin(gameID, newPiece)
-				return boardValid, piecesTaken, (playerToMove if possibleWin else 0)
+				return boardValid, piecesTaken, (playerToMove if possibleWin else 0), upgraded
 		else:
 			raise WrongPlayerMove("Opposite Player Move or attempting to move a blank space")
 
