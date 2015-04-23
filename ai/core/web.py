@@ -2,6 +2,7 @@
 # app/core/web.py
 
 import zmq
+import json
 
 class Server(object):
 	'''A basic web server that handles connections'''

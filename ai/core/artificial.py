@@ -81,6 +81,10 @@ class StaticAI(BaseAI):
 			except WrongPlayerMove:
 				break
 
+		if not playedMove:
+			currentPiece = self.engine.gameMeta[self.gameID]["move"]
+			self.engine.gameMeta[self.gameID]["move"] = (1 if currentPiece == 2 else 2) # swap the current places if a move cannot be made
+
 		return playedMove, moveSuccess, piecesTaken, winner, upgraded
 
 	def evaluateAttack(self, attack):

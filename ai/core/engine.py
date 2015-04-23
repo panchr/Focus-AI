@@ -59,14 +59,16 @@ class Engine(object):
 		gameMeta = self.gameMeta[gameID]
 		playerToMove = game[old]
 		if gameMeta["move"] == abs(playerToMove):
-			newPiece = (1 if playerToMove == 2 else 2)
-			gameMeta["move"] = newPiece
 			boardValid, piecesTaken, upgraded = Gamestate.movePiece(game, old, new)
 			if not boardValid:
 				raise InvalidMove("Move is not valid")
 			else:
+				newPiece = (1 if playerToMove == 2 else 2)
+				gameMeta["move"] = newPiece
 				possibleWin = self.checkWin(gameID, newPiece)
-				return boardValid, piecesTaken, (playerToMove if possibleWin else 0), upgraded
+				winner = int(playerToMove if possibleWin else 0)
+				# must explicitly convert to an int because otherwise it's an numpy.int64 (which can't be JSON serialized)
+				return boardValid, piecesTaken, winner, upgraded
 		else:
 			raise WrongPlayerMove("Opposite Player Move or attempting to move a blank space")
 
