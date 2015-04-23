@@ -64,7 +64,7 @@ class StaticAI(BaseAI):
 
 			moves = segmentOne + segmentTwo
 		else:
-			moves = position_openings
+			moves = openings
 			random.shuffle(moves) # shuffle the moves to pick a random opening
 
 		playedMove, moveSuccess, piecesTaken, winner, upgraded = None, False, [], 0, False
@@ -81,7 +81,7 @@ class StaticAI(BaseAI):
 			except WrongPlayerMove:
 				break
 
-		return playedMove, moveSuccess, piecesTaken, winner
+		return playedMove, moveSuccess, piecesTaken, winner, upgraded
 
 	def evaluateAttack(self, attack):
 		'''Evaluates the attack

@@ -141,7 +141,7 @@ class TestStaticAI(TestBaseAI):
 		self.testObject.possibleStimuli = []
 		self.testObject.setState(state)
 
-		playedMove, success, taken, winner = self.testObject.makeMove()
+		playedMove, success, taken, winner, upgraded = self.testObject.makeMove()
 		matchedRule = self.connection.Rule.find_one({"response": playedMove})
 
 		self.assertTrue(success)

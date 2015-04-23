@@ -39,6 +39,10 @@ class Engine(object):
 		self.numberGames += 1
 		return gameID
 
+	def endGame(self, gameID):
+		'''Ends a current game'''
+		del self.games[gameID]
+
 	def getGame(self, gameID):
 		'''Get the game by the game id'''
 		return self.games[gameID]
@@ -55,12 +59,12 @@ class Engine(object):
 		gameMeta = self.gameMeta[gameID]
 		playerToMove = game[old]
 		if gameMeta["move"] == abs(playerToMove):
+			newPiece = (1 if playerToMove == 2 else 2)
+			gameMeta["move"] = newPiece
 			boardValid, piecesTaken, upgraded = Gamestate.movePiece(game, old, new)
 			if not boardValid:
 				raise InvalidMove("Move is not valid")
 			else:
-				newPiece = (1 if playerToMove == 2 else 2)
-				gameMeta["move"] = newPiece
 				possibleWin = self.checkWin(gameID, newPiece)
 				return boardValid, piecesTaken, (playerToMove if possibleWin else 0), upgraded
 		else:

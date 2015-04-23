@@ -67,7 +67,7 @@ class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 	def test_makeMoveErrors(self):
 		'''Engine.makeMove raises appropriate errors if necessary'''
 		self.assertRaises(InvalidMove, self.testObject.makeMove, self.gameB, (-1, 0), (1, 1))
-		self.assertRaises(WrongPlayerMove, self.testObject.makeMove, self.gameB, (0, 1), (1, 1))
+		self.assertRaises(InvalidMove, self.testObject.makeMove, self.gameB, (0, 1), (1, 1))
 		self.assertRaises(InvalidMove, self.testObject.makeMove, self.gameB, (7, 0), (3, 1))
 
 	def test_checkWin(self):
