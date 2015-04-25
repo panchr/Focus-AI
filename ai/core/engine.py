@@ -51,9 +51,18 @@ class Engine(object):
 		'''Set the game to a new state'''
 		self.games[gameID] = newGame
 
+	def swapPlayer(self, gameID):
+		'''Swap the current player to be moved'''
+		currentPiece = self.gameMeta[gameID]["move"]
+		newPiece = (1 if currentPiece == 2 else 2)
+		self.gameMeta[gameID]["move"] = newPiece
+		return newPiece
+
 	# old and new are tuples of (x, y) coordinates
 	def makeMove(self, gameID, old, new):
 		'''Move a piece to a new position'''
+		if (not gameID in self.games):
+			return False, [], 0, False
 		old, new = TO_TUPLE([old, new])
 		game = self.games[gameID]
 		gameMeta = self.gameMeta[gameID]
@@ -63,11 +72,13 @@ class Engine(object):
 			if not boardValid:
 				raise InvalidMove("Move is not valid")
 			else:
-				newPiece = (1 if playerToMove == 2 else 2)
-				gameMeta["move"] = newPiece
+				newPiece = self.swapPlayer(gameID)
 				possibleWin = self.checkWin(gameID, newPiece)
-				winner = int(playerToMove if possibleWin else 0)
+				winner = abs(int(playerToMove if possibleWin else 0))
 				# must explicitly convert to an int because otherwise it's an numpy.int64 (which can't be JSON serialized)
+				# also need to only get the magnitude of it so that even if you win with a king, the piece type wins (and not the king itself)
+				if winner:
+					self.endGame(gameID)
 				return boardValid, piecesTaken, winner, upgraded
 		else:
 			raise WrongPlayerMove("Opposite Player Move or attempting to move a blank space")

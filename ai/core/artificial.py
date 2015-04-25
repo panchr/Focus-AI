@@ -38,6 +38,8 @@ class StaticAI(BaseAI):
 	'''Represents a Static AI'''
 	def makeMove(self):
 		'''Make the AI's move'''
+		outputFile = open("artificial.output", "a")
+		outputFile.write("StaticAI.makeMove called\n")
 		takingFound = False
 		openings, attacks = [], []
 		positions = Gamestate.findLocations(self.state, self.piece)
@@ -54,6 +56,7 @@ class StaticAI(BaseAI):
 				openings.extend(map(lambda newPosition: [position, newPosition],position_openings))
 
 		if attacks:
+			outputFile.write("Using taking positions\n")
 			attacks.sort(key = self.evaluateAttack)
 
 			segmentOne, segmentTwo = attacks[:config.RULE_MATCHES], attacks[config.RULE_MATCHES:]
@@ -64,26 +67,33 @@ class StaticAI(BaseAI):
 
 			moves = segmentOne + segmentTwo
 		else:
+			outputFile.write("Using open positions\n")
 			moves = openings
 			random.shuffle(moves) # shuffle the moves to pick a random opening
-
+		outputFile.write(str(moves) + "\n")
 		playedMove, moveSuccess, piecesTaken, winner, upgraded = None, False, [], 0, False
 
 		for move in moves:
 			try:
+				outputFile.write("Trying move: " + str(move) + "\n")
 				moveSuccess, piecesTaken, winner, upgraded = self.engine.makeMove(self.gameID, *move)
 				stimulus = self.generateStimulus(move)
 				self.db.newRule(self.state, stimulus, move, piece = self.piece)
 				playedMove = move
 				break
 			except InvalidMove:
+				outputFile.write("Invalid move: " + str(move) + "\n")
 				continue
 			except WrongPlayerMove:
+				outputFile.write("Wrong player move: " + str(move) + "\n")
+				outputFile.write(str(self.engine.gameMeta[self.gameID]) + "\n")
 				break
 
 		if not playedMove:
-			currentPiece = self.engine.gameMeta[self.gameID]["move"]
-			self.engine.gameMeta[self.gameID]["move"] = (1 if currentPiece == 2 else 2) # swap the current places if a move cannot be made
+			outputFile.write("No played move\n")
+			self.engine.swapPlayer(self.gameID) # swap the current places if a move cannot be made
+			self.makeMove()
+			outputFile.write("New piece to move is: " + str(self.engine.gameMeta[self.gameID]["move"]) + "\n") 
 
 		return playedMove, moveSuccess, piecesTaken, winner, upgraded
 

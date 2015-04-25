@@ -34,7 +34,15 @@ class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 		self.testObject.games[gameID] = 1
 		self.assertEquals(self.testObject.games[gameID], self.testObject.getGame(gameID))
 
-	def test_setgame(self):
+	def test_endGame(self):
+		'''Engine.endGame works'''
+		gameID = "abc"
+		self.testObject.games[gameID] = 1
+		self.assertIn(gameID, self.testObject.games)
+		self.testObject.endGame(gameID)
+		self.assertNotIn(gameID, self.testObject.games)
+
+	def test_setGame(self):
 		'''Engine.setGame works'''
 		gameA = "gameA"
 		gameB = "gameB"
