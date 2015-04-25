@@ -36,10 +36,8 @@ class BaseAI(object):
 
 class StaticAI(BaseAI):
 	'''Represents a Static AI'''
-	def makeMove(self):
+	def makeMove(self, force = False):
 		'''Make the AI's move'''
-		outputFile = open("artificial.output", "a")
-		outputFile.write("StaticAI.makeMove called\n")
 		takingFound = False
 		openings, attacks = [], []
 		positions = Gamestate.findLocations(self.state, self.piece)
@@ -56,7 +54,6 @@ class StaticAI(BaseAI):
 				openings.extend(map(lambda newPosition: [position, newPosition],position_openings))
 
 		if attacks:
-			outputFile.write("Using taking positions\n")
 			attacks.sort(key = self.evaluateAttack)
 
 			segmentOne, segmentTwo = attacks[:config.RULE_MATCHES], attacks[config.RULE_MATCHES:]
@@ -67,33 +64,25 @@ class StaticAI(BaseAI):
 
 			moves = segmentOne + segmentTwo
 		else:
-			outputFile.write("Using open positions\n")
 			moves = openings
 			random.shuffle(moves) # shuffle the moves to pick a random opening
-		outputFile.write(str(moves) + "\n")
 		playedMove, moveSuccess, piecesTaken, winner, upgraded = None, False, [], 0, False
 
 		for move in moves:
 			try:
-				outputFile.write("Trying move: " + str(move) + "\n")
 				moveSuccess, piecesTaken, winner, upgraded = self.engine.makeMove(self.gameID, *move)
 				stimulus = self.generateStimulus(move)
 				self.db.newRule(self.state, stimulus, move, piece = self.piece)
 				playedMove = move
 				break
 			except InvalidMove:
-				outputFile.write("Invalid move: " + str(move) + "\n")
 				continue
 			except WrongPlayerMove:
-				outputFile.write("Wrong player move: " + str(move) + "\n")
-				outputFile.write(str(self.engine.gameMeta[self.gameID]) + "\n")
 				break
 
-		if not playedMove:
-			outputFile.write("No played move\n")
+		if force and not playedMove:
 			self.engine.swapPlayer(self.gameID) # swap the current places if a move cannot be made
 			self.makeMove()
-			outputFile.write("New piece to move is: " + str(self.engine.gameMeta[self.gameID]["move"]) + "\n") 
 
 		return playedMove, moveSuccess, piecesTaken, winner, upgraded
 
@@ -127,7 +116,7 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 	'''Represents a Dynamic Scripting AI'''
 	delta = config.WEIGHT_DELTA
 
-	def makeMove(self):
+	def makeMove(self, force = False):
 		'''Makes the AI's move'''
 		stimuli = self.analyzeStimuli()
 		possibleMoves = self.db.getMatchingRules(self.state, stimuli, self.piece)
@@ -150,7 +139,7 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 				break
 		
 		if not playedMove:
-			return self.bestNewMove()
+			return self.bestNewMove(force)
 
 		return playedMove.response, moveSuccess, piecesTaken, winner, upgraded
 
@@ -170,9 +159,9 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 			self.state[opponentKings] *= -1 # revert opponent kings
 		return results
 
-	def bestNewMove(self):
+	def bestNewMove(self, force = False):
 		'''Makes a randomized move that is weakly evaluated --- only should be executed if no valid moves exist in the database'''
-		return super(DynamicScriptingAI, self).makeMove()
+		return super(DynamicScriptingAI, self).makeMove(force)
 
 	def feedback(self, seemedHuman = False, details = ""):
 		'''Provide feedback to the AI'''

@@ -56,7 +56,7 @@ def makeMove(db, engine, data):
 def makeMoveAI(db, engine, data):
 	'''Make the AI game move'''
 	gameID = data["gameID"]
-	move, success, pieces, winner, upgraded = ALL_AI[gameID].makeMove()
+	move, success, pieces, winner, upgraded = ALL_AI[gameID].makeMove(force = True)
 	
 	if winner:
 		return Response.json("Game end", "Success", 201, winner = winner, pieces = pieces, move = move, upgraded = upgraded)

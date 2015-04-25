@@ -38,9 +38,13 @@ class TestEngine(baseTests.NumpyTest, unittest.TestCase):
 		'''Engine.endGame works'''
 		gameID = "abc"
 		self.testObject.games[gameID] = 1
+		self.testObject.gameMeta[gameID] = 1
 		self.assertIn(gameID, self.testObject.games)
+		self.assertIn(gameID, self.testObject.gameMeta)
+
 		self.testObject.endGame(gameID)
 		self.assertNotIn(gameID, self.testObject.games)
+		self.assertNotIn(gameID, self.testObject.gameMeta)
 
 	def test_setGame(self):
 		'''Engine.setGame works'''

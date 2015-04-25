@@ -42,6 +42,7 @@ class Engine(object):
 	def endGame(self, gameID):
 		'''Ends a current game'''
 		del self.games[gameID]
+		del self.gameMeta[gameID]
 
 	def getGame(self, gameID):
 		'''Get the game by the game id'''

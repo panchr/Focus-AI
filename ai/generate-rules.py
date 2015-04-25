@@ -47,6 +47,7 @@ def main():
 			else:
 				special = []
 			x_only = "x-only" in special
+			king_only = "king-only" in special
 
 			# Get the flipped, reflected, and flipped+reflected values
 			flippedRule = changeRulePiece(state, condition, response, piece, group, initialWeight)
@@ -59,17 +60,17 @@ def main():
 			translatedReflected = translateRule(state, reflectedRule["condition"], reflectedRule["response"], reflectedRule["piece"], group, initialWeight, x_only)
 			translatedReflectedFlipped = translateRule(state, flippedReflected["condition"], flippedReflected["response"], flippedReflected["piece"], group, initialWeight, x_only)
 
-			# Get the king values (and then flipped, reflected, and flipped+reflected for the kings)
-			kingRule = ruleToKing(state, condition, response, piece, group, initialWeight)
-			flippedKingRule =changeRulePiece(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight)
-			reflectedKingRule = reflectRule(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight)
-			flippedReflectedKingRule = changeRulePiece(state, reflectedKingRule["condition"], reflectedKingRule["response"], reflectedKingRule["piece"], kingRule["group"], initialWeight)
+			if not king_only: # Get the king values (and then flipped, reflected, and flipped+reflected for the kings)
+				kingRule = ruleToKing(state, condition, response, piece, group, initialWeight)
+				flippedKingRule =changeRulePiece(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight)
+				reflectedKingRule = reflectRule(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight)
+				flippedReflectedKingRule = changeRulePiece(state, reflectedKingRule["condition"], reflectedKingRule["response"], reflectedKingRule["piece"], kingRule["group"], initialWeight)
 
-			# Get the translated king values, for all 4 types
-			translatedKing = translateRule(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight, x_only)
-			translatedFlippedKing = translateRule(state, flippedKingRule["condition"], flippedKingRule["response"], flippedKingRule["piece"], kingRule["group"], initialWeight, x_only)
-			translatedReflectedKing = translateRule(state, reflectedKingRule["condition"], reflectedKingRule["response"], reflectedKingRule["piece"], kingRule["group"], initialWeight, x_only)
-			translatedFlippedReflectedKing = translateRule(state, flippedReflectedKingRule["condition"], flippedReflectedKingRule["response"], flippedReflectedKingRule["piece"], kingRule["group"], initialWeight, x_only)
+				# Get the translated king values, for all 4 types
+				translatedKing = translateRule(state, kingRule["condition"], kingRule["response"], kingRule["piece"], kingRule["group"], initialWeight, x_only)
+				translatedFlippedKing = translateRule(state, flippedKingRule["condition"], flippedKingRule["response"], flippedKingRule["piece"], kingRule["group"], initialWeight, x_only)
+				translatedReflectedKing = translateRule(state, reflectedKingRule["condition"], reflectedKingRule["response"], reflectedKingRule["piece"], kingRule["group"], initialWeight, x_only)
+				translatedFlippedReflectedKing = translateRule(state, flippedReflectedKingRule["condition"], flippedReflectedKingRule["response"], flippedReflectedKingRule["piece"], kingRule["group"], initialWeight, x_only)
 
 			# Set the initial values for the condit
 			state = mergeCondition(state ,condition)
@@ -78,11 +79,10 @@ def main():
 			rule["response"] = response
 
 			for baseRule, translatedRule in zip(
-				[rule, flippedRule, reflectedRule, flippedReflected,
-				kingRule, reflectedKingRule, flippedKingRule, flippedReflectedKingRule],
-				[translated, translatedFlipped, translatedReflected, translatedReflectedFlipped,
-				translatedKing, translatedFlippedKing, translatedReflectedKing, translatedFlippedReflectedKing
-				]
+				[rule, flippedRule, reflectedRule, flippedReflected] +
+				([kingRule, reflectedKingRule, flippedKingRule, flippedReflectedKingRule] if not king_only else []),
+				[translated, translatedFlipped, translatedReflected, translatedReflectedFlipped] +
+				([translatedKing, translatedFlippedKing, translatedReflectedKing, translatedFlippedReflectedKing] if not king_only else [])
 				):
 				if validMove(baseRule["state"], *baseRule["response"]):
 					rules.append(baseRule)
