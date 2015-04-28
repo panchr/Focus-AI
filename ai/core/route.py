@@ -63,8 +63,17 @@ def makeMoveAI(db, engine, data):
 
 	return Response.json("Move executed", "Success", 200, move = move, pieces = pieces, upgraded = upgraded)
 
+def gameFeedback(db, engine, data):
+	'''Provide feedback to the game AI'''
+	gameID = data["gameID"]
+	seemedHuman, feedback = data["seemedHuman"], data["feedback"]
+
+	storedFeedback = ALL_AI[gameID].feedback(seemedHuman, feedback)
+	return Response.json("Success", 200)
+
 ROUTES = {
 	"game.new": newGame,
 	"game.move": makeMove,
-	"game.ai.move": makeMoveAI
+	"game.ai.move": makeMoveAI,
+	"game.feedback": gameFeedback
 	}
