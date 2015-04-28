@@ -72,7 +72,9 @@ class StaticAI(BaseAI):
 			try:
 				moveSuccess, piecesTaken, winner, upgraded = self.engine.makeMove(self.gameID, *move)
 				stimulus = self.generateStimulus(move)
-				self.db.newRule(self.state, stimulus, move, piece = self.piece)
+				rule = self.db.newRule(self.state, stimulus, move, piece = self.piece)
+				self.history.append(np.copy(self.state))
+				self.playedMoves.append(rule)
 				playedMove = move
 				break
 			except InvalidMove:
