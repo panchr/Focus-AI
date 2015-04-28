@@ -27,6 +27,10 @@ class BaseTest(object):
 		'''Tests that the test case inherits from unittest.TestCase'''
 		self.assertIsInstance(self, unittest.TestCase)
 
+	def assertHasKey(self, dictionary, key):
+		'''Key exists in the dictionary'''
+		self.assertIn(key, dictionary)
+
 	def assertHasAttr(self, o, attr):
 		'''Object has an attribute'''
 		self.assertTrue(hasattr(o, attr), "{o} does not have attribute {attr}".format(o = o, attr = attr))
