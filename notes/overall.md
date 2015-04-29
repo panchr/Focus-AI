@@ -1,12 +1,10 @@
 # Overall Planning/Notes
 
-## Last Updated: 3/16/2015
+## Last Updated: 4/29/2015
 
 ### Current Status
 
-Currently, I am working on finishing up some remaining unit tests.
-In addition, I want to learn about deep learning to see if I can use it to analyze Checkers gameplay data to determine stimuli.
-On the other hand, I could also use a base set of data and then use genetic algorithms to create further rules.
+Currently, I am trying to get more players for my game so that my AI can collect data.
 
 ### Decision Making Process
 
@@ -47,4 +45,7 @@ Currently, the game state is stored as a 2-dimensional `numpy.ndarray`, which tu
 Here are [my notes on representation learning](representation-learning.md).
 
 ### Game Engine
-I could not find a suitable Checkrs Game Engine in Python, so I am working on creating my own. Most of my notes were taken during [week 7](week-7.md).
+I could not find a suitable Checkers Game Engine in Python, so I am working on creating my own. Most of my notes were taken during [week 7](week-7.md).
+
+### Unit testing
+My notes on unit tests are located [here](unit-tests.md).

@@ -28,3 +28,10 @@
 6. Continued work of the core AI, mainly focusing on the Game state manipulation
 7. Started main work on the game engine - making moves and move validation
 8. Finished game engine and started the models for the Condition and Response pairs of the rule sets
+9. Read more about Deep Learning
+10. ~
+11. Most of core AI is finished, other than the static AI component
+12. Started main web development process
+13. Finished web development aspects and started connecting the backends
+14. Fixed any small remaining bugs in the core AI and web backends
+
