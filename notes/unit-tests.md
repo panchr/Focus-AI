@@ -10,3 +10,5 @@ Writing unit tests as I developed definitely elongated the process.
 However, it forced me to review my code and algorithm more carefully, which helped from the very beginning. In addition, they have prevented me from committing numerous careless mistakes.
 
 I used git's `pre-commit` hook to run all unit tests before committing to the repository --- this ensures that every commit is a stable release as well.
+
+All of my unit tests are located in the [ai/tests folder](../ai/tests).

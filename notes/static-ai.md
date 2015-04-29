@@ -10,5 +10,7 @@ If take moves are found, they are ranked based on how many pieces are taken. Sim
 
 Then, the AI goes through each of the moves and tries to execute them. The search only returns valid moves, but I still try every move successively if the first move fails to be valid. Once a move is executed, a stimulus is extracted from the move and it is recorded as a new rule. This prevents the AI from having to repeat the search in a similar scenario.
 
+The main implementation is located in the [ai/core/artificial.py module](../ai/core/artificial.py).
+
 This has worked pretty nicely, though it could be improved. Namely, the AI makes some relatively stupid mistakes sometimes, mostly because many groups have the same weight.
 I am considering indexing the rules by a pre-determined "strength", but this would require a triple-attribute-sort (instead of just two attributes as of now) and I'm not sure if that will work out or how I would go about implementing it.

@@ -52,3 +52,6 @@ My notes on unit tests are located [here](unit-tests.md).
 
 ### Static Move Generation
 I researched how to use search functions to generate all possible moves for a player and [implemented this as well](static-ai.md).
+
+### Generating Rules
+To avoid repeatedly copying the same moves, I used a series of matrix transformations to [generate new rules](rule-generation.md) based on base rules.
