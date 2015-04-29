@@ -49,3 +49,6 @@ I could not find a suitable Checkers Game Engine in Python, so I am working on c
 
 ### Unit testing
 My notes on unit tests are located [here](unit-tests.md).
+
+### Static Move Generation
+I researched how to use search functions to generate all possible moves for a player and [implemented this as well](static-ai.md).
