@@ -55,3 +55,6 @@ I researched how to use search functions to generate all possible moves for a pl
 
 ### Generating Rules
 To avoid repeatedly copying the same moves, I used a series of matrix transformations to [generate new rules](rule-generation.md) based on base rules.
+
+### Web Development
+All of my notes on web development are located [here](web-development.md).
