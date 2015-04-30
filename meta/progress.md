@@ -14,9 +14,8 @@
 	2. [How can a suitable game engine be developed in Python?](../notes/week-7.md)
 	3. [How will the AI interact with a game engine?](../notes/week-7.md#core-interaction)
 7. What type of interface will the primary application be?
-	1. If using a web-based interface, how will the website interface with the AI and game engine?
-	2. How can a Python-driven AI support concurrent connections?
-	3. Can each connection (and respective AI instance) remain isolated from the rest?
+	1. [If using a web-based interface, how will the website interface with the AI and game engine?](../notes/web-development.md#backend-connection)
+	2. [How can a Python-driven AI support concurrent connections?](../notes/web-development.md#concurrent-connections)
 
 ## Weekly Work Completed
 
@@ -34,4 +33,3 @@
 12. Started main web development process
 13. Finished web development aspects and started connecting the backends
 14. Fixed any small remaining bugs in the core AI and web backends
-

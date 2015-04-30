@@ -3,10 +3,18 @@
 I knew the easiest way for random people to access my game and play against my AI was if it was based online.
 So, I decided to host the game and AI on my website.
 
+### Web Design
 Developing the actual interface was fairly straightforward once I fixed small graphical issues. However, I did run into one major problem, which was connecting the frontend webpage with the backend web service.
 
-I used something called Socket.IO to handle WebSocket connections for me. This made it fairly simple to connect the frontend and the backend. However, my main website backend is created in `Node.js`, whereas my AI backend is created in `Python`.
+### Backend Connection
+I used something called Socket.IO to handle WebSocket connections for me. This made it fairly simple to connect the frontend and the backend.
+
+### IPC
+However, my main website backend is created in `Node.js`, whereas my AI backend is created in `Python`.
 I needed some way to connect the two, I decided to use IPC (Inter-process communication) software to accomplish this. After researching a few different types, I settled on `ZMQ`, which looked to be the simplest.
+
+### Concurrent Connections
+WebSockets allow for multiple connections at once. In addition, the AI backend can assign individual ID numbers per game/connection, and this helps to isolate connections.
 
 It was fairly simple to set up, but I did run into many errors. For example, both the Python and Node.js libraries need to be partially compiled because they have external C dependencies.
 When installing them, it attempts the compilation but it reported numerous errors without actually notifying me that I did not have a compiler installed.

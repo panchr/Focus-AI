@@ -20,4 +20,3 @@
 7. What type of interface will the primary application be?
 	1. If using a web-based interface, how will the website interface with the AI and game engine?
 	2. How can a Python-driven AI support concurrent connections?
-	3. Can each connection (and respective AI instance) remain isolated from the rest?
