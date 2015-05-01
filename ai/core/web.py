@@ -37,7 +37,7 @@ class Server(object):
 				self.socket.send_json({
 					"msg_id": msg_id,
 					"response": {
-						type: 504
+						"type": 504
 						}
 					})
 

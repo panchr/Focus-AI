@@ -23,6 +23,7 @@ class BaseAI(object):
 		self.opponentPiece = (1 if self.piece == 2 else 2)
 		self.playedMoves = []
 		self.history = []
+		self.winner = None
 
 	def setState(self, newState):
 		'''Sets the game state'''
@@ -86,6 +87,7 @@ class StaticAI(BaseAI):
 			self.engine.swapPlayer(self.gameID) # swap the current places if a move cannot be made
 			self.makeMove()
 
+		self.winner = winner
 		return playedMove, moveSuccess, piecesTaken, winner, upgraded
 
 	def evaluateAttack(self, attack):
@@ -143,6 +145,7 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 		if not playedMove:
 			return self.bestNewMove(force)
 
+		self.winner = winner
 		return playedMove.response, moveSuccess, piecesTaken, winner, upgraded
 
 	def analyzeStimuli(self):
@@ -173,4 +176,9 @@ class DynamicScriptingAI(StaticAI, BaseAI):
 				rule.increaseWeight()
 			else:
 				rule.decreaseWeight()
+				
+			if self.winner == self.piece:
+				rule.increaseStrength()
+			elif self.winner == self.opponentPiece:
+				rule.decreaseStrength()
 		return Game.new(feedback = details, history = self.history, rules = rules, seemedHuman = seemedHuman)

@@ -25,7 +25,7 @@ class Database(mongokit.Connection):
 		results = list(self.Rule.find({
 			"condition": {"$in": stimuli},
 			"piece": {"$in": [piece, -piece, 0]},
-			}).sort("weight", -1).limit(config.RULE_MATCHES))
+			}).sort("combinedWeight", -1).limit(config.RULE_MATCHES))
 		# should also sort by "move strength"
 		# this might require another weight, that is set from the start
 		results.sort(key = lambda item: Gamestate.compare(state, item.state), reverse = True)

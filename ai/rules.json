@@ -12,7 +12,7 @@
 			[2, 0, 0, 0, 0, 0, 0, 0]
 		],
 		"response": [[7, 0], [[5, 2]]],
-		"initialWeight": 1,
+		"initialStrength": 1,
 		"piece": 2,
 		"group": "take-1"
 	},
@@ -29,7 +29,7 @@
 			[2, 0, 0, 0, 0, 0, 0, 0]
 		],
 		"response": [[7, 0], [[5, 2], [3, 4]]],
-		"initialWeight": 2,
+		"initialStrength": 2,
 		"piece": 2,
 		"group": "take-2"
 	},
@@ -46,7 +46,7 @@
 			[2, 0, 0, 0, 0, 0, 0, 0]
 		],
 		"response": [[7, 0], [[5, 2], [3, 4], [1, 6]]],
-		"initialWeight": 3,
+		"initialStrength": 3,
 		"piece": 2,
 		"group": "take-3"
 	},
@@ -63,7 +63,8 @@
 			[2, 0, 0, 0, 0, 0, 0, 0]
 		],
 		"response": [[7, 0], [[5, 2], [3, 0]]],
-		"initialWeight": 2,
+		"initialWeight": 1,
+		"initialStrength": 2,
 		"piece": 2,
 		"group": "take-2-diagonal"
 	},
@@ -80,7 +81,8 @@
 			[2, 0, 0, 0, 0, 0, 0, 0]
 		],
 		"response": [[7, 0], [[5, 2], [3, 0], [1, 2]]],
-		"initialWeight": 3,
+		"initialWeight": 2,
+		"initialStrength": 3,
 		"piece": 2,
 		"group": "take-3-diagonal"
 	},
@@ -97,7 +99,8 @@
 			[2, 0, 0, 0, 0, 0, 0, 0]
 		],
 		"response": [[7, 0], [[5, 2], [3, 4], [1, 2]]],
-		"initialWeight": 3,
+		"initialWeight": 0.5,
+		"initialStrength": 3,
 		"piece": 2,
 		"group": "take-3-diag-end"
 	},
@@ -114,7 +117,8 @@
 			[0, 0, 2, 0, 0, 0, 0, 0]
 		],
 		"response": [[7, 2], [[5, 4], [3, 2], [1, 0]]],
-		"initialWeight": 3,
+		"initialWeight": 1.5,
+		"initialStrength": 3,
 		"piece": 2,
 		"group": "take-3-diag-middle"
 	},
@@ -132,6 +136,7 @@
 		],
 		"response": [[7, 2], [[5, 4], [3, 2], [5, 0]]],
 		"initialWeight": 3,
+		"initialStrength": 3,
 		"piece": 2,
 		"group": "take-3-round",
 		"special": ["king-only"]
@@ -181,7 +186,8 @@
 			[0, 0, 0, 0, 0, 0, 0, 0]
 		],
 		"response": [[1, 0], [0, 1]],
-		"initialWeight": 2,
+		"initialWeight": 1,
+		"initialStrength": 4,
 		"piece": 2,
 		"group": "move-promote",
 		"special": ["x-only"]
