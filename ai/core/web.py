@@ -27,11 +27,19 @@ class Server(object):
 				print("ZMQ Server: received SOCKET_END; shutting down server")
 				self.shutdown()
 				break
-			msg_id, response = self.handler(message)
-			self.socket.send_json({
-				"msg_id": msg_id,
-				"response": response
-				})
+			try:
+				msg_id, response = self.handler(message)
+				self.socket.send_json({
+					"msg_id": msg_id,
+					"response": response
+					})
+			except Exception as error:
+				self.socket.send_json({
+					"msg_id": msg_id,
+					"response": {
+						type: 504
+						}
+					})
 
 	def shutdown(self, endTasks = []):
 		'''Shutdown the server'''
