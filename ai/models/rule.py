@@ -21,7 +21,7 @@ class Rule(Model):
 		"piece": int,
 		"group": basestring,
 		"weight": float, # although weights are initially stored as integers, they are occasionally changed to floats so that they can be normalized
-		"strength": float, # the strength is how well the move is
+		"strength": float, # the strength is how good the move is
 		"combinedWeight": float, # the combined weights of each group
 		}
 	
@@ -74,6 +74,7 @@ class Rule(Model):
 			((self[field] - 1) < config.NORMALIZE_THRESHOLD_NEG) or
 			((self.combinedWeight + 1) > config.NORMALIZE_THRESHOLD) or
 			((self.combinedWeight - 1) < config.NORMALIZE_THRESHOLD_NEG)):
+			# if the weight or strength is close to breaking the max or min integer, normalize all of the weights
 			Rule.normalize()
 
 	@Model.autosave

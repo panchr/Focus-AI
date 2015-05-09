@@ -1,7 +1,7 @@
 Focus AI
 ========
 
-This repository contains all of my work (other than readings) for my Senior Honors Focus Project.
+This repository contains all of my work (other than readings) for my Senior Focus Honors project.
 
 I am researching gameplaying AI and how they interact with human players. Specifically, I want to learn how to create an AI that can play a gamelike a regular human does.
 
@@ -11,6 +11,8 @@ By April of 2015, I hope to have created an AI for Checkers using this algorithm
 
 The final project is located on my personal website, [https://panchr.me/focus](https://panchr.me/focus).
 
+My final paper for my first semester research is also on my personal website, [https://panchr.me/papers/focus.pdf](https://panchr.me/papers/focus.pdf).
+
 *Note: most of my code and development work is the `dev` branch. I will merge it into the `master` branch every week, so the weekly tag will contain the latest development work.*
 
 ### Important Pages
@@ -19,3 +21,4 @@ The final project is located on my personal website, [https://panchr.me/focus](h
 - [Overall Notes Summary](notes/overall.md)
 - [Project Timeline](meta/project-timeline.md)
 - [Guiding Questions](meta/guiding-questions.md)
+- [Final Paper](https://panchr.me/papers/focus.pdf)
