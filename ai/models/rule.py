@@ -44,7 +44,8 @@ class Rule(Model):
 		rule.response = response
 
 		if piece is None:
-			piece = state[response[0]] if len(response) > 0 else 0
+			piece = int(state[response[0]]) if len(response) > 0 else 0
+			# must explicitly convert to int to store in MongoDB
 
 		rule.piece = piece
 		rule.group = group
