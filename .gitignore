@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io
 
+# Virtual environment
+venv
+
 ### Other files
 TODO
 *.output
