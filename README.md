@@ -1,6 +1,9 @@
 Focus AI
 ========
 
+Build Status: [![Circle 
+CI](https://circleci.com/gh/panchr/Focus-AI.svg?style=svg)](https://circleci.com/gh/panchr/Focus-AI)
+
 This repository contains all of my work (other than readings) for my Senior Focus Honors project.
 
 I am researching gameplaying AI and how they interact with human players. Specifically, I want to learn how to create an AI that can play a gamelike a regular human does.

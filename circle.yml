@@ -1,0 +1,10 @@
+# Rushy Panchal
+# circle.yml
+# CircleCI configuration file
+
+machine:
+  python:
+    version: 2.7.9
+
+general:
+  build_dir: ai
